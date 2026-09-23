@@ -3,7 +3,7 @@ import { useRouter } from 'expo-router';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { useProfileNavigation } from '../../hooks/useProfileNavigation';
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 import type { TeamMember } from '../../types/database';
 
 function initials(name: string): string {
@@ -85,7 +85,7 @@ export function TeamSection({
                   hitSlop={6}
                   accessibilityLabel={`Remove ${member.displayName} from team`}
                 >
-                  <Feather name="user-minus" size={13} color="#f87171" />
+                  <Feather name="user-minus" size={13} color={colors.danger} />
                   <Text style={styles.removeButtonText}>Remove</Text>
                 </Pressable>
               ) : null}
@@ -99,25 +99,25 @@ export function TeamSection({
 
 const styles = StyleSheet.create({
   section: {
-    gap: 10,
+    gap: spacing.md,
   },
   title: {
-    fontSize: 15,
+    fontSize: fontSize.lg,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   list: {
-    gap: 8,
+    gap: spacing.sm,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: spacing.md,
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    padding: 10,
+    borderRadius: radius.md,
+    padding: spacing.md,
   },
   rowOwner: {
     borderColor: colors.emerald,
@@ -125,10 +125,10 @@ const styles = StyleSheet.create({
   avatar: {
     width: 36,
     height: 36,
-    borderRadius: 18,
+    borderRadius: radius.pill,
   },
   avatarFallback: {
-    backgroundColor: '#1e293b',
+    backgroundColor: colors.surfaceRaised,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -145,26 +145,26 @@ const styles = StyleSheet.create({
   removeButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: spacing.xs,
     borderWidth: 1,
-    borderColor: '#f8717166',
-    borderRadius: 999,
-    paddingVertical: 4,
-    paddingHorizontal: 10,
+    borderColor: colors.dangerBorder,
+    borderRadius: radius.pill,
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.md,
   },
   removeButtonText: {
-    color: '#f87171',
-    fontSize: 12,
+    color: colors.danger,
+    fontSize: fontSize.sm,
     fontWeight: '600',
   },
   name: {
     color: colors.textPrimary,
     fontWeight: '600',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
   role: {
     color: colors.textMuted,
-    fontSize: 12,
+    fontSize: fontSize.sm,
     textTransform: 'capitalize',
   },
   roleOwner: {

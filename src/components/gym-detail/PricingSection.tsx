@@ -1,7 +1,7 @@
 import { Feather } from '@expo/vector-icons';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { colors } from '../../theme/colors';
+import { colors, fontSize, spacing } from '../../theme';
 import type { GymPlanType, GymPricingPlan } from '../../types/database';
 
 const PLAN_LABELS: Record<GymPlanType, string> = {
@@ -55,7 +55,7 @@ export function PricingSection({
 
 const styles = StyleSheet.create({
   section: {
-    gap: 8,
+    gap: spacing.sm,
   },
   headerRow: {
     flexDirection: 'row',
@@ -63,27 +63,27 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   title: {
-    fontSize: 15,
+    fontSize: fontSize.lg,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   editButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: spacing.xs,
   },
   editButtonText: {
     color: colors.emerald,
     fontWeight: '700',
-    fontSize: 13,
+    fontSize: fontSize.base,
   },
   plansText: {
-    fontSize: 14,
+    fontSize: fontSize.md,
     color: colors.textPrimary,
     lineHeight: 20,
   },
   empty: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     color: colors.textMuted,
   },
 });

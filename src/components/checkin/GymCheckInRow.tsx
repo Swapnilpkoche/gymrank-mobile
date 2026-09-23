@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import type { LatestValidCheckIn } from '../../lib/checkin';
 import { useTodayCheckInState } from '../../hooks/useTodayCheckInState';
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 
 // One row in the Check In tab's "Check in now" list. Its own component (not
 // inlined in the list's .map()) so useTodayCheckInState - which ticks on a
@@ -59,7 +59,7 @@ export function GymCheckInRow({
         {gymName}
       </Text>
       <Pressable style={styles.checkInButton} onPress={() => onCheckIn(gymId, gymName)}>
-        <Feather name="map-pin" size={14} color="#fff" />
+        <Feather name="map-pin" size={14} color={colors.white} />
         <Text style={styles.checkInButtonText}>Check In</Text>
       </Pressable>
     </View>
@@ -71,65 +71,65 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: 10,
+    gap: spacing.md,
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 14,
-    paddingVertical: 12,
-    paddingHorizontal: 14,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.md,
   },
   gymRowName: {
     flex: 1,
-    fontSize: 14,
+    fontSize: fontSize.md,
     fontWeight: '600',
     color: colors.textPrimary,
   },
   checkInButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: spacing.sm,
     backgroundColor: colors.emerald,
-    borderRadius: 10,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    borderRadius: radius.md,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
   },
   checkInButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontWeight: '700',
-    fontSize: 13,
+    fontSize: fontSize.base,
   },
   checkedInBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: spacing.sm,
     backgroundColor: colors.background,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 10,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    borderRadius: radius.md,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
   },
   checkedInBadgeText: {
     color: colors.emeraldLight,
     fontWeight: '700',
-    fontSize: 13,
+    fontSize: fontSize.base,
   },
   usedElsewhereBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: spacing.sm,
     backgroundColor: colors.background,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 10,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    borderRadius: radius.md,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
     opacity: 0.8,
   },
   usedElsewhereBadgeText: {
     color: colors.textMuted,
     fontWeight: '700',
-    fontSize: 13,
+    fontSize: fontSize.base,
   },
 });

@@ -32,7 +32,7 @@ import {
 } from '../../src/lib/trainer';
 import { confirmTrainerRequest, sendTrainerRequest } from '../../src/lib/trainerRequestFlow';
 import { fetchPublicProfile } from '../../src/lib/userFollows';
-import { colors } from '../../src/theme/colors';
+import { colors, fontSize, radius, spacing } from '../../src/theme';
 import type {
   MyGymHistoryItem,
   PublicProfile,
@@ -286,7 +286,7 @@ export default function TrainerProfileScreen() {
               disabled={isSendingRequest}
             >
               {isSendingRequest ? (
-                <ActivityIndicator color="#fff" size="small" />
+                <ActivityIndicator color={colors.white} size="small" />
               ) : (
                 <Text style={styles.applyButtonText}>
                   {trainer ? `Request to join ${applyGym.name}` : 'Create trainer profile'}
@@ -357,7 +357,7 @@ export default function TrainerProfileScreen() {
         <View style={styles.actionRow}>
           {isOwnProfile ? (
             <Pressable style={styles.primaryButton} onPress={() => setIsEditModalVisible(true)}>
-              <Feather name="edit-2" size={16} color="#fff" />
+              <Feather name="edit-2" size={16} color={colors.white} />
               <Text style={styles.primaryButtonText}>
                 {trainer ? 'Edit trainer profile' : 'Create trainer profile'}
               </Text>
@@ -409,7 +409,7 @@ export default function TrainerProfileScreen() {
                       hitSlop={6}
                       accessibilityLabel={`Leave ${affiliation.gymName}`}
                     >
-                      <Feather name="log-out" size={13} color="#f87171" />
+                      <Feather name="log-out" size={13} color={colors.danger} />
                       <Text style={styles.leaveButtonText}>Leave</Text>
                     </Pressable>
                   ) : (
@@ -456,7 +456,7 @@ export default function TrainerProfileScreen() {
                     <Feather
                       name={warn ? 'alert-circle' : 'clock'}
                       size={16}
-                      color={warn ? '#fbbf24' : colors.textMuted}
+                      color={warn ? colors.warning : colors.textMuted}
                     />
                     <Text style={[styles.historyText, warn && styles.historyTextWarn]}>{text}</Text>
                     <Feather name="chevron-right" size={16} color={colors.textMuted} />
@@ -514,73 +514,73 @@ const styles = StyleSheet.create({
   content: {
     flexGrow: 1,
     alignItems: 'center',
-    padding: 24,
+    padding: spacing.xxl,
     paddingBottom: 48,
-    gap: 10,
+    gap: spacing.md,
   },
   centered: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.background,
-    padding: 16,
+    padding: spacing.lg,
   },
   error: {
-    color: '#f87171',
+    color: colors.danger,
     textAlign: 'center',
   },
   applyCard: {
     width: '100%',
-    gap: 8,
-    backgroundColor: '#052e1f',
+    gap: spacing.sm,
+    backgroundColor: colors.emeraldTint,
     borderWidth: 1,
     borderColor: colors.emerald,
-    borderRadius: 12,
-    padding: 14,
-    marginBottom: 8,
+    borderRadius: radius.md,
+    padding: spacing.md,
+    marginBottom: spacing.sm,
   },
   applyHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: spacing.sm,
   },
   applyLabel: {
     color: colors.emeraldLight,
-    fontSize: 11,
+    fontSize: fontSize.xs,
     fontWeight: '700',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
   applyTitle: {
     color: colors.textPrimary,
-    fontSize: 16,
+    fontSize: fontSize.xl,
     fontWeight: '700',
   },
   applyText: {
     color: colors.textPrimary,
-    fontSize: 13,
+    fontSize: fontSize.base,
     lineHeight: 19,
   },
   applyButton: {
     backgroundColor: colors.emerald,
-    borderRadius: 10,
-    paddingVertical: 12,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
     alignItems: 'center',
-    marginTop: 4,
+    marginTop: spacing.xs,
   },
   applyButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontWeight: '700',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
   photo: {
     width: PHOTO_SIZE,
     height: PHOTO_SIZE,
     borderRadius: PHOTO_SIZE / 2,
-    marginBottom: 4,
+    marginBottom: spacing.xs,
   },
   photoFallback: {
-    backgroundColor: '#1e293b',
+    backgroundColor: colors.surfaceRaised,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -590,163 +590,163 @@ const styles = StyleSheet.create({
     fontSize: 36,
   },
   name: {
-    fontSize: 21,
+    fontSize: fontSize.xxl,
     fontWeight: '700',
     color: colors.textPrimary,
     textAlign: 'center',
   },
   username: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     color: colors.textMuted,
   },
   badgeRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
-    gap: 8,
-    marginTop: 4,
+    gap: spacing.sm,
+    marginTop: spacing.xs,
   },
   trainerBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 5,
-    backgroundColor: '#052e1f',
+    gap: spacing.xs,
+    backgroundColor: colors.emeraldTint,
     borderWidth: 1,
     borderColor: colors.emerald,
-    borderRadius: 999,
-    paddingVertical: 4,
-    paddingHorizontal: 12,
+    borderRadius: radius.pill,
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.md,
   },
   trainerBadgeText: {
     color: colors.emeraldLight,
-    fontSize: 12,
+    fontSize: fontSize.sm,
     fontWeight: '700',
   },
   experienceBadge: {
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 999,
-    paddingVertical: 4,
-    paddingHorizontal: 12,
+    borderRadius: radius.pill,
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.md,
   },
   experienceBadgeText: {
     color: colors.textPrimary,
-    fontSize: 12,
+    fontSize: fontSize.sm,
     fontWeight: '600',
   },
   chipRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
-    gap: 8,
-    marginTop: 4,
+    gap: spacing.sm,
+    marginTop: spacing.xs,
   },
   chip: {
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 999,
-    paddingVertical: 5,
-    paddingHorizontal: 12,
+    borderRadius: radius.pill,
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.md,
   },
   chipText: {
     color: colors.textPrimary,
-    fontSize: 12,
+    fontSize: fontSize.sm,
     fontWeight: '600',
   },
   bio: {
-    fontSize: 14,
+    fontSize: fontSize.md,
     color: colors.textPrimary,
     textAlign: 'center',
     lineHeight: 21,
-    marginTop: 6,
+    marginTop: spacing.sm,
   },
   emptyText: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     color: colors.textMuted,
     textAlign: 'center',
-    marginTop: 4,
+    marginTop: spacing.xs,
   },
   ctaCard: {
     width: '100%',
-    gap: 6,
+    gap: spacing.sm,
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    padding: 14,
-    marginTop: 8,
+    borderRadius: radius.md,
+    padding: spacing.md,
+    marginTop: spacing.sm,
   },
   ctaTitle: {
-    fontSize: 15,
+    fontSize: fontSize.lg,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   ctaText: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     color: colors.textMuted,
     lineHeight: 19,
   },
   actionRow: {
     flexDirection: 'row',
-    gap: 10,
-    marginTop: 12,
+    gap: spacing.md,
+    marginTop: spacing.md,
   },
   primaryButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
+    gap: spacing.sm,
     backgroundColor: colors.emerald,
-    borderRadius: 999,
-    paddingVertical: 12,
-    paddingHorizontal: 22,
+    borderRadius: radius.pill,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.xxl,
   },
   primaryButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontWeight: '700',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
   outlineButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
+    gap: spacing.sm,
     borderWidth: 1,
     borderColor: colors.emerald,
-    borderRadius: 999,
-    paddingVertical: 12,
+    borderRadius: radius.pill,
+    paddingVertical: spacing.md,
     paddingHorizontal: 28,
     minWidth: 140,
   },
   outlineButtonText: {
     color: colors.emerald,
     fontWeight: '700',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
   section: {
     width: '100%',
-    gap: 10,
-    marginTop: 14,
+    gap: spacing.md,
+    marginTop: spacing.md,
   },
   sectionTitle: {
-    fontSize: 15,
+    fontSize: fontSize.lg,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   list: {
-    gap: 8,
+    gap: spacing.sm,
   },
   gymRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: spacing.md,
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    padding: 12,
+    borderRadius: radius.md,
+    padding: spacing.md,
   },
   gymInfo: {
     flex: 1,
@@ -754,16 +754,16 @@ const styles = StyleSheet.create({
   leaveButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: spacing.xs,
     borderWidth: 1,
-    borderColor: '#f8717166',
-    borderRadius: 999,
-    paddingVertical: 4,
-    paddingHorizontal: 10,
+    borderColor: colors.dangerBorder,
+    borderRadius: radius.pill,
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.md,
   },
   leaveButtonText: {
-    color: '#f87171',
-    fontSize: 12,
+    color: colors.danger,
+    fontSize: fontSize.sm,
     fontWeight: '600',
   },
   historyRowWarn: {
@@ -772,20 +772,20 @@ const styles = StyleSheet.create({
   historyText: {
     flex: 1,
     color: colors.textMuted,
-    fontSize: 13,
+    fontSize: fontSize.base,
     lineHeight: 18,
   },
   historyTextWarn: {
-    color: '#fbbf24',
+    color: colors.warning,
   },
   gymName: {
     color: colors.textPrimary,
     fontWeight: '600',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
   gymCity: {
     color: colors.textMuted,
-    fontSize: 12,
-    marginTop: 2,
+    fontSize: fontSize.sm,
+    marginTop: spacing.xs,
   },
 });

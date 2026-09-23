@@ -31,7 +31,7 @@ import {
 } from '../../../src/lib/contests';
 import { fetchGymDetail } from '../../../src/lib/gymDetail';
 import { fetchProfile } from '../../../src/lib/profile';
-import { colors } from '../../../src/theme/colors';
+import { colors, fontSize, radius, spacing } from '../../../src/theme';
 import type { ContestGender, ContestPeriod, Nomination } from '../../../src/types/database';
 
 const GENDER_OPTIONS: { value: ContestGender; label: string }[] = [
@@ -393,9 +393,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   content: {
-    padding: 16,
+    padding: spacing.lg,
     paddingBottom: 40,
-    gap: 20,
+    gap: spacing.xl,
   },
   centered: {
     flex: 1,
@@ -404,60 +404,60 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   error: {
-    color: '#f87171',
-    fontSize: 13,
+    color: colors.danger,
+    fontSize: fontSize.base,
   },
   empty: {
     color: colors.textMuted,
-    fontSize: 13,
+    fontSize: fontSize.base,
   },
   genderRow: {
     flexDirection: 'row',
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 999,
-    padding: 4,
-    gap: 4,
+    borderRadius: radius.pill,
+    padding: spacing.xs,
+    gap: spacing.xs,
   },
   genderSegment: {
     flex: 1,
-    paddingVertical: 8,
-    borderRadius: 999,
+    paddingVertical: spacing.sm,
+    borderRadius: radius.pill,
     alignItems: 'center',
   },
   genderSegmentActive: {
     backgroundColor: colors.emerald,
   },
   genderLabel: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     fontWeight: '600',
     color: colors.textMuted,
   },
   genderLabelActive: {
-    color: '#fff',
+    color: colors.white,
   },
   section: {
-    gap: 12,
+    gap: spacing.md,
   },
   sectionTitle: {
-    fontSize: 17,
+    fontSize: fontSize.xl,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   sectionSubtitle: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     color: colors.textMuted,
     marginTop: -8,
   },
   myNominationCard: {
     alignItems: 'center',
-    gap: 10,
+    gap: spacing.md,
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 16,
-    padding: 16,
+    borderRadius: radius.lg,
+    padding: spacing.lg,
   },
   myNominationPhoto: {
     width: 120,
@@ -465,50 +465,50 @@ const styles = StyleSheet.create({
     borderRadius: 60,
   },
   myNominationText: {
-    fontSize: 14,
+    fontSize: fontSize.md,
     fontWeight: '600',
     color: colors.textPrimary,
   },
   nomineeGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 12,
+    gap: spacing.md,
   },
   cityBracketLink: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 6,
+    gap: spacing.sm,
     borderWidth: 1,
     borderColor: colors.emerald,
-    borderRadius: 12,
-    paddingVertical: 12,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
   },
   cityBracketLinkText: {
     color: colors.emerald,
     fontWeight: '700',
-    fontSize: 13,
+    fontSize: fontSize.base,
   },
   withdrawButton: {
     borderWidth: 1,
-    borderColor: '#f8717166',
-    borderRadius: 12,
-    paddingVertical: 12,
+    borderColor: colors.dangerBorder,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
     alignItems: 'center',
   },
   withdrawButtonText: {
-    color: '#f87171',
+    color: colors.danger,
     fontWeight: '600',
-    fontSize: 13,
+    fontSize: fontSize.base,
   },
   winnerCard: {
     alignItems: 'center',
-    gap: 8,
+    gap: spacing.sm,
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 16,
-    padding: 20,
+    borderRadius: radius.lg,
+    padding: spacing.xl,
   },
   winnerPhoto: {
     width: 140,
@@ -516,30 +516,30 @@ const styles = StyleSheet.create({
     borderRadius: 70,
   },
   winnerName: {
-    fontSize: 18,
+    fontSize: fontSize.xl,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   winnerLabel: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     color: colors.textMuted,
   },
   resultsList: {
-    gap: 8,
+    gap: spacing.sm,
   },
   resultRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: spacing.md,
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    borderRadius: radius.md,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
   },
   resultRank: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     fontWeight: '700',
     color: colors.textMuted,
     width: 28,
@@ -547,16 +547,16 @@ const styles = StyleSheet.create({
   resultPhoto: {
     width: 36,
     height: 36,
-    borderRadius: 18,
+    borderRadius: radius.pill,
   },
   resultName: {
     flex: 1,
-    fontSize: 14,
+    fontSize: fontSize.md,
     fontWeight: '600',
     color: colors.textPrimary,
   },
   resultVotes: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     fontWeight: '600',
     color: colors.emerald,
   },

@@ -3,6 +3,7 @@ import { useVideoPlayer, VideoView } from 'expo-video';
 import { Image, Modal, Pressable, StyleSheet } from 'react-native';
 
 import type { AlbumItem } from '../../types/database';
+import { colors, radius } from '../../theme';
 
 // A fresh instance per item (keyed by id below) so the player is created
 // and torn down alongside the modal content - no play state leaking
@@ -37,7 +38,7 @@ export function AlbumViewerModal({
           <VideoPlayerView key={item.id} url={item.url} />
         ) : null}
         <Pressable style={styles.closeButton} onPress={onClose} hitSlop={8}>
-          <Feather name="x" size={22} color="#fff" />
+          <Feather name="x" size={22} color={colors.white} />
         </Pressable>
       </Pressable>
     </Modal>
@@ -47,7 +48,7 @@ export function AlbumViewerModal({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: '#000000e6',
+    backgroundColor: colors.scrimHeavy,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
     right: 20,
     width: 36,
     height: 36,
-    borderRadius: 18,
+    borderRadius: radius.pill,
     backgroundColor: '#ffffff26',
     alignItems: 'center',
     justifyContent: 'center',

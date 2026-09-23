@@ -24,7 +24,7 @@ import {
   uploadGymPhoto,
   uploadOnboardingDocument,
 } from '../src/lib/onboarding';
-import { colors } from '../src/theme/colors';
+import { colors, fontSize, radius, spacing } from '../src/theme';
 import type { LocationOption, OnboardingDocumentType } from '../src/types/database';
 
 export default function ListGymScreen() {
@@ -272,7 +272,7 @@ export default function ListGymScreen() {
         disabled={!isFormValid || isSubmitting}
       >
         {isSubmitting ? (
-          <ActivityIndicator color="#fff" />
+          <ActivityIndicator color={colors.white} />
         ) : (
           <Text style={styles.submitButtonText}>Submit for review</Text>
         )}
@@ -287,28 +287,28 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   content: {
-    padding: 16,
+    padding: spacing.lg,
     paddingBottom: 40,
-    gap: 16,
+    gap: spacing.lg,
   },
   title: {
-    fontSize: 24,
+    fontSize: fontSize.display,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   subtitle: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     color: colors.textMuted,
     marginTop: -8,
   },
   error: {
-    color: '#f87171',
+    color: colors.danger,
   },
   field: {
-    gap: 6,
+    gap: spacing.sm,
   },
   label: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     fontWeight: '600',
     color: colors.textMuted,
   },
@@ -316,25 +316,25 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    borderRadius: radius.md,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
     color: colors.textPrimary,
-    fontSize: 15,
+    fontSize: fontSize.lg,
   },
   submitButton: {
     backgroundColor: colors.emerald,
-    borderRadius: 12,
-    paddingVertical: 14,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: spacing.sm,
   },
   submitButtonDisabled: {
     opacity: 0.5,
   },
   submitButtonText: {
-    color: '#fff',
-    fontSize: 15,
+    color: colors.white,
+    fontSize: fontSize.lg,
     fontWeight: '700',
   },
   confirmationContainer: {
@@ -342,29 +342,29 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 32,
-    gap: 16,
+    padding: spacing.xxxl,
+    gap: spacing.lg,
   },
   confirmationTitle: {
-    fontSize: 20,
+    fontSize: fontSize.xxl,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   confirmationText: {
-    fontSize: 14,
+    fontSize: fontSize.md,
     color: colors.textMuted,
     textAlign: 'center',
     lineHeight: 20,
   },
   confirmationButton: {
     backgroundColor: colors.emerald,
-    borderRadius: 999,
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    marginTop: 8,
+    borderRadius: radius.pill,
+    paddingHorizontal: spacing.xxl,
+    paddingVertical: spacing.md,
+    marginTop: spacing.sm,
   },
   confirmationButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontWeight: '700',
   },
 });

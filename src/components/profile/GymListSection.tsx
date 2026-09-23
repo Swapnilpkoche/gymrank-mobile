@@ -3,7 +3,7 @@ import { useRouter } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { GymRow } from './GymRow';
-import { colors } from '../../theme/colors';
+import { colors, fontSize, spacing } from '../../theme';
 
 export function GymListSection({
   title,
@@ -58,30 +58,30 @@ export function GymListSection({
 
 const styles = StyleSheet.create({
   section: {
-    gap: 10,
+    gap: spacing.md,
   },
   title: {
-    fontSize: 15,
+    fontSize: fontSize.lg,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   empty: {
     color: colors.textMuted,
-    fontSize: 13,
+    fontSize: fontSize.base,
   },
   list: {
-    gap: 8,
+    gap: spacing.sm,
   },
   viewAllRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 6,
-    paddingVertical: 4,
+    gap: spacing.sm,
+    paddingVertical: spacing.xs,
   },
   viewAllText: {
     color: colors.emeraldLight,
     fontWeight: '600',
-    fontSize: 13,
+    fontSize: fontSize.base,
   },
 });

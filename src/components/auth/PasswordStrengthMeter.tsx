@@ -1,4 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
+import { colors, fontSize, spacing } from '../../theme';
 
 type StrengthLevel = 'weak' | 'fair' | 'good' | 'strong';
 
@@ -25,7 +26,7 @@ const LEVEL_CONFIG: Record<StrengthLevel, { label: string; color: string; filled
   weak: { label: 'Weak', color: '#dc2626', filledSegments: 1 },
   fair: { label: 'Fair', color: '#d97706', filledSegments: 2 },
   good: { label: 'Good', color: '#65a30d', filledSegments: 3 },
-  strong: { label: 'Strong', color: '#059669', filledSegments: 4 },
+  strong: { label: 'Strong', color: colors.emeraldDark, filledSegments: 4 },
 };
 
 // The filled-segment colors above read fine on either background, but the
@@ -34,7 +35,7 @@ const LEVEL_CONFIG: Record<StrengthLevel, { label: string; color: string; filled
 // into the (auth) group, which doesn't use them.
 const TRACK_COLOR: Record<'light' | 'dark', string> = {
   light: '#e5e7eb',
-  dark: '#ffffff1a',
+  dark: colors.border,
 };
 
 export function PasswordStrengthMeter({
@@ -70,11 +71,11 @@ export function PasswordStrengthMeter({
 
 const styles = StyleSheet.create({
   container: {
-    gap: 4,
+    gap: spacing.xs,
   },
   barRow: {
     flexDirection: 'row',
-    gap: 4,
+    gap: spacing.xs,
   },
   segment: {
     flex: 1,
@@ -82,7 +83,7 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
   label: {
-    fontSize: 11,
+    fontSize: fontSize.xs,
     fontWeight: '600',
     alignSelf: 'flex-end',
   },

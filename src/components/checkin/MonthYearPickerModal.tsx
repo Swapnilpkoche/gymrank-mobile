@@ -2,7 +2,7 @@ import { Feather } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 
 const MONTH_ABBREVIATIONS = [
   'Jan',
@@ -88,10 +88,10 @@ const MONTH_CELL_WIDTH = '25%' as const;
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: '#000000b3',
+    backgroundColor: colors.scrim,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 24,
+    padding: spacing.xxl,
   },
   card: {
     width: '100%',
@@ -99,18 +99,18 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 20,
-    padding: 20,
-    gap: 16,
+    borderRadius: radius.lg,
+    padding: spacing.xl,
+    gap: spacing.lg,
   },
   yearRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 20,
+    gap: spacing.xl,
   },
   yearText: {
-    fontSize: 17,
+    fontSize: fontSize.xl,
     fontWeight: '700',
     color: colors.textPrimary,
     minWidth: 64,
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   navButton: {
     width: 30,
     height: 30,
-    borderRadius: 15,
+    borderRadius: radius.lg,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.background,
@@ -136,14 +136,14 @@ const styles = StyleSheet.create({
   },
   monthCellActive: {
     backgroundColor: colors.emerald,
-    borderRadius: 10,
+    borderRadius: radius.md,
   },
   monthText: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     fontWeight: '600',
     color: colors.textPrimary,
   },
   monthTextActive: {
-    color: '#fff',
+    color: colors.white,
   },
 });

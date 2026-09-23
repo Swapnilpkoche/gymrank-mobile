@@ -19,7 +19,7 @@ import {
   notifyNotificationsChanged,
 } from '../src/lib/notifications';
 import { formatShortDate } from '../src/lib/time';
-import { colors } from '../src/theme/colors';
+import { colors, fontSize, radius, spacing } from '../src/theme';
 import type { AppNotification } from '../src/types/database';
 
 export default function NotificationsScreen() {
@@ -146,7 +146,7 @@ export default function NotificationsScreen() {
                     <Feather
                       name={isExpired ? 'alert-circle' : 'clock'}
                       size={14}
-                      color={isExpired ? '#f87171' : '#fbbf24'}
+                      color={isExpired ? colors.danger : colors.warning}
                     />
                     <Text style={[styles.title, unread && styles.titleUnread]}>{item.title}</Text>
                   </View>
@@ -169,66 +169,66 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   content: {
-    padding: 16,
+    padding: spacing.lg,
     paddingBottom: 40,
-    gap: 12,
+    gap: spacing.md,
   },
   centered: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.background,
-    padding: 24,
+    padding: spacing.xxl,
   },
   error: {
-    color: '#f87171',
-    fontSize: 13,
+    color: colors.danger,
+    fontSize: fontSize.base,
   },
   markAll: {
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'flex-end',
-    gap: 6,
+    gap: spacing.sm,
   },
   markAllText: {
     color: colors.emeraldLight,
     fontWeight: '600',
-    fontSize: 13,
+    fontSize: fontSize.base,
   },
   empty: {
     alignItems: 'center',
-    gap: 8,
+    gap: spacing.sm,
     paddingVertical: 48,
   },
   emptyTitle: {
     color: colors.textPrimary,
-    fontSize: 16,
+    fontSize: fontSize.xl,
     fontWeight: '700',
   },
   emptyText: {
     color: colors.textMuted,
-    fontSize: 13,
+    fontSize: fontSize.base,
     textAlign: 'center',
     lineHeight: 19,
   },
   list: {
-    gap: 8,
+    gap: spacing.sm,
   },
   card: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: spacing.md,
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    paddingVertical: 12,
-    paddingRight: 12,
-    paddingLeft: 6,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
+    paddingRight: spacing.md,
+    paddingLeft: spacing.sm,
   },
   cardUnread: {
     borderColor: colors.emerald,
-    backgroundColor: '#052e1f',
+    backgroundColor: colors.emeraldTint,
   },
   dotColumn: {
     width: 14,
@@ -242,16 +242,16 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 1,
-    gap: 4,
+    gap: spacing.xs,
   },
   titleRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: spacing.sm,
   },
   title: {
     color: colors.textMuted,
-    fontSize: 14,
+    fontSize: fontSize.md,
     fontWeight: '600',
   },
   titleUnread: {
@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: colors.textMuted,
-    fontSize: 13,
+    fontSize: fontSize.base,
     lineHeight: 18,
   },
   textUnread: {
@@ -268,6 +268,6 @@ const styles = StyleSheet.create({
   },
   time: {
     color: colors.textMuted,
-    fontSize: 11,
+    fontSize: fontSize.xs,
   },
 });

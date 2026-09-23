@@ -4,7 +4,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { planLabel } from '../../lib/memberships';
 import { formatDayMonth } from '../../lib/time';
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 import type { MyMembership } from '../../types/database';
 
 // Dismissal is a per-viewer convenience, so it lives in local storage (never
@@ -47,7 +47,7 @@ export function MembershipReminderBanner({ membership }: { membership: MyMembers
 
   return (
     <View style={styles.banner}>
-      <Feather name="clock" size={18} color="#fbbf24" />
+      <Feather name="clock" size={18} color={colors.warning} />
       <Text style={styles.text}>
         Your {planLabel(membership.planType).toLowerCase()} membership at {membership.gymName} ends
         on {formatDayMonth(membership.endDate)}. Renew at the gym to keep your member access.
@@ -63,17 +63,17 @@ const styles = StyleSheet.create({
   banner: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: 10,
-    backgroundColor: '#fbbf2414',
+    gap: spacing.md,
+    backgroundColor: colors.warningTint,
     borderWidth: 1,
-    borderColor: '#fbbf2466',
-    borderRadius: 12,
-    padding: 12,
+    borderColor: colors.warningBorder,
+    borderRadius: radius.md,
+    padding: spacing.md,
   },
   text: {
     flex: 1,
     color: colors.textPrimary,
-    fontSize: 13,
+    fontSize: fontSize.base,
     lineHeight: 18,
   },
 });

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { uploadAvatar } from '../../lib/profile';
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 
 function initials(name: string): string {
   const trimmed = name.trim();
@@ -64,9 +64,9 @@ export function AvatarPicker({
         )}
         <View style={styles.editBadge}>
           {isUploading ? (
-            <ActivityIndicator color="#fff" size="small" />
+            <ActivityIndicator color={colors.white} size="small" />
           ) : (
-            <Feather name="camera" size={13} color="#fff" />
+            <Feather name="camera" size={13} color={colors.white} />
           )}
         </View>
       </Pressable>
@@ -80,7 +80,7 @@ const AVATAR_SIZE = 84;
 const styles = StyleSheet.create({
   wrapper: {
     alignItems: 'center',
-    gap: 6,
+    gap: spacing.sm,
   },
   avatar: {
     width: AVATAR_SIZE,
@@ -88,14 +88,14 @@ const styles = StyleSheet.create({
     borderRadius: AVATAR_SIZE / 2,
   },
   avatarFallback: {
-    backgroundColor: '#1e293b',
+    backgroundColor: colors.surfaceRaised,
     alignItems: 'center',
     justifyContent: 'center',
   },
   avatarText: {
     color: colors.textPrimary,
     fontWeight: '700',
-    fontSize: 28,
+    fontSize: fontSize.display,
   },
   editBadge: {
     position: 'absolute',
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     right: 0,
     width: 26,
     height: 26,
-    borderRadius: 13,
+    borderRadius: radius.pill,
     backgroundColor: colors.emerald,
     borderWidth: 2,
     borderColor: colors.background,
@@ -111,8 +111,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   errorText: {
-    color: '#f87171',
-    fontSize: 11,
+    color: colors.danger,
+    fontSize: fontSize.xs,
     textAlign: 'center',
   },
 });

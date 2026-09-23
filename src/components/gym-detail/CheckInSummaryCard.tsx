@@ -1,8 +1,9 @@
 import { Feather } from '@expo/vector-icons';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius } from '../../theme';
 import type { CheckInSummary } from '../../types/database';
+import { spacing } from '../../theme';
 
 // 'overall' = across every gym (Check In tab, Profile); 'gym' = only the gym
 // whose page is showing it. The caller decides which summary it passes in.
@@ -40,15 +41,15 @@ export function CheckInSummaryCard({
 
 const styles = StyleSheet.create({
   card: {
-    gap: 12,
+    gap: spacing.md,
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 14,
-    padding: 16,
+    borderRadius: radius.md,
+    padding: spacing.lg,
   },
   scope: {
-    fontSize: 11,
+    fontSize: fontSize.xs,
     fontWeight: '600',
     letterSpacing: 0.4,
     textTransform: 'uppercase',
@@ -62,7 +63,7 @@ const styles = StyleSheet.create({
   stat: {
     flex: 1,
     alignItems: 'center',
-    gap: 4,
+    gap: spacing.xs,
   },
   divider: {
     width: 1,
@@ -70,12 +71,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.border,
   },
   value: {
-    fontSize: 20,
+    fontSize: fontSize.xxl,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   label: {
-    fontSize: 11,
+    fontSize: fontSize.xs,
     color: colors.textMuted,
   },
 });

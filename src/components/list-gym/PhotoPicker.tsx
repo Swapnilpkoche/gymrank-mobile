@@ -2,7 +2,7 @@ import { Feather } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 
 const MAX_PHOTOS = 6;
 
@@ -42,7 +42,7 @@ export function PhotoPicker({
           <View key={uri} style={styles.thumbWrapper}>
             <Image source={{ uri }} style={styles.thumb} />
             <Pressable style={styles.removeBadge} onPress={() => handleRemove(uri)}>
-              <Feather name="x" size={12} color="#fff" />
+              <Feather name="x" size={12} color={colors.white} />
             </Pressable>
           </View>
         ))}
@@ -59,20 +59,20 @@ export function PhotoPicker({
 
 const styles = StyleSheet.create({
   container: {
-    gap: 8,
+    gap: spacing.sm,
   },
   label: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     fontWeight: '600',
     color: colors.textMuted,
   },
   hint: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     color: colors.textMuted,
   },
   row: {
-    gap: 10,
-    paddingVertical: 4,
+    gap: spacing.md,
+    paddingVertical: spacing.xs,
   },
   thumbWrapper: {
     position: 'relative',
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   thumb: {
     width: 84,
     height: 84,
-    borderRadius: 12,
+    borderRadius: radius.md,
   },
   removeBadge: {
     position: 'absolute',
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     right: -6,
     width: 20,
     height: 20,
-    borderRadius: 10,
+    borderRadius: radius.md,
     backgroundColor: colors.textMuted,
     alignItems: 'center',
     justifyContent: 'center',
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
   addButton: {
     width: 84,
     height: 84,
-    borderRadius: 12,
+    borderRadius: radius.md,
     borderWidth: 1,
     borderColor: colors.border,
     borderStyle: 'dashed',

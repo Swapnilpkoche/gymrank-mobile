@@ -4,6 +4,7 @@ import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput } from 'react
 
 import { supabase } from '../../src/lib/supabase';
 import { AuthScreenContainer } from '../../src/components/auth/AuthScreenContainer';
+import { colors, fontSize, radius, spacing } from '../../src/theme';
 
 export default function ForgotPasswordScreen() {
   const router = useRouter();
@@ -51,7 +52,7 @@ export default function ForgotPasswordScreen() {
         disabled={isSubmitting || !email.trim()}
       >
         {isSubmitting ? (
-          <ActivityIndicator color="#fff" />
+          <ActivityIndicator color={colors.white} />
         ) : (
           <Text style={styles.buttonText}>Send code</Text>
         )}
@@ -66,36 +67,36 @@ export default function ForgotPasswordScreen() {
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: 28,
+    fontSize: fontSize.display,
     fontWeight: '700',
-    marginBottom: 4,
+    marginBottom: spacing.xs,
   },
   subtitle: {
-    fontSize: 14,
+    fontSize: fontSize.md,
     color: '#6b7280',
-    marginBottom: 8,
+    marginBottom: spacing.sm,
   },
   input: {
     borderWidth: 1,
     borderColor: '#d1d5db',
-    borderRadius: 8,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    fontSize: 16,
+    borderRadius: radius.sm,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
+    fontSize: fontSize.xl,
   },
   button: {
     backgroundColor: '#111827',
-    borderRadius: 8,
-    paddingVertical: 14,
+    borderRadius: radius.sm,
+    paddingVertical: spacing.md,
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: spacing.sm,
   },
   buttonDisabled: {
     opacity: 0.5,
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 16,
+    color: colors.white,
+    fontSize: fontSize.xl,
     fontWeight: '600',
   },
   error: {
@@ -103,7 +104,7 @@ const styles = StyleSheet.create({
   },
   link: {
     textAlign: 'center',
-    marginTop: 16,
+    marginTop: spacing.lg,
     color: '#2563eb',
   },
 });

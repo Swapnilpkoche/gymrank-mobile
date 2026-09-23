@@ -7,7 +7,7 @@ import { MonthYearPickerModal } from './MonthYearPickerModal';
 import { fetchCheckInDatesForMonth } from '../../lib/checkin';
 import { fetchDayNotesForMonth } from '../../lib/dayNotes';
 import { APP_TIMEZONE, dateKeyInTimeZone } from '../../lib/time';
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 import type { DayNote, MyGym } from '../../types/database';
 
 const WEEKDAY_LABELS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
@@ -182,7 +182,7 @@ export function CheckInCalendar({
               </View>
               {hasNote ? (
                 <View style={styles.noteBadge}>
-                  <Feather name="edit-3" size={8} color="#020617" />
+                  <Feather name="edit-3" size={8} color={colors.textOnAccent} />
                 </View>
               ) : null}
             </Pressable>
@@ -217,9 +217,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 14,
-    padding: 16,
-    gap: 12,
+    borderRadius: radius.md,
+    padding: spacing.lg,
+    gap: spacing.md,
   },
   header: {
     flexDirection: 'row',
@@ -229,21 +229,21 @@ const styles = StyleSheet.create({
   headerTitleRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: spacing.sm,
   },
   headerSpinner: {
-    marginLeft: 2,
+    marginLeft: spacing.xs,
   },
   navButton: {
     width: 30,
     height: 30,
-    borderRadius: 15,
+    borderRadius: radius.lg,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.background,
   },
   title: {
-    fontSize: 15,
+    fontSize: fontSize.lg,
     fontWeight: '700',
     color: colors.textPrimary,
   },
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
   weekdayLabel: {
     width: CELL_WIDTH,
     textAlign: 'center',
-    fontSize: 11,
+    fontSize: fontSize.xs,
     fontWeight: '600',
     color: colors.textMuted,
   },
@@ -266,12 +266,12 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 4,
+    marginBottom: spacing.xs,
   },
   dayCircle: {
     width: 28,
     height: 28,
-    borderRadius: 14,
+    borderRadius: radius.pill,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -283,11 +283,11 @@ const styles = StyleSheet.create({
     borderColor: colors.emeraldLight,
   },
   dayText: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     color: colors.textPrimary,
   },
   dayTextChecked: {
-    color: '#fff',
+    color: colors.white,
     fontWeight: '700',
   },
   noteBadge: {

@@ -1,7 +1,7 @@
 import { Feather } from '@expo/vector-icons';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 
 export function GymRow({
   name,
@@ -44,41 +44,41 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: 10,
+    gap: spacing.md,
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 14,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.md,
   },
   left: {
     flex: 1,
-    gap: 2,
+    gap: spacing.xs,
   },
   name: {
-    fontSize: 14,
+    fontSize: fontSize.md,
     fontWeight: '600',
     color: colors.textPrimary,
   },
   note: {
-    fontSize: 11,
+    fontSize: fontSize.xs,
     fontWeight: '600',
-    color: '#fbbf24',
+    color: colors.warning,
   },
   right: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: spacing.sm,
   },
   badge: {
     backgroundColor: colors.background,
-    borderRadius: 999,
-    paddingVertical: 3,
-    paddingHorizontal: 8,
+    borderRadius: radius.pill,
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.sm,
   },
   badgeText: {
-    fontSize: 11,
+    fontSize: fontSize.xs,
     fontWeight: '700',
     color: colors.emeraldLight,
   },

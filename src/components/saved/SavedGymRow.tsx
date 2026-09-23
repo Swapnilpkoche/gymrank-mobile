@@ -1,7 +1,7 @@
 import { Feather } from '@expo/vector-icons';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 
 export function SavedGymRow({
   name,
@@ -19,7 +19,7 @@ export function SavedGymRow({
       </Text>
       <View style={styles.right}>
         <Pressable style={styles.unfollowButton} onPress={onUnfollow} hitSlop={8}>
-          <Feather name="heart" size={14} color="#fff" />
+          <Feather name="heart" size={14} color={colors.white} />
         </Pressable>
         <Feather name="chevron-right" size={16} color={colors.textMuted} />
       </View>
@@ -32,29 +32,29 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: 10,
+    gap: spacing.md,
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 14,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.md,
   },
   name: {
     flex: 1,
-    fontSize: 14,
+    fontSize: fontSize.md,
     fontWeight: '600',
     color: colors.textPrimary,
   },
   right: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: spacing.md,
   },
   unfollowButton: {
     width: 28,
     height: 28,
-    borderRadius: 14,
+    borderRadius: radius.pill,
     backgroundColor: colors.emerald,
     alignItems: 'center',
     justifyContent: 'center',

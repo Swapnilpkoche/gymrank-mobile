@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 
 export function ReportThreadModal({
   visible,
@@ -55,7 +55,7 @@ export function ReportThreadModal({
               disabled={isSubmitting || !reason.trim()}
             >
               {isSubmitting ? (
-                <ActivityIndicator color="#fff" size="small" />
+                <ActivityIndicator color={colors.white} size="small" />
               ) : (
                 <Text style={styles.primaryButtonText}>Submit</Text>
               )}
@@ -70,10 +70,10 @@ export function ReportThreadModal({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: '#000000b3',
+    backgroundColor: colors.scrim,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 24,
+    padding: spacing.xxl,
   },
   card: {
     width: '100%',
@@ -81,17 +81,17 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 20,
-    padding: 20,
-    gap: 12,
+    borderRadius: radius.lg,
+    padding: spacing.xl,
+    gap: spacing.md,
   },
   title: {
-    fontSize: 16,
+    fontSize: fontSize.xl,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   body: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     color: colors.textMuted,
     lineHeight: 19,
   },
@@ -99,44 +99,44 @@ const styles = StyleSheet.create({
     minHeight: 90,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    padding: 12,
+    borderRadius: radius.md,
+    padding: spacing.md,
     color: colors.textPrimary,
-    fontSize: 14,
+    fontSize: fontSize.md,
     textAlignVertical: 'top',
   },
   buttonRow: {
     flexDirection: 'row',
-    gap: 10,
-    marginTop: 4,
+    gap: spacing.md,
+    marginTop: spacing.xs,
   },
   primaryButton: {
     flex: 1,
     backgroundColor: colors.emerald,
-    borderRadius: 12,
-    paddingVertical: 12,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
     alignItems: 'center',
   },
   primaryButtonDisabled: {
     opacity: 0.5,
   },
   primaryButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontWeight: '700',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
   secondaryButton: {
     flex: 1,
     backgroundColor: 'transparent',
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    paddingVertical: 12,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
     alignItems: 'center',
   },
   secondaryButtonText: {
     color: colors.textPrimary,
     fontWeight: '600',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
 });

@@ -14,7 +14,7 @@ import {
 import { ThreadRow } from '../src/components/messages/ThreadRow';
 import { useAuth } from '../src/context/auth-context';
 import { fetchMessageThreads } from '../src/lib/messages';
-import { colors } from '../src/theme/colors';
+import { colors, fontSize, radius, spacing } from '../src/theme';
 import type { MessageThread } from '../src/types/database';
 
 export default function MessagesScreen() {
@@ -122,49 +122,49 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   content: {
-    padding: 16,
+    padding: spacing.lg,
     paddingBottom: 40,
-    gap: 24,
+    gap: spacing.xxl,
   },
   centered: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
+    gap: spacing.sm,
     backgroundColor: colors.background,
-    padding: 24,
+    padding: spacing.xxl,
   },
   emptyTitle: {
-    fontSize: 17,
+    fontSize: fontSize.xl,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   primaryButton: {
     backgroundColor: colors.emerald,
-    borderRadius: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    marginTop: 8,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.xxl,
+    marginTop: spacing.sm,
   },
   primaryButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontWeight: '700',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
   error: {
-    color: '#f87171',
-    fontSize: 13,
+    color: colors.danger,
+    fontSize: fontSize.base,
   },
   section: {
-    gap: 10,
+    gap: spacing.md,
   },
   sectionTitle: {
-    fontSize: 15,
+    fontSize: fontSize.lg,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   empty: {
     color: colors.textMuted,
-    fontSize: 13,
+    fontSize: fontSize.base,
   },
 });

@@ -16,7 +16,7 @@ import { useDeviceLocation } from '../../src/hooks/useDeviceLocation';
 import { fetchDiscoverGyms, searchGyms } from '../../src/lib/gyms';
 import { haversineDistanceKm } from '../../src/lib/location';
 import { searchProfiles } from '../../src/lib/userFollows';
-import { colors } from '../../src/theme/colors';
+import { colors, fontSize, spacing } from '../../src/theme';
 import type { FollowedUser, GymWithDiscoverData } from '../../src/types/database';
 
 const NEARBY_RADIUS_KM = 25;
@@ -237,19 +237,19 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   content: {
-    paddingHorizontal: 16,
-    paddingBottom: 32,
-    gap: 20,
+    paddingHorizontal: spacing.lg,
+    paddingBottom: spacing.xxxl,
+    gap: spacing.xl,
   },
   searchResultsSection: {
-    gap: 12,
+    gap: spacing.md,
   },
   sectionTitle: {
-    fontSize: 17,
+    fontSize: fontSize.xl,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   error: {
-    color: '#f87171',
+    color: colors.danger,
   },
 });

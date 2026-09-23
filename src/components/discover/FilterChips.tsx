@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 
 export type GymFilter = 'all' | 'best_rated' | 'best_value' | 'budget' | 'nearby';
 
@@ -44,34 +44,34 @@ export function FilterChips({
 
 const styles = StyleSheet.create({
   label: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     fontWeight: '600',
     color: colors.textMuted,
-    marginBottom: 8,
+    marginBottom: spacing.sm,
   },
   row: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
+    gap: spacing.sm,
   },
   chip: {
     borderWidth: 1,
     borderColor: colors.border,
     backgroundColor: colors.card,
-    borderRadius: 999,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
+    borderRadius: radius.pill,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
   },
   chipActive: {
     backgroundColor: colors.emerald,
     borderColor: colors.emerald,
   },
   chipText: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     fontWeight: '600',
     color: colors.textMuted,
   },
   chipTextActive: {
-    color: '#fff',
+    color: colors.white,
   },
 });

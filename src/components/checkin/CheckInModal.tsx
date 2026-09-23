@@ -6,7 +6,7 @@ import { useAuth } from '../../context/auth-context';
 import { performCheckIn, type CheckInOutcome, type CheckInPhase } from '../../lib/checkin';
 import { fetchCheckInSummary } from '../../lib/gymDetail';
 import { formatDistanceMeters } from '../../lib/location';
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 
 type State =
   | { step: 'running'; phase: CheckInPhase }
@@ -105,7 +105,7 @@ function ResultContent({
     return (
       <View style={styles.center}>
         <View style={styles.successIcon}>
-          <Feather name="check" size={28} color="#fff" />
+          <Feather name="check" size={28} color={colors.white} />
         </View>
         <Text style={styles.title}>Checked in!</Text>
         <Text style={styles.gymName}>{gymName}</Text>
@@ -126,7 +126,7 @@ function ResultContent({
   if (outcome.kind === 'rejected') {
     return (
       <View style={styles.center}>
-        <Feather name="x-circle" size={32} color="#f87171" />
+        <Feather name="x-circle" size={32} color={colors.danger} />
         <Text style={styles.title}>Check-in didn&apos;t go through</Text>
         <Text style={styles.message}>{outcome.message}</Text>
         {outcome.distanceMeters !== null ? (
@@ -168,7 +168,7 @@ function ResultContent({
   if (outcome.kind === 'location-error') {
     return (
       <View style={styles.center}>
-        <Feather name="alert-triangle" size={32} color="#f87171" />
+        <Feather name="alert-triangle" size={32} color={colors.danger} />
         <Text style={styles.title}>Couldn&apos;t get your location</Text>
         <Text style={styles.message}>Make sure GPS/location services are on, then try again.</Text>
         <View style={styles.buttonRow}>
@@ -185,7 +185,7 @@ function ResultContent({
 
   return (
     <View style={styles.center}>
-      <Feather name="alert-triangle" size={32} color="#f87171" />
+      <Feather name="alert-triangle" size={32} color={colors.danger} />
       <Text style={styles.title}>Something went wrong</Text>
       <Text style={styles.message}>{outcome.message}</Text>
       <View style={styles.buttonRow}>
@@ -203,10 +203,10 @@ function ResultContent({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: '#000000b3',
+    backgroundColor: colors.scrim,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 24,
+    padding: spacing.xxl,
   },
   card: {
     width: '100%',
@@ -214,17 +214,17 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 20,
-    padding: 24,
+    borderRadius: radius.lg,
+    padding: spacing.xxl,
   },
   center: {
     alignItems: 'center',
-    gap: 10,
+    gap: spacing.md,
   },
   statusText: {
     color: colors.textMuted,
-    fontSize: 14,
-    marginTop: 4,
+    fontSize: fontSize.md,
+    marginTop: spacing.xs,
   },
   successIcon: {
     width: 56,
@@ -233,68 +233,68 @@ const styles = StyleSheet.create({
     backgroundColor: colors.emerald,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 4,
+    marginBottom: spacing.xs,
   },
   title: {
-    fontSize: 18,
+    fontSize: fontSize.xl,
     fontWeight: '700',
     color: colors.textPrimary,
     textAlign: 'center',
   },
   gymName: {
-    fontSize: 14,
+    fontSize: fontSize.md,
     fontWeight: '600',
     color: colors.emeraldLight,
     textAlign: 'center',
   },
   message: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     color: colors.textMuted,
     textAlign: 'center',
     lineHeight: 19,
   },
   metaRow: {
     flexDirection: 'row',
-    gap: 14,
-    marginTop: 2,
+    gap: spacing.md,
+    marginTop: spacing.xs,
   },
   metaText: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     fontWeight: '600',
     color: colors.textPrimary,
   },
   buttonRow: {
     flexDirection: 'row',
-    gap: 10,
-    marginTop: 8,
+    gap: spacing.md,
+    marginTop: spacing.sm,
     width: '100%',
   },
   primaryButton: {
     flex: 1,
     backgroundColor: colors.emerald,
-    borderRadius: 12,
-    paddingVertical: 12,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: spacing.sm,
   },
   primaryButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontWeight: '700',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
   secondaryButton: {
     flex: 1,
     backgroundColor: 'transparent',
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    paddingVertical: 12,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: spacing.sm,
   },
   secondaryButtonText: {
     color: colors.textPrimary,
     fontWeight: '600',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
 });

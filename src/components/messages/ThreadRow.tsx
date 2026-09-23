@@ -1,7 +1,7 @@
 import { Feather } from '@expo/vector-icons';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 import type { MessageThread } from '../../types/database';
 
 function initials(name: string): string {
@@ -42,21 +42,21 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: spacing.md,
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    paddingVertical: 10,
-    paddingHorizontal: 14,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.md,
   },
   avatar: {
     width: 40,
     height: 40,
-    borderRadius: 20,
+    borderRadius: radius.pill,
   },
   avatarFallback: {
-    backgroundColor: '#1e293b',
+    backgroundColor: colors.surfaceRaised,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -68,12 +68,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   name: {
-    fontSize: 14,
+    fontSize: fontSize.md,
     fontWeight: '600',
     color: colors.textPrimary,
   },
   statusText: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     color: colors.textMuted,
     marginTop: 1,
   },

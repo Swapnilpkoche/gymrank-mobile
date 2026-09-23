@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 
 export function ChipRow({
   title,
@@ -39,22 +39,22 @@ export function ChipRow({
 
 const styles = StyleSheet.create({
   section: {
-    gap: 10,
+    gap: spacing.md,
   },
   title: {
-    fontSize: 15,
+    fontSize: fontSize.lg,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   row: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
+    gap: spacing.sm,
   },
   chip: {
-    borderRadius: 999,
-    paddingHorizontal: 12,
-    paddingVertical: 7,
+    borderRadius: radius.pill,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
     borderWidth: 1,
   },
   chipEquipment: {
@@ -62,11 +62,11 @@ const styles = StyleSheet.create({
     borderColor: colors.emerald,
   },
   chipAmenity: {
-    backgroundColor: '#1e293b',
+    backgroundColor: colors.surfaceRaised,
     borderColor: colors.border,
   },
   chipText: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     fontWeight: '600',
   },
   chipTextEquipment: {

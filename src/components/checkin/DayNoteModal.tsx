@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 
 import { deleteDayNote, saveDayNote } from '../../lib/dayNotes';
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 import type { DayNote, MyGym } from '../../types/database';
 
 function formatDateLabel(dateKey: string): string {
@@ -159,7 +159,7 @@ export function DayNoteModal({
             </Pressable>
             {!readOnly && existingNote ? (
               <Pressable style={styles.dangerButton} onPress={handleDelete} disabled={isSaving}>
-                <Feather name="trash-2" size={16} color="#f87171" />
+                <Feather name="trash-2" size={16} color={colors.danger} />
               </Pressable>
             ) : null}
             {!readOnly ? (
@@ -169,7 +169,7 @@ export function DayNoteModal({
                 disabled={isSaving || !hasGym}
               >
                 {isSaving ? (
-                  <ActivityIndicator color="#fff" size="small" />
+                  <ActivityIndicator color={colors.white} size="small" />
                 ) : (
                   <Text style={styles.primaryButtonText}>Save</Text>
                 )}
@@ -185,10 +185,10 @@ export function DayNoteModal({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: '#000000b3',
+    backgroundColor: colors.scrim,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 24,
+    padding: spacing.xxl,
   },
   card: {
     width: '100%',
@@ -196,17 +196,17 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 20,
-    padding: 20,
-    gap: 12,
+    borderRadius: radius.lg,
+    padding: spacing.xl,
+    gap: spacing.md,
   },
   title: {
-    fontSize: 16,
+    fontSize: fontSize.xl,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   helperText: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     color: colors.textMuted,
     lineHeight: 19,
   },
@@ -214,14 +214,14 @@ const styles = StyleSheet.create({
     flexGrow: 0,
   },
   gymPickerContent: {
-    gap: 8,
+    gap: spacing.sm,
   },
   gymChip: {
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 999,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
+    borderRadius: radius.pill,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
     maxWidth: 160,
   },
   gymChipActive: {
@@ -229,63 +229,63 @@ const styles = StyleSheet.create({
     borderColor: colors.emerald,
   },
   gymChipText: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     fontWeight: '600',
     color: colors.textMuted,
   },
   gymChipTextActive: {
-    color: '#fff',
+    color: colors.white,
   },
   input: {
     minHeight: 90,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    padding: 12,
+    borderRadius: radius.md,
+    padding: spacing.md,
     color: colors.textPrimary,
-    fontSize: 14,
+    fontSize: fontSize.md,
     textAlignVertical: 'top',
   },
   buttonRow: {
     flexDirection: 'row',
-    gap: 10,
+    gap: spacing.md,
     alignItems: 'center',
   },
   primaryButton: {
     flex: 1,
     backgroundColor: colors.emerald,
-    borderRadius: 12,
-    paddingVertical: 12,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
     alignItems: 'center',
   },
   primaryButtonDisabled: {
     opacity: 0.5,
   },
   primaryButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontWeight: '700',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
   secondaryButton: {
     flex: 1,
     backgroundColor: 'transparent',
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    paddingVertical: 12,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
     alignItems: 'center',
   },
   secondaryButtonText: {
     color: colors.textPrimary,
     fontWeight: '600',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
   dangerButton: {
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 14,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.md,
     alignItems: 'center',
     justifyContent: 'center',
   },

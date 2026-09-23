@@ -26,7 +26,7 @@ import {
   unfollowUser,
   type RelationshipStatus,
 } from '../../src/lib/userFollows';
-import { colors } from '../../src/theme/colors';
+import { colors, fontSize, radius, spacing } from '../../src/theme';
 import type { AlbumItem, PublicProfile } from '../../src/types/database';
 
 function initials(name: string): string {
@@ -224,7 +224,7 @@ export default function PublicProfileScreen() {
           >
             {isFollowActionPending ? (
               <ActivityIndicator
-                color={relationship?.isFollowing ? '#fff' : colors.emerald}
+                color={relationship?.isFollowing ? colors.white : colors.emerald}
                 size="small"
               />
             ) : (
@@ -232,7 +232,7 @@ export default function PublicProfileScreen() {
                 <Feather
                   name="heart"
                   size={16}
-                  color={relationship?.isFollowing ? '#fff' : colors.emerald}
+                  color={relationship?.isFollowing ? colors.white : colors.emerald}
                 />
                 <Text
                   style={[
@@ -304,28 +304,28 @@ const styles = StyleSheet.create({
   content: {
     flexGrow: 1,
     alignItems: 'center',
-    padding: 24,
-    gap: 8,
+    padding: spacing.xxl,
+    gap: spacing.sm,
   },
   centered: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.background,
-    padding: 16,
+    padding: spacing.lg,
   },
   error: {
-    color: '#f87171',
+    color: colors.danger,
     textAlign: 'center',
   },
   avatar: {
     width: AVATAR_SIZE,
     height: AVATAR_SIZE,
     borderRadius: AVATAR_SIZE / 2,
-    marginBottom: 4,
+    marginBottom: spacing.xs,
   },
   avatarFallback: {
-    backgroundColor: '#1e293b',
+    backgroundColor: colors.surfaceRaised,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -335,50 +335,50 @@ const styles = StyleSheet.create({
     fontSize: 32,
   },
   name: {
-    fontSize: 20,
+    fontSize: fontSize.xxl,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   username: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     color: colors.textMuted,
   },
   followsYouBadge: {
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 999,
-    paddingVertical: 4,
-    paddingHorizontal: 12,
-    marginTop: 4,
+    borderRadius: radius.pill,
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.md,
+    marginTop: spacing.xs,
   },
   followsYouText: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     fontWeight: '600',
     color: colors.textMuted,
   },
   bio: {
-    fontSize: 14,
+    fontSize: fontSize.md,
     color: colors.textPrimary,
     textAlign: 'center',
     lineHeight: 20,
-    marginTop: 4,
+    marginTop: spacing.xs,
   },
   actionRow: {
     flexDirection: 'row',
-    gap: 10,
-    marginTop: 12,
+    gap: spacing.md,
+    marginTop: spacing.md,
   },
   followButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
+    gap: spacing.sm,
     borderWidth: 1,
     borderColor: colors.emerald,
-    borderRadius: 999,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
+    borderRadius: radius.pill,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.xl,
     minWidth: 120,
   },
   followButtonActive: {
@@ -387,31 +387,31 @@ const styles = StyleSheet.create({
   followButtonText: {
     color: colors.emerald,
     fontWeight: '700',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
   followButtonTextActive: {
-    color: '#fff',
+    color: colors.white,
   },
   messageButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
+    gap: spacing.sm,
     borderWidth: 1,
     borderColor: colors.emerald,
-    borderRadius: 999,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
+    borderRadius: radius.pill,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.xl,
     minWidth: 120,
   },
   messageButtonText: {
     color: colors.emerald,
     fontWeight: '700',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
   albumSection: {
     width: '100%',
-    gap: 20,
-    marginTop: 20,
+    gap: spacing.xl,
+    marginTop: spacing.xl,
   },
 });

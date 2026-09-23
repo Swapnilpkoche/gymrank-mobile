@@ -17,7 +17,7 @@ import { DateOfBirthPicker } from './DateOfBirthPicker';
 import { GenderPicker } from './GenderPicker';
 import { dateToIsoDateString, isoDateStringToDate } from '../../lib/dateOfBirth';
 import { updateProfile } from '../../lib/profile';
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 import type { Gender, Profile } from '../../types/database';
 
 const MAX_DOB_EDITS = 2;
@@ -211,7 +211,7 @@ export function EditProfileModal({
 
             {errorMessage ? (
               <View style={styles.errorBox}>
-                <Feather name="alert-triangle" size={14} color="#f87171" />
+                <Feather name="alert-triangle" size={14} color={colors.danger} />
                 <Text style={styles.errorText}>{errorMessage}</Text>
               </View>
             ) : null}
@@ -223,7 +223,7 @@ export function EditProfileModal({
             </Pressable>
             <Pressable style={styles.primaryButton} onPress={handleSave} disabled={isSaving}>
               {isSaving ? (
-                <ActivityIndicator color="#fff" size="small" />
+                <ActivityIndicator color={colors.white} size="small" />
               ) : (
                 <Text style={styles.primaryButtonText}>Save</Text>
               )}
@@ -238,7 +238,7 @@ export function EditProfileModal({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: '#000000b3',
+    backgroundColor: colors.scrim,
     justifyContent: 'flex-end',
   },
   card: {
@@ -248,10 +248,10 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     borderWidth: 1,
     borderColor: colors.border,
-    paddingTop: 16,
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-    gap: 14,
+    paddingTop: spacing.lg,
+    paddingHorizontal: spacing.xl,
+    paddingBottom: spacing.xl,
+    gap: spacing.md,
   },
   headerRow: {
     flexDirection: 'row',
@@ -259,24 +259,24 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   title: {
-    fontSize: 17,
+    fontSize: fontSize.xl,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   content: {
-    gap: 16,
-    paddingBottom: 4,
+    gap: spacing.lg,
+    paddingBottom: spacing.xs,
   },
   field: {
-    gap: 6,
+    gap: spacing.sm,
   },
   helperText: {
-    fontSize: 11,
+    fontSize: fontSize.xs,
     color: colors.textMuted,
     marginTop: -2,
   },
   label: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     fontWeight: '600',
     color: colors.textMuted,
   },
@@ -284,11 +284,11 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    borderRadius: radius.md,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
     color: colors.textPrimary,
-    fontSize: 15,
+    fontSize: fontSize.lg,
   },
   textArea: {
     minHeight: 80,
@@ -297,48 +297,48 @@ const styles = StyleSheet.create({
   errorBox: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: 8,
-    backgroundColor: '#f8717126',
+    gap: spacing.sm,
+    backgroundColor: colors.dangerTint,
     borderWidth: 1,
-    borderColor: '#f8717166',
-    borderRadius: 12,
-    padding: 12,
+    borderColor: colors.dangerBorder,
+    borderRadius: radius.md,
+    padding: spacing.md,
   },
   errorText: {
     flex: 1,
-    fontSize: 13,
-    color: '#f87171',
+    fontSize: fontSize.base,
+    color: colors.danger,
     lineHeight: 18,
   },
   buttonRow: {
     flexDirection: 'row',
-    gap: 10,
-    marginTop: 4,
+    gap: spacing.md,
+    marginTop: spacing.xs,
   },
   primaryButton: {
     flex: 1,
     backgroundColor: colors.emerald,
-    borderRadius: 12,
-    paddingVertical: 12,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
     alignItems: 'center',
   },
   primaryButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontWeight: '700',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
   secondaryButton: {
     flex: 1,
     backgroundColor: 'transparent',
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    paddingVertical: 12,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
     alignItems: 'center',
   },
   secondaryButtonText: {
     color: colors.textPrimary,
     fontWeight: '600',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
 });

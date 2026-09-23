@@ -1,7 +1,7 @@
 import { Feather } from '@expo/vector-icons';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 
 export function ScoreCard({
   avgRating,
@@ -29,26 +29,26 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 14,
-    padding: 16,
+    borderRadius: radius.md,
+    padding: spacing.lg,
   },
   scoreRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: spacing.sm,
   },
   score: {
-    fontSize: 22,
+    fontSize: fontSize.xxl,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   label: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     color: colors.textMuted,
   },
   reviewCount: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     color: colors.textMuted,
-    marginTop: 4,
+    marginTop: spacing.xs,
   },
 });

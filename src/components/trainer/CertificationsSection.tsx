@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Alert, Image, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { MAX_CERTIFICATIONS } from '../../lib/trainer';
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 import type { TrainerCertification } from '../../types/database';
 
 export function CertificationsSection({
@@ -96,7 +96,7 @@ export function CertificationsSection({
 
 const styles = StyleSheet.create({
   section: {
-    gap: 10,
+    gap: spacing.md,
     width: '100%',
   },
   headerRow: {
@@ -105,50 +105,50 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   title: {
-    fontSize: 15,
+    fontSize: fontSize.lg,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   addButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: spacing.xs,
     borderWidth: 1,
     borderColor: colors.emerald,
-    borderRadius: 999,
-    paddingVertical: 4,
-    paddingHorizontal: 10,
+    borderRadius: radius.pill,
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.md,
   },
   addButtonText: {
     color: colors.emerald,
     fontWeight: '700',
-    fontSize: 12,
+    fontSize: fontSize.sm,
   },
   empty: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     color: colors.textMuted,
     lineHeight: 18,
   },
   list: {
-    gap: 8,
+    gap: spacing.sm,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: spacing.md,
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    padding: 10,
+    borderRadius: radius.md,
+    padding: spacing.md,
   },
   thumb: {
     width: 48,
     height: 48,
-    borderRadius: 8,
+    borderRadius: radius.sm,
   },
   thumbFallback: {
-    backgroundColor: '#052e1f',
+    backgroundColor: colors.emeraldTint,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -158,19 +158,19 @@ const styles = StyleSheet.create({
   certTitle: {
     color: colors.textPrimary,
     fontWeight: '600',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
   issuer: {
     color: colors.textMuted,
-    fontSize: 12,
-    marginTop: 2,
+    fontSize: fontSize.sm,
+    marginTop: spacing.xs,
   },
   viewerOverlay: {
     flex: 1,
-    backgroundColor: '#000000e6',
+    backgroundColor: colors.scrimHeavy,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 16,
+    padding: spacing.lg,
   },
   viewerImage: {
     width: '100%',

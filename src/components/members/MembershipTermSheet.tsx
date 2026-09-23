@@ -21,7 +21,7 @@ import {
   renewMember,
 } from '../../lib/memberships';
 import { formatShortDate } from '../../lib/time';
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 import type { GymPlanType, GymPricingPlan, TermPreview } from '../../types/database';
 import { StartDatePicker } from './StartDatePicker';
 
@@ -237,7 +237,7 @@ export function MembershipTermSheet({
 
             {errorMessage ? (
               <View style={styles.errorBox}>
-                <Feather name="alert-triangle" size={14} color="#f87171" />
+                <Feather name="alert-triangle" size={14} color={colors.danger} />
                 <Text style={styles.errorText}>{errorMessage}</Text>
               </View>
             ) : null}
@@ -253,7 +253,7 @@ export function MembershipTermSheet({
               disabled={isSaving || !preview}
             >
               {isSaving ? (
-                <ActivityIndicator color="#fff" size="small" />
+                <ActivityIndicator color={colors.white} size="small" />
               ) : (
                 <Text style={styles.primaryButtonText}>{CONFIRM_LABELS[target.mode]}</Text>
               )}
@@ -268,7 +268,7 @@ export function MembershipTermSheet({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: '#000000b3',
+    backgroundColor: colors.scrim,
     justifyContent: 'flex-end',
   },
   card: {
@@ -278,10 +278,10 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     borderWidth: 1,
     borderColor: colors.border,
-    paddingTop: 16,
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-    gap: 14,
+    paddingTop: spacing.lg,
+    paddingHorizontal: spacing.xl,
+    paddingBottom: spacing.xl,
+    gap: spacing.md,
   },
   headerRow: {
     flexDirection: 'row',
@@ -289,59 +289,59 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   title: {
-    fontSize: 17,
+    fontSize: fontSize.xl,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   content: {
-    gap: 16,
-    paddingBottom: 4,
+    gap: spacing.lg,
+    paddingBottom: spacing.xs,
   },
   memberName: {
-    fontSize: 15,
+    fontSize: fontSize.lg,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   hint: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     color: colors.textMuted,
     lineHeight: 17,
   },
   subHint: {
-    fontSize: 11,
+    fontSize: fontSize.xs,
     color: colors.textMuted,
     lineHeight: 16,
   },
   field: {
-    gap: 8,
+    gap: spacing.sm,
   },
   label: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     fontWeight: '600',
     color: colors.textMuted,
   },
   planList: {
-    gap: 8,
+    gap: spacing.sm,
   },
   planRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: spacing.md,
     backgroundColor: colors.background,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    borderRadius: radius.md,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
   },
   planRowSelected: {
     borderColor: colors.emerald,
-    backgroundColor: '#052e1f',
+    backgroundColor: colors.emeraldTint,
   },
   planLabel: {
     flex: 1,
     color: colors.textPrimary,
-    fontSize: 14,
+    fontSize: fontSize.md,
     fontWeight: '600',
   },
   planLabelSelected: {
@@ -349,84 +349,84 @@ const styles = StyleSheet.create({
   },
   planPrice: {
     color: colors.textMuted,
-    fontSize: 12,
+    fontSize: fontSize.sm,
   },
   staticDate: {
-    gap: 4,
+    gap: spacing.xs,
   },
   staticDateText: {
     color: colors.textPrimary,
-    fontSize: 15,
+    fontSize: fontSize.lg,
     fontWeight: '600',
   },
   summaryBox: {
-    gap: 4,
+    gap: spacing.xs,
     backgroundColor: colors.background,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    padding: 12,
+    borderRadius: radius.md,
+    padding: spacing.md,
   },
   summaryLabel: {
-    fontSize: 11,
+    fontSize: fontSize.xs,
     fontWeight: '700',
     color: colors.textMuted,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
   summaryValue: {
-    fontSize: 15,
+    fontSize: fontSize.lg,
     fontWeight: '700',
     color: colors.emeraldLight,
   },
   errorBox: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: 8,
-    backgroundColor: '#f8717126',
+    gap: spacing.sm,
+    backgroundColor: colors.dangerTint,
     borderWidth: 1,
-    borderColor: '#f8717166',
-    borderRadius: 12,
-    padding: 12,
+    borderColor: colors.dangerBorder,
+    borderRadius: radius.md,
+    padding: spacing.md,
   },
   errorText: {
     flex: 1,
-    fontSize: 13,
-    color: '#f87171',
+    fontSize: fontSize.base,
+    color: colors.danger,
     lineHeight: 18,
   },
   buttonRow: {
     flexDirection: 'row',
-    gap: 10,
-    marginTop: 4,
+    gap: spacing.md,
+    marginTop: spacing.xs,
   },
   primaryButton: {
     flex: 1.4,
     backgroundColor: colors.emerald,
-    borderRadius: 12,
-    paddingVertical: 12,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
     alignItems: 'center',
   },
   primaryButtonDisabled: {
     opacity: 0.6,
   },
   primaryButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontWeight: '700',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
   secondaryButton: {
     flex: 1,
     backgroundColor: 'transparent',
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    paddingVertical: 12,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
     alignItems: 'center',
   },
   secondaryButtonText: {
     color: colors.textPrimary,
     fontWeight: '600',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
 });

@@ -2,8 +2,9 @@ import { Feather } from '@expo/vector-icons';
 import { Image, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
 import { formatDistanceKm } from '../../lib/location';
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius } from '../../theme';
 import type { GymWithDiscoverData } from '../../types/database';
+import { spacing } from '../../theme';
 
 export const GYM_CARD_WIDTH = 200;
 
@@ -40,7 +41,7 @@ export function GymCard({
 
         {gym.rating !== null ? (
           <View style={styles.ratingBadge}>
-            <Feather name="star" size={11} color="#020617" />
+            <Feather name="star" size={11} color={colors.textOnAccent} />
             <Text style={styles.ratingText}>{gym.rating.toFixed(1)}</Text>
           </View>
         ) : null}
@@ -70,9 +71,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 16,
+    borderRadius: radius.lg,
     overflow: 'hidden',
-    paddingBottom: 12,
+    paddingBottom: spacing.md,
   },
   photoWrapper: {
     position: 'relative',
@@ -84,7 +85,7 @@ const styles = StyleSheet.create({
   photoPlaceholder: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#1e293b',
+    backgroundColor: colors.surfaceRaised,
   },
   ratingBadge: {
     position: 'absolute',
@@ -92,42 +93,42 @@ const styles = StyleSheet.create({
     right: 8,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 3,
+    gap: spacing.xs,
     backgroundColor: colors.emeraldLight,
-    borderRadius: 999,
-    paddingHorizontal: 7,
-    paddingVertical: 3,
+    borderRadius: radius.pill,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
   },
   ratingText: {
-    fontSize: 11,
+    fontSize: fontSize.xs,
     fontWeight: '700',
-    color: '#020617',
+    color: colors.textOnAccent,
   },
   priceBadge: {
     position: 'absolute',
     bottom: 8,
     left: 8,
-    backgroundColor: '#00000099',
-    borderRadius: 999,
-    paddingHorizontal: 7,
-    paddingVertical: 3,
+    backgroundColor: colors.scrimLight,
+    borderRadius: radius.pill,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
   },
   priceText: {
-    fontSize: 11,
+    fontSize: fontSize.xs,
     fontWeight: '700',
-    color: '#fff',
+    color: colors.white,
   },
   name: {
-    fontSize: 15,
+    fontSize: fontSize.lg,
     fontWeight: '600',
     color: colors.textPrimary,
-    marginTop: 10,
-    marginHorizontal: 12,
+    marginTop: spacing.md,
+    marginHorizontal: spacing.md,
   },
   subtitle: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     color: colors.textMuted,
-    marginTop: 3,
-    marginHorizontal: 12,
+    marginTop: spacing.xs,
+    marginHorizontal: spacing.md,
   },
 });

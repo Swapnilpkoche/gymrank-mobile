@@ -6,6 +6,7 @@ import { AlbumCategoryPreview } from './AlbumCategoryPreview';
 import { AlbumViewerModal } from './AlbumViewerModal';
 import { useAlbum } from '../../hooks/useAlbum';
 import type { AlbumItem, AlbumMediaType } from '../../types/database';
+import { colors, fontSize, spacing } from '../../theme';
 
 export function AlbumSection({ userId, refreshToken }: { userId: string; refreshToken: number }) {
   const router = useRouter();
@@ -72,10 +73,10 @@ export function AlbumSection({ userId, refreshToken }: { userId: string; refresh
 
 const styles = StyleSheet.create({
   container: {
-    gap: 24,
+    gap: spacing.xxl,
   },
   error: {
-    color: '#f87171',
-    fontSize: 13,
+    color: colors.danger,
+    fontSize: fontSize.base,
   },
 });

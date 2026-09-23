@@ -22,7 +22,7 @@ import { confirmUnfollow } from '../../src/lib/confirmations';
 import { toggleFollow } from '../../src/lib/gymDetail';
 import { fetchFollowedGyms } from '../../src/lib/profile';
 import { fetchFollowedUsers, searchProfiles, unfollowUser } from '../../src/lib/userFollows';
-import { colors } from '../../src/theme/colors';
+import { colors, fontSize, radius, spacing } from '../../src/theme';
 import type { FollowedGym, FollowedUser } from '../../src/types/database';
 
 const SEARCH_DEBOUNCE_MS = 400;
@@ -285,45 +285,45 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
+    gap: spacing.sm,
     backgroundColor: colors.background,
-    padding: 24,
+    padding: spacing.xxl,
   },
   headerSection: {
-    gap: 12,
-    padding: 16,
-    paddingBottom: 4,
+    gap: spacing.md,
+    padding: spacing.lg,
+    paddingBottom: spacing.xs,
   },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: spacing.md,
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    borderRadius: radius.md,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
   },
   searchInput: {
     flex: 1,
     color: colors.textPrimary,
-    fontSize: 15,
+    fontSize: fontSize.lg,
   },
   pageTitle: {
-    fontSize: 24,
+    fontSize: fontSize.display,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   listContent: {
-    padding: 16,
-    paddingTop: 12,
+    padding: spacing.lg,
+    paddingTop: spacing.md,
     paddingBottom: 40,
     flexGrow: 1,
   },
   error: {
-    color: '#f87171',
-    fontSize: 13,
+    color: colors.danger,
+    fontSize: fontSize.base,
   },
   separator: {
     height: 8,
@@ -332,35 +332,35 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
+    gap: spacing.sm,
     paddingVertical: 40,
   },
   emptyTitle: {
-    fontSize: 17,
+    fontSize: fontSize.xl,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   emptyText: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     color: colors.textMuted,
     textAlign: 'center',
   },
   link: {
     color: colors.emeraldLight,
     fontWeight: '600',
-    fontSize: 13,
-    marginTop: 4,
+    fontSize: fontSize.base,
+    marginTop: spacing.xs,
   },
   primaryButton: {
     backgroundColor: colors.emerald,
-    borderRadius: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    marginTop: 8,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.xxl,
+    marginTop: spacing.sm,
   },
   primaryButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontWeight: '700',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
 });

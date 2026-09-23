@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 import type { LocationOption } from '../../types/database';
 
 // No winner highlighting here - a list of equipment/amenities isn't a single
@@ -47,32 +47,32 @@ export function CompareListSection({
 
 const styles = StyleSheet.create({
   row: {
-    gap: 6,
+    gap: spacing.sm,
   },
   label: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     fontWeight: '600',
     color: colors.textMuted,
   },
   columnsRow: {
     flexDirection: 'row',
-    gap: 8,
+    gap: spacing.sm,
   },
   column: {
     flex: 1,
-    gap: 4,
-    padding: 10,
-    borderRadius: 10,
+    gap: spacing.xs,
+    padding: spacing.md,
+    borderRadius: radius.md,
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
   },
   item: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     color: colors.textPrimary,
   },
   empty: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     color: colors.textMuted,
     fontStyle: 'italic',
   },

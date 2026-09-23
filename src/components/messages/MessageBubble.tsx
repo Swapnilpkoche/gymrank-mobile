@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 import type { Message } from '../../types/database';
 
 export function MessageBubble({ message, isMine }: { message: Message; isMine: boolean }) {
@@ -16,17 +16,17 @@ export function MessageBubble({ message, isMine }: { message: Message; isMine: b
 const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
-    paddingHorizontal: 16,
-    marginVertical: 4,
+    paddingHorizontal: spacing.lg,
+    marginVertical: spacing.xs,
   },
   rowMine: {
     justifyContent: 'flex-end',
   },
   bubble: {
     maxWidth: '78%',
-    borderRadius: 16,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+    borderRadius: radius.lg,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
   },
   bubbleTheirs: {
     backgroundColor: colors.card,
@@ -39,11 +39,11 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 4,
   },
   text: {
-    fontSize: 14,
+    fontSize: fontSize.md,
     color: colors.textPrimary,
     lineHeight: 19,
   },
   textMine: {
-    color: '#fff',
+    color: colors.white,
   },
 });

@@ -17,6 +17,7 @@ import {
 } from '../../src/lib/rememberMe';
 import { supabase } from '../../src/lib/supabase';
 import { AuthScreenContainer } from '../../src/components/auth/AuthScreenContainer';
+import { colors, fontSize, radius, spacing } from '../../src/theme';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -95,7 +96,7 @@ export default function LoginScreen() {
           hitSlop={8}
         >
           <View style={[styles.checkbox, rememberMe && styles.checkboxChecked]}>
-            {rememberMe ? <Feather name="check" size={13} color="#fff" /> : null}
+            {rememberMe ? <Feather name="check" size={13} color={colors.white} /> : null}
           </View>
           <Text style={styles.rememberLabel}>Remember me</Text>
         </Pressable>
@@ -113,7 +114,7 @@ export default function LoginScreen() {
         disabled={isSubmitting || !email || !password}
       >
         {isSubmitting ? (
-          <ActivityIndicator color="#fff" />
+          <ActivityIndicator color={colors.white} />
         ) : (
           <Text style={styles.buttonText}>Log in</Text>
         )}
@@ -128,31 +129,31 @@ export default function LoginScreen() {
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: 28,
+    fontSize: fontSize.display,
     fontWeight: '700',
-    marginBottom: 12,
+    marginBottom: spacing.md,
   },
   input: {
     borderWidth: 1,
     borderColor: '#d1d5db',
-    borderRadius: 8,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    fontSize: 16,
+    borderRadius: radius.sm,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
+    fontSize: fontSize.xl,
   },
   button: {
     backgroundColor: '#111827',
-    borderRadius: 8,
-    paddingVertical: 14,
+    borderRadius: radius.sm,
+    paddingVertical: spacing.md,
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: spacing.sm,
   },
   buttonDisabled: {
     opacity: 0.5,
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 16,
+    color: colors.white,
+    fontSize: fontSize.xl,
     fontWeight: '600',
   },
   error: {
@@ -166,7 +167,7 @@ const styles = StyleSheet.create({
   rememberCheckboxRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: spacing.sm,
   },
   checkbox: {
     width: 20,
@@ -182,16 +183,16 @@ const styles = StyleSheet.create({
     borderColor: '#111827',
   },
   rememberLabel: {
-    fontSize: 14,
+    fontSize: fontSize.md,
     color: '#374151',
   },
   forgotLink: {
     color: '#2563eb',
-    fontSize: 13,
+    fontSize: fontSize.base,
   },
   link: {
     textAlign: 'center',
-    marginTop: 16,
+    marginTop: spacing.lg,
     color: '#2563eb',
   },
 });

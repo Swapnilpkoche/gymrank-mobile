@@ -2,6 +2,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { AlbumThumb } from './AlbumThumb';
 import type { AlbumItem } from '../../types/database';
+import { spacing } from '../../theme';
 
 export function AlbumGrid({
   items,
@@ -33,6 +34,6 @@ const styles = StyleSheet.create({
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
+    gap: spacing.sm,
   },
 });

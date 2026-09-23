@@ -2,7 +2,7 @@ import { Feather } from '@expo/vector-icons';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { AlbumThumb } from './AlbumThumb';
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 import type { AlbumItem } from '../../types/database';
 
 export function AlbumCategoryPreview({
@@ -98,7 +98,7 @@ export function AlbumCategoryPreview({
 
 const styles = StyleSheet.create({
   section: {
-    gap: 10,
+    gap: spacing.md,
   },
   headerRow: {
     flexDirection: 'row',
@@ -108,39 +108,39 @@ const styles = StyleSheet.create({
   headerTap: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: spacing.sm,
     flexShrink: 1,
   },
   title: {
-    fontSize: 15,
+    fontSize: fontSize.lg,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   countLabel: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     color: colors.textMuted,
   },
   addButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: spacing.xs,
     borderWidth: 1,
     borderColor: colors.emerald,
-    borderRadius: 999,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
+    borderRadius: radius.pill,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
   },
   addButtonText: {
     color: colors.emerald,
     fontWeight: '700',
-    fontSize: 13,
+    fontSize: fontSize.base,
   },
   empty: {
     color: colors.textMuted,
-    fontSize: 13,
+    fontSize: fontSize.base,
   },
   row: {
     flexDirection: 'row',
-    gap: 8,
+    gap: spacing.sm,
   },
 });

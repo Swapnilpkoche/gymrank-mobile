@@ -3,7 +3,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useState } from 'react';
 import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 
 const MAX_EXTRA_PHOTOS = 3;
 
@@ -67,7 +67,7 @@ export function NominationForm({
           <View key={uri} style={styles.extraThumbWrapper}>
             <Image source={{ uri }} style={styles.extraThumb} />
             <Pressable style={styles.removeBadge} onPress={() => removeExtraPhoto(uri)}>
-              <Feather name="x" size={12} color="#fff" />
+              <Feather name="x" size={12} color={colors.white} />
             </Pressable>
           </View>
         ))}
@@ -80,7 +80,7 @@ export function NominationForm({
 
       <Pressable style={styles.consentRow} onPress={() => setConsentAccepted((prev) => !prev)}>
         <View style={[styles.checkbox, consentAccepted && styles.checkboxChecked]}>
-          {consentAccepted ? <Feather name="check" size={12} color="#fff" /> : null}
+          {consentAccepted ? <Feather name="check" size={12} color={colors.white} /> : null}
         </View>
         <Text style={styles.consentText}>
           I understand that if I win, I may go on to represent my gym at the City level, and that
@@ -95,7 +95,7 @@ export function NominationForm({
         disabled={!canSubmit}
       >
         {isSubmitting ? (
-          <ActivityIndicator color="#fff" size="small" />
+          <ActivityIndicator color={colors.white} size="small" />
         ) : (
           <Text style={styles.submitButtonText}>Submit Nomination</Text>
         )}
@@ -106,17 +106,17 @@ export function NominationForm({
 
 const styles = StyleSheet.create({
   container: {
-    gap: 12,
+    gap: spacing.md,
   },
   label: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     fontWeight: '600',
     color: colors.textMuted,
   },
   primaryPhotoBox: {
     width: '100%',
     height: 220,
-    borderRadius: 16,
+    borderRadius: radius.lg,
     overflow: 'hidden',
     backgroundColor: colors.card,
     borderWidth: 1,
@@ -130,16 +130,16 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
+    gap: spacing.sm,
   },
   placeholderText: {
     color: colors.textMuted,
-    fontSize: 13,
+    fontSize: fontSize.base,
   },
   extraRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 10,
+    gap: spacing.md,
   },
   extraThumbWrapper: {
     position: 'relative',
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
   extraThumb: {
     width: 72,
     height: 72,
-    borderRadius: 12,
+    borderRadius: radius.md,
   },
   removeBadge: {
     position: 'absolute',
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     right: -6,
     width: 20,
     height: 20,
-    borderRadius: 10,
+    borderRadius: radius.md,
     backgroundColor: colors.textMuted,
     alignItems: 'center',
     justifyContent: 'center',
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
   addExtraButton: {
     width: 72,
     height: 72,
-    borderRadius: 12,
+    borderRadius: radius.md,
     borderWidth: 1,
     borderColor: colors.border,
     borderStyle: 'dashed',
@@ -174,8 +174,8 @@ const styles = StyleSheet.create({
   consentRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: 10,
-    marginTop: 4,
+    gap: spacing.md,
+    marginTop: spacing.xs,
   },
   checkbox: {
     width: 20,
@@ -193,23 +193,23 @@ const styles = StyleSheet.create({
   },
   consentText: {
     flex: 1,
-    fontSize: 12,
+    fontSize: fontSize.sm,
     color: colors.textMuted,
     lineHeight: 17,
   },
   submitButton: {
     backgroundColor: colors.emerald,
-    borderRadius: 12,
-    paddingVertical: 14,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
     alignItems: 'center',
-    marginTop: 4,
+    marginTop: spacing.xs,
   },
   submitButtonDisabled: {
     opacity: 0.5,
   },
   submitButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontWeight: '700',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
 });

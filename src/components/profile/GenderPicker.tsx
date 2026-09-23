@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 import type { Gender } from '../../types/database';
 
 const OPTIONS: { value: Gender; label: string }[] = [
@@ -44,26 +44,26 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
+    gap: spacing.sm,
   },
   chip: {
     borderWidth: 1,
     borderColor: colors.border,
     backgroundColor: colors.background,
-    borderRadius: 999,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
+    borderRadius: radius.pill,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
   },
   chipActive: {
     backgroundColor: colors.emerald,
     borderColor: colors.emerald,
   },
   chipText: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     fontWeight: '600',
     color: colors.textMuted,
   },
   chipTextActive: {
-    color: '#fff',
+    color: colors.white,
   },
 });

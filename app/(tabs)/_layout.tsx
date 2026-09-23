@@ -3,6 +3,7 @@ import { Tabs, useRouter } from 'expo-router';
 
 import { useAuth } from '../../src/context/auth-context';
 import { useUnreadNotificationCount } from '../../src/hooks/useUnreadNotificationCount';
+import { colors } from '../../src/theme';
 
 export default function TabsLayout() {
   const { session } = useAuth();
@@ -16,8 +17,8 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#10b981',
-        tabBarInactiveTintColor: '#64748b',
+        tabBarActiveTintColor: colors.emerald,
+        tabBarInactiveTintColor: colors.textMuted,
       }}
     >
       <Tabs.Screen

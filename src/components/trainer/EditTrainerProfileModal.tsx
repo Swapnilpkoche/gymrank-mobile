@@ -22,7 +22,7 @@ import {
   saveTrainerProfile,
   type PickedImage,
 } from '../../lib/trainer';
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 import type { TrainerProfile } from '../../types/database';
 
 const MAX_SPECIALTY_LENGTH = 40;
@@ -199,7 +199,7 @@ export function EditTrainerProfileModal({
                 </View>
               )}
               <View style={styles.editBadge}>
-                <Feather name="camera" size={13} color="#fff" />
+                <Feather name="camera" size={13} color={colors.white} />
               </View>
             </Pressable>
             <Text style={styles.photoHint}>Trainer photo (shown on your public trainer profile)</Text>
@@ -271,7 +271,7 @@ export function EditTrainerProfileModal({
 
             {errorMessage ? (
               <View style={styles.errorBox}>
-                <Feather name="alert-triangle" size={14} color="#f87171" />
+                <Feather name="alert-triangle" size={14} color={colors.danger} />
                 <Text style={styles.errorText}>{errorMessage}</Text>
               </View>
             ) : null}
@@ -283,7 +283,7 @@ export function EditTrainerProfileModal({
             </Pressable>
             <Pressable style={styles.primaryButton} onPress={handleSave} disabled={isSaving}>
               {isSaving ? (
-                <ActivityIndicator color="#fff" size="small" />
+                <ActivityIndicator color={colors.white} size="small" />
               ) : (
                 <Text style={styles.primaryButtonText}>Save</Text>
               )}
@@ -300,7 +300,7 @@ const PHOTO_SIZE = 96;
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: '#000000b3',
+    backgroundColor: colors.scrim,
     justifyContent: 'flex-end',
   },
   card: {
@@ -310,10 +310,10 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     borderWidth: 1,
     borderColor: colors.border,
-    paddingTop: 16,
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-    gap: 14,
+    paddingTop: spacing.lg,
+    paddingHorizontal: spacing.xl,
+    paddingBottom: spacing.xl,
+    gap: spacing.md,
   },
   headerRow: {
     flexDirection: 'row',
@@ -321,36 +321,36 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   title: {
-    fontSize: 17,
+    fontSize: fontSize.xl,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   content: {
-    gap: 16,
-    paddingBottom: 4,
+    gap: spacing.lg,
+    paddingBottom: spacing.xs,
   },
   applyBanner: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: 10,
-    backgroundColor: '#052e1f',
+    gap: spacing.md,
+    backgroundColor: colors.emeraldTint,
     borderWidth: 1,
     borderColor: colors.emerald,
-    borderRadius: 12,
-    padding: 12,
+    borderRadius: radius.md,
+    padding: spacing.md,
   },
   applyBannerText: {
     flex: 1,
-    gap: 4,
+    gap: spacing.xs,
   },
   applyBannerTitle: {
     color: colors.emeraldLight,
-    fontSize: 14,
+    fontSize: fontSize.md,
     fontWeight: '700',
   },
   applyBannerBody: {
     color: colors.textPrimary,
-    fontSize: 12,
+    fontSize: fontSize.sm,
     lineHeight: 17,
   },
   photoWrapper: {
@@ -362,7 +362,7 @@ const styles = StyleSheet.create({
     borderRadius: PHOTO_SIZE / 2,
   },
   photoFallback: {
-    backgroundColor: '#1e293b',
+    backgroundColor: colors.surfaceRaised,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -377,7 +377,7 @@ const styles = StyleSheet.create({
     right: 0,
     width: 28,
     height: 28,
-    borderRadius: 14,
+    borderRadius: radius.pill,
     backgroundColor: colors.emerald,
     borderWidth: 2,
     borderColor: colors.card,
@@ -385,16 +385,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   photoHint: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     color: colors.textMuted,
     textAlign: 'center',
     marginTop: -8,
   },
   field: {
-    gap: 6,
+    gap: spacing.sm,
   },
   label: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     fontWeight: '600',
     color: colors.textMuted,
   },
@@ -402,44 +402,44 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    borderRadius: radius.md,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
     color: colors.textPrimary,
-    fontSize: 15,
+    fontSize: fontSize.lg,
   },
   multiline: {
     minHeight: 110,
   },
   counter: {
-    fontSize: 11,
+    fontSize: fontSize.xs,
     color: colors.textMuted,
     textAlign: 'right',
   },
   chipRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
+    gap: spacing.sm,
   },
   chip: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    backgroundColor: '#052e1f',
+    gap: spacing.sm,
+    backgroundColor: colors.emeraldTint,
     borderWidth: 1,
     borderColor: colors.emerald,
-    borderRadius: 999,
-    paddingVertical: 5,
-    paddingHorizontal: 10,
+    borderRadius: radius.pill,
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.md,
   },
   chipText: {
     color: colors.emeraldLight,
-    fontSize: 12,
+    fontSize: fontSize.sm,
     fontWeight: '600',
   },
   addRow: {
     flexDirection: 'row',
-    gap: 8,
+    gap: spacing.sm,
   },
   addInput: {
     flex: 1,
@@ -447,61 +447,61 @@ const styles = StyleSheet.create({
   addButton: {
     borderWidth: 1,
     borderColor: colors.emerald,
-    borderRadius: 12,
-    paddingHorizontal: 16,
+    borderRadius: radius.md,
+    paddingHorizontal: spacing.lg,
     alignItems: 'center',
     justifyContent: 'center',
   },
   addButtonText: {
     color: colors.emerald,
     fontWeight: '700',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
   errorBox: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: 8,
-    backgroundColor: '#f8717126',
+    gap: spacing.sm,
+    backgroundColor: colors.dangerTint,
     borderWidth: 1,
-    borderColor: '#f8717166',
-    borderRadius: 12,
-    padding: 12,
+    borderColor: colors.dangerBorder,
+    borderRadius: radius.md,
+    padding: spacing.md,
   },
   errorText: {
     flex: 1,
-    fontSize: 13,
-    color: '#f87171',
+    fontSize: fontSize.base,
+    color: colors.danger,
     lineHeight: 18,
   },
   buttonRow: {
     flexDirection: 'row',
-    gap: 10,
-    marginTop: 4,
+    gap: spacing.md,
+    marginTop: spacing.xs,
   },
   primaryButton: {
     flex: 1,
     backgroundColor: colors.emerald,
-    borderRadius: 12,
-    paddingVertical: 12,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
     alignItems: 'center',
   },
   primaryButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontWeight: '700',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
   secondaryButton: {
     flex: 1,
     backgroundColor: 'transparent',
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    paddingVertical: 12,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
     alignItems: 'center',
   },
   secondaryButtonText: {
     color: colors.textPrimary,
     fontWeight: '600',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
 });

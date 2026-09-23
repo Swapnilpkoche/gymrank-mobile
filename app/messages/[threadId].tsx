@@ -26,7 +26,7 @@ import {
   reportMessageThread,
   sendMessage,
 } from '../../src/lib/messages';
-import { colors } from '../../src/theme/colors';
+import { colors, fontSize, radius, spacing } from '../../src/theme';
 import type { Message, MessageThread } from '../../src/types/database';
 
 export default function ThreadScreen() {
@@ -192,7 +192,7 @@ export default function ThreadScreen() {
             </Pressable>
             <Pressable style={styles.acceptButton} onPress={handleAccept} disabled={isAccepting}>
               {isAccepting ? (
-                <ActivityIndicator color="#fff" size="small" />
+                <ActivityIndicator color={colors.white} size="small" />
               ) : (
                 <Text style={styles.acceptButtonText}>Accept</Text>
               )}
@@ -215,7 +215,7 @@ export default function ThreadScreen() {
             onPress={handleSend}
             disabled={!draft.trim() || isSending}
           >
-            <Feather name="arrow-up" size={18} color="#fff" />
+            <Feather name="arrow-up" size={18} color={colors.white} />
           </Pressable>
         </View>
       ) : null}
@@ -239,71 +239,71 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.background,
-    padding: 16,
+    padding: spacing.lg,
   },
   error: {
-    color: '#f87171',
+    color: colors.danger,
     textAlign: 'center',
   },
   messagesContent: {
-    paddingVertical: 12,
+    paddingVertical: spacing.md,
     flexGrow: 1,
   },
   empty: {
     color: colors.textMuted,
-    fontSize: 13,
+    fontSize: fontSize.base,
     textAlign: 'center',
-    marginTop: 24,
+    marginTop: spacing.xxl,
   },
   requestBar: {
     borderTopWidth: 1,
     borderTopColor: colors.border,
     backgroundColor: colors.card,
-    padding: 14,
-    gap: 10,
+    padding: spacing.md,
+    gap: spacing.md,
   },
   requestText: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     color: colors.textMuted,
     textAlign: 'center',
   },
   requestButtons: {
     flexDirection: 'row',
-    gap: 10,
+    gap: spacing.md,
   },
   declineButton: {
     flex: 1,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    paddingVertical: 12,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
     alignItems: 'center',
   },
   declineButtonText: {
     color: colors.textPrimary,
     fontWeight: '600',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
   acceptButton: {
     flex: 1,
     backgroundColor: colors.emerald,
-    borderRadius: 12,
-    paddingVertical: 12,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
     alignItems: 'center',
   },
   acceptButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontWeight: '700',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
   composer: {
     flexDirection: 'row',
     alignItems: 'flex-end',
-    gap: 10,
+    gap: spacing.md,
     borderTopWidth: 1,
     borderTopColor: colors.border,
     backgroundColor: colors.card,
-    padding: 10,
+    padding: spacing.md,
   },
   composerInput: {
     flex: 1,
@@ -311,16 +311,16 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 18,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+    borderRadius: radius.lg,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
     color: colors.textPrimary,
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
   sendButton: {
     width: 38,
     height: 38,
-    borderRadius: 19,
+    borderRadius: radius.pill,
     backgroundColor: colors.emerald,
     alignItems: 'center',
     justifyContent: 'center',

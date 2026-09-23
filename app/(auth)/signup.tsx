@@ -13,6 +13,7 @@ import { DateOfBirthPicker } from '../../src/components/profile/DateOfBirthPicke
 import { calculateAge, dateToIsoDateString, MIN_SIGNUP_AGE } from '../../src/lib/dateOfBirth';
 import { supabase } from '../../src/lib/supabase';
 import { AuthScreenContainer } from '../../src/components/auth/AuthScreenContainer';
+import { colors, fontSize, radius, spacing } from '../../src/theme';
 
 export default function SignupScreen() {
   const [email, setEmail] = useState('');
@@ -93,7 +94,7 @@ export default function SignupScreen() {
         disabled={isSubmitting || !email || !password || !dateOfBirth}
       >
         {isSubmitting ? (
-          <ActivityIndicator color="#fff" />
+          <ActivityIndicator color={colors.white} />
         ) : (
           <Text style={styles.buttonText}>Sign up</Text>
         )}
@@ -108,42 +109,42 @@ export default function SignupScreen() {
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: 28,
+    fontSize: fontSize.display,
     fontWeight: '700',
-    marginBottom: 12,
+    marginBottom: spacing.md,
   },
   input: {
     borderWidth: 1,
     borderColor: '#d1d5db',
-    borderRadius: 8,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    fontSize: 16,
+    borderRadius: radius.sm,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
+    fontSize: fontSize.xl,
   },
   button: {
     backgroundColor: '#111827',
-    borderRadius: 8,
-    paddingVertical: 14,
+    borderRadius: radius.sm,
+    paddingVertical: spacing.md,
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: spacing.sm,
   },
   buttonDisabled: {
     opacity: 0.5,
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 16,
+    color: colors.white,
+    fontSize: fontSize.xl,
     fontWeight: '600',
   },
   error: {
     color: '#dc2626',
   },
   message: {
-    color: '#059669',
+    color: colors.emeraldDark,
   },
   link: {
     textAlign: 'center',
-    marginTop: 16,
+    marginTop: spacing.lg,
     color: '#2563eb',
   },
 });

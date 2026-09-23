@@ -7,7 +7,7 @@ import type { TodayCheckInState } from '../../hooks/useTodayCheckInState';
 import type { MyStaffStatus } from '../../lib/trainer';
 import type { MembershipState } from '../../types/database';
 import { formatShortDate, formatWaitShort } from '../../lib/time';
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 
 type TrainerButton = {
   label: string;
@@ -241,7 +241,7 @@ export function ActionGrid({
               size={18}
               color={
                 action.active
-                  ? '#fff'
+                  ? colors.white
                   : action.disabled || action.muted
                     ? colors.textMuted
                     : colors.emerald
@@ -267,7 +267,7 @@ export function ActionGrid({
           </Text>
           {canLeave ? (
             <Pressable style={styles.leaveLink} onPress={onLeave} hitSlop={8}>
-              <Feather name="log-out" size={13} color="#f87171" />
+              <Feather name="log-out" size={13} color={colors.danger} />
               <Text style={styles.leaveLinkText}>Leave this gym</Text>
             </Pressable>
           ) : null}
@@ -281,17 +281,17 @@ export function ActionGrid({
 
 const styles = StyleSheet.create({
   container: {
-    gap: 10,
+    gap: spacing.md,
   },
   teamNote: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     color: colors.textMuted,
     lineHeight: 17,
     textAlign: 'center',
   },
   endedNote: {
-    fontSize: 12,
-    color: '#fbbf24',
+    fontSize: fontSize.sm,
+    color: colors.warning,
     lineHeight: 17,
     textAlign: 'center',
   },
@@ -299,30 +299,30 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 6,
-    paddingVertical: 2,
+    gap: spacing.sm,
+    paddingVertical: spacing.xs,
   },
   leaveLinkText: {
-    color: '#f87171',
-    fontSize: 13,
+    color: colors.danger,
+    fontSize: fontSize.base,
     fontWeight: '600',
   },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 10,
+    gap: spacing.md,
   },
   button: {
     width: '48%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
+    gap: spacing.sm,
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    paddingVertical: 14,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
   },
   buttonActive: {
     backgroundColor: colors.emerald,
@@ -333,13 +333,13 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: colors.textPrimary,
-    fontSize: 13,
+    fontSize: fontSize.base,
     fontWeight: '600',
   },
   buttonTextDisabled: {
     color: colors.textMuted,
   },
   buttonTextActive: {
-    color: '#fff',
+    color: colors.white,
   },
 });

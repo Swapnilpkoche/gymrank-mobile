@@ -1,7 +1,7 @@
 import { Feather } from '@expo/vector-icons';
 import { Image, StyleSheet, Text, View } from 'react-native';
 
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 
 export function GymHeroSection({
   photoUrl,
@@ -53,43 +53,43 @@ const styles = StyleSheet.create({
   placeholder: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#1e293b',
+    backgroundColor: colors.surfaceRaised,
   },
   overlay: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    padding: 16,
+    padding: spacing.lg,
     paddingTop: 40,
     backgroundColor: '#020617cc',
   },
   categoryTag: {
     alignSelf: 'flex-start',
     backgroundColor: colors.emerald,
-    borderRadius: 999,
-    paddingHorizontal: 10,
-    paddingVertical: 3,
-    marginBottom: 6,
+    borderRadius: radius.pill,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    marginBottom: spacing.sm,
   },
   categoryTagText: {
-    color: '#fff',
-    fontSize: 11,
+    color: colors.white,
+    fontSize: fontSize.xs,
     fontWeight: '700',
   },
   name: {
-    fontSize: 22,
+    fontSize: fontSize.xxl,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   locationRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
-    marginTop: 4,
+    gap: spacing.xs,
+    marginTop: spacing.xs,
   },
   locationText: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     color: colors.textPrimary,
   },
 });

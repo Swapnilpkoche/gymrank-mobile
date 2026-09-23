@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 
 import { getCurrentHourInTimeZone } from '../../lib/time';
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 import type { BusyHour } from '../../types/database';
 
 const GYM_TIMEZONE = 'Asia/Kolkata';
@@ -18,7 +18,7 @@ function getBusyLevel(currentHourCount: number, peakCount: number): BusyLevel {
 }
 
 const LEVEL_COLOR: Record<BusyLevel, string> = {
-  'Busy now': '#f87171',
+  'Busy now': colors.danger,
   Moderate: '#facc15',
   Quiet: colors.emeraldLight,
 };
@@ -70,35 +70,35 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 14,
-    padding: 16,
+    borderRadius: radius.md,
+    padding: spacing.lg,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 12,
+    marginBottom: spacing.md,
   },
   title: {
-    fontSize: 15,
+    fontSize: fontSize.lg,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   badge: {
-    borderRadius: 999,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
+    borderRadius: radius.pill,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
   },
   badgeText: {
-    fontSize: 11,
+    fontSize: fontSize.xs,
     fontWeight: '700',
-    color: '#020617',
+    color: colors.textOnAccent,
   },
   chart: {
     flexDirection: 'row',
     alignItems: 'flex-end',
     height: CHART_HEIGHT,
-    gap: 2,
+    gap: spacing.xs,
   },
   barColumn: {
     flex: 1,
@@ -113,10 +113,10 @@ const styles = StyleSheet.create({
   axisRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 6,
+    marginTop: spacing.sm,
   },
   axisLabel: {
-    fontSize: 10,
+    fontSize: fontSize.xs,
     color: colors.textMuted,
   },
 });

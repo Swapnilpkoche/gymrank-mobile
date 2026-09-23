@@ -1,7 +1,7 @@
 import { useRouter } from 'expo-router';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { colors } from '../../theme/colors';
+import { colors, fontSize, spacing } from '../../theme';
 import type { GymWithDiscoverData } from '../../types/database';
 import { GymCard } from './GymCard';
 
@@ -51,25 +51,25 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 12,
+    marginBottom: spacing.md,
   },
   sectionTitle: {
-    fontSize: 17,
+    fontSize: fontSize.xl,
     fontWeight: '700',
     color: colors.textPrimary,
     flexShrink: 1,
   },
   swipeHint: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     color: colors.textMuted,
   },
   row: {
-    gap: 12,
-    paddingRight: 4,
+    gap: spacing.md,
+    paddingRight: spacing.xs,
   },
   empty: {
     color: colors.textMuted,
-    fontSize: 13,
-    paddingVertical: 8,
+    fontSize: fontSize.base,
+    paddingVertical: spacing.sm,
   },
 });

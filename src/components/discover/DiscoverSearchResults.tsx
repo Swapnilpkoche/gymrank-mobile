@@ -3,7 +3,7 @@ import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { GymCard } from './GymCard';
 import { SavedMemberRow } from '../saved/SavedMemberRow';
-import { colors } from '../../theme/colors';
+import { colors, fontSize, spacing } from '../../theme';
 import type { FollowedUser, GymWithDiscoverData } from '../../types/database';
 
 // Bounded so each column scrolls on its own instead of the taller one
@@ -74,14 +74,14 @@ export function DiscoverSearchResults({
 const styles = StyleSheet.create({
   columns: {
     flexDirection: 'row',
-    gap: 12,
+    gap: spacing.md,
   },
   column: {
     flex: 1,
-    gap: 10,
+    gap: spacing.md,
   },
   columnTitle: {
-    fontSize: 15,
+    fontSize: fontSize.lg,
     fontWeight: '700',
     color: colors.textPrimary,
   },
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     maxHeight: COLUMN_HEIGHT,
   },
   columnContent: {
-    gap: 10,
+    gap: spacing.md,
     flexGrow: 1,
   },
   gymCard: {
@@ -97,6 +97,6 @@ const styles = StyleSheet.create({
   },
   empty: {
     color: colors.textMuted,
-    fontSize: 12,
+    fontSize: fontSize.sm,
   },
 });

@@ -1,7 +1,7 @@
 import { Feather } from '@expo/vector-icons';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { colors } from '../../theme/colors';
+import { colors, spacing } from '../../theme';
 
 export function StarRatingInput({
   value,
@@ -34,6 +34,6 @@ export function StarRatingInput({
 const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
-    gap: 6,
+    gap: spacing.sm,
   },
 });

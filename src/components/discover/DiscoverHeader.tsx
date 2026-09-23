@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { useAuth } from '../../context/auth-context';
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 
 export function DiscoverHeader({ locationText }: { locationText: string | null }) {
   const { session } = useAuth();
@@ -40,56 +40,56 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
-    paddingVertical: 16,
+    paddingVertical: spacing.lg,
   },
   title: {
-    fontSize: 26,
+    fontSize: fontSize.display,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   location: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     color: colors.textMuted,
-    marginTop: 2,
+    marginTop: spacing.xs,
   },
   authButtons: {
     flexDirection: 'row',
-    gap: 8,
+    gap: spacing.sm,
   },
   signInButton: {
     borderWidth: 1,
     borderColor: colors.emerald,
-    borderRadius: 999,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
+    borderRadius: radius.pill,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
   },
   signInText: {
     color: colors.emerald,
     fontWeight: '600',
-    fontSize: 13,
+    fontSize: fontSize.base,
   },
   signUpButton: {
     backgroundColor: colors.emerald,
-    borderRadius: 999,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
+    borderRadius: radius.pill,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
   },
   signUpText: {
-    color: '#fff',
+    color: colors.white,
     fontWeight: '600',
-    fontSize: 13,
+    fontSize: fontSize.base,
   },
   avatar: {
     width: 36,
     height: 36,
-    borderRadius: 18,
+    borderRadius: radius.pill,
     backgroundColor: colors.emerald,
     alignItems: 'center',
     justifyContent: 'center',
   },
   avatarText: {
-    color: '#fff',
+    color: colors.white,
     fontWeight: '700',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
 });

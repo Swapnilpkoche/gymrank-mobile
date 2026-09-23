@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 
 type OverallStats = { rating: number | null; reviewCount: number };
 
@@ -48,33 +48,33 @@ export function CompareOverallSection({
 
 const styles = StyleSheet.create({
   row: {
-    gap: 6,
+    gap: spacing.sm,
   },
   label: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     fontWeight: '600',
     color: colors.textMuted,
   },
   valuesRow: {
     flexDirection: 'row',
-    gap: 8,
+    gap: spacing.sm,
   },
   card: {
     flex: 1,
     alignItems: 'center',
-    gap: 2,
-    paddingVertical: 10,
-    borderRadius: 10,
+    gap: spacing.xs,
+    paddingVertical: spacing.md,
+    borderRadius: radius.md,
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
   },
   cardWinner: {
-    backgroundColor: '#052e1f',
+    backgroundColor: colors.emeraldTint,
     borderColor: colors.emerald,
   },
   ratingText: {
-    fontSize: 14,
+    fontSize: fontSize.md,
     fontWeight: '600',
     color: colors.textPrimary,
   },
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   reviewCountText: {
-    fontSize: 11,
+    fontSize: fontSize.xs,
     color: colors.textMuted,
   },
 });

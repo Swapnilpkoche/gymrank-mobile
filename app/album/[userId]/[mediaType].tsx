@@ -15,7 +15,7 @@ import { AlbumGrid } from '../../../src/components/profile/AlbumGrid';
 import { AlbumViewerModal } from '../../../src/components/profile/AlbumViewerModal';
 import { useAuth } from '../../../src/context/auth-context';
 import { useAlbum } from '../../../src/hooks/useAlbum';
-import { colors } from '../../../src/theme/colors';
+import { colors, fontSize, radius, spacing } from '../../../src/theme';
 import type { AlbumItem, AlbumMediaType } from '../../../src/types/database';
 
 export default function FullAlbumScreen() {
@@ -120,9 +120,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   content: {
-    padding: 16,
+    padding: spacing.lg,
     paddingBottom: 40,
-    gap: 14,
+    gap: spacing.md,
   },
   headerRow: {
     flexDirection: 'row',
@@ -130,31 +130,31 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   countLabel: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     color: colors.textMuted,
   },
   addButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: spacing.xs,
     borderWidth: 1,
     borderColor: colors.emerald,
-    borderRadius: 999,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
+    borderRadius: radius.pill,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
     marginLeft: 'auto',
   },
   addButtonText: {
     color: colors.emerald,
     fontWeight: '700',
-    fontSize: 13,
+    fontSize: fontSize.base,
   },
   error: {
-    color: '#f87171',
-    fontSize: 13,
+    color: colors.danger,
+    fontSize: fontSize.base,
   },
   empty: {
     color: colors.textMuted,
-    fontSize: 13,
+    fontSize: fontSize.base,
   },
 });

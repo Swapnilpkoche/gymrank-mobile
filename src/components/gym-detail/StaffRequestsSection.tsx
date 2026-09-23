@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { fetchGymStaffRequests, respondToStaffRequest } from '../../lib/trainer';
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 import type { StaffRequest } from '../../types/database';
 
 function initials(name: string): string {
@@ -124,7 +124,7 @@ export function StaffRequestsSection({
                   disabled={isResponding}
                 >
                   {isResponding ? (
-                    <ActivityIndicator color="#fff" size="small" />
+                    <ActivityIndicator color={colors.white} size="small" />
                   ) : (
                     <Text style={styles.approveButtonText}>Approve</Text>
                   )}
@@ -140,35 +140,35 @@ export function StaffRequestsSection({
 
 const styles = StyleSheet.create({
   section: {
-    gap: 10,
+    gap: spacing.md,
   },
   title: {
-    fontSize: 15,
+    fontSize: fontSize.lg,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   list: {
-    gap: 8,
+    gap: spacing.sm,
   },
   card: {
-    gap: 12,
+    gap: spacing.md,
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.emerald,
-    borderRadius: 12,
-    padding: 12,
+    borderRadius: radius.md,
+    padding: spacing.md,
   },
   cardTop: {
     flexDirection: 'row',
-    gap: 12,
+    gap: spacing.md,
   },
   avatar: {
     width: 44,
     height: 44,
-    borderRadius: 22,
+    borderRadius: radius.pill,
   },
   avatarFallback: {
-    backgroundColor: '#1e293b',
+    backgroundColor: colors.surfaceRaised,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -178,54 +178,54 @@ const styles = StyleSheet.create({
   },
   info: {
     flex: 1,
-    gap: 2,
+    gap: spacing.xs,
   },
   name: {
     color: colors.textPrimary,
     fontWeight: '700',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
   role: {
     color: colors.emeraldLight,
-    fontSize: 12,
+    fontSize: fontSize.sm,
     fontWeight: '600',
     textTransform: 'capitalize',
   },
   summary: {
     color: colors.textMuted,
-    fontSize: 12,
+    fontSize: fontSize.sm,
   },
   specialties: {
     color: colors.textMuted,
-    fontSize: 12,
+    fontSize: fontSize.sm,
   },
   buttonRow: {
     flexDirection: 'row',
-    gap: 10,
+    gap: spacing.md,
   },
   approveButton: {
     flex: 1,
     backgroundColor: colors.emerald,
-    borderRadius: 10,
-    paddingVertical: 10,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
     alignItems: 'center',
   },
   approveButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontWeight: '700',
-    fontSize: 13,
+    fontSize: fontSize.base,
   },
   rejectButton: {
     flex: 1,
     borderWidth: 1,
-    borderColor: '#f8717166',
-    borderRadius: 10,
-    paddingVertical: 10,
+    borderColor: colors.dangerBorder,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
     alignItems: 'center',
   },
   rejectButtonText: {
-    color: '#f87171',
+    color: colors.danger,
     fontWeight: '600',
-    fontSize: 13,
+    fontSize: fontSize.base,
   },
 });

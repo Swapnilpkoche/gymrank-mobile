@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 
 const NOT_AVAILABLE = 'Not available';
 
@@ -47,32 +47,32 @@ export function CompareRow({
 
 const styles = StyleSheet.create({
   row: {
-    gap: 6,
+    gap: spacing.sm,
   },
   label: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     fontWeight: '600',
     color: colors.textMuted,
   },
   valuesRow: {
     flexDirection: 'row',
-    gap: 8,
+    gap: spacing.sm,
   },
   valueBox: {
     flex: 1,
     alignItems: 'center',
-    paddingVertical: 10,
-    borderRadius: 10,
+    paddingVertical: spacing.md,
+    borderRadius: radius.md,
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
   },
   valueBoxWinner: {
-    backgroundColor: '#052e1f',
+    backgroundColor: colors.emeraldTint,
     borderColor: colors.emerald,
   },
   valueText: {
-    fontSize: 14,
+    fontSize: fontSize.md,
     fontWeight: '600',
     color: colors.textPrimary,
   },

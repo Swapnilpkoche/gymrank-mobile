@@ -4,7 +4,7 @@ import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import MapView, { type Region } from 'react-native-maps';
 
 import { requestCurrentCoordinates, type Coordinates } from '../../lib/location';
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 
 const DEFAULT_DELTA = 0.01;
 const PIN_SIZE = 34;
@@ -92,25 +92,25 @@ export function LocationMapPicker({ onChange }: { onChange: (coords: Coordinates
 
 const styles = StyleSheet.create({
   container: {
-    gap: 8,
+    gap: spacing.sm,
   },
   label: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     fontWeight: '600',
     color: colors.textMuted,
   },
   hint: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     color: colors.textMuted,
     lineHeight: 17,
   },
   warning: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     color: '#f59e0b',
   },
   mapWrapper: {
     height: 220,
-    borderRadius: 14,
+    borderRadius: radius.md,
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: colors.border,
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     marginBottom: PIN_SIZE,
   },
   coords: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     color: colors.textPrimary,
     fontWeight: '600',
     textAlign: 'center',

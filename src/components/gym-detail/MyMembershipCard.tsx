@@ -2,7 +2,7 @@ import { Feather } from '@expo/vector-icons';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { endsLabel, isCurrentMemberState, planLabel } from '../../lib/memberships';
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 import type { MyMembership } from '../../types/database';
 
 // A member's own view of their membership (plan + end date are private to them
@@ -18,7 +18,7 @@ export function MyMembershipCard({ membership }: { membership: MyMembership }) {
 
   const tone = isExpired ? styles.cardBad : isExpiringSoon ? styles.cardWarn : styles.cardOk;
   const iconName = isExpired ? 'alert-circle' : isExpiringSoon ? 'clock' : 'check-circle';
-  const iconColor = isExpired ? '#f87171' : isExpiringSoon ? '#fbbf24' : colors.emeraldLight;
+  const iconColor = isExpired ? colors.danger : isExpiringSoon ? colors.warning : colors.emeraldLight;
 
   return (
     <View style={[styles.card, tone]}>
@@ -59,39 +59,39 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: 12,
+    gap: spacing.md,
     borderWidth: 1,
-    borderRadius: 12,
-    padding: 14,
+    borderRadius: radius.md,
+    padding: spacing.md,
   },
   cardOk: {
-    backgroundColor: '#052e1f',
+    backgroundColor: colors.emeraldTint,
     borderColor: colors.emerald,
   },
   cardWarn: {
-    backgroundColor: '#fbbf2414',
-    borderColor: '#fbbf2466',
+    backgroundColor: colors.warningTint,
+    borderColor: colors.warningBorder,
   },
   cardBad: {
     backgroundColor: '#f8717114',
-    borderColor: '#f8717166',
+    borderColor: colors.dangerBorder,
   },
   body: {
     flex: 1,
-    gap: 3,
+    gap: spacing.xs,
   },
   title: {
     color: colors.textPrimary,
-    fontSize: 14,
+    fontSize: fontSize.md,
     fontWeight: '700',
   },
   detail: {
     color: colors.textPrimary,
-    fontSize: 13,
+    fontSize: fontSize.base,
   },
   subDetail: {
     color: colors.textMuted,
-    fontSize: 12,
+    fontSize: fontSize.sm,
     lineHeight: 17,
   },
 });

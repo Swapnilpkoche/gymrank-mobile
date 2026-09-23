@@ -27,7 +27,7 @@ import {
   rejectMemberRequest,
 } from '../../../src/lib/memberships';
 import { formatShortDate } from '../../../src/lib/time';
-import { colors } from '../../../src/theme/colors';
+import { colors, fontSize, radius, spacing } from '../../../src/theme';
 import type {
   GymPricingPlan,
   MemberRequest,
@@ -306,7 +306,7 @@ export default function GymMembersScreen() {
                         disabled={busy}
                       >
                         {busy ? (
-                          <ActivityIndicator color="#fff" size="small" />
+                          <ActivityIndicator color={colors.white} size="small" />
                         ) : (
                           <Text style={styles.approveButtonText}>Approve…</Text>
                         )}
@@ -384,87 +384,87 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   content: {
-    padding: 16,
+    padding: spacing.lg,
     paddingBottom: 48,
-    gap: 14,
+    gap: spacing.md,
   },
   centered: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.background,
-    padding: 16,
+    padding: spacing.lg,
   },
   error: {
-    color: '#f87171',
+    color: colors.danger,
     textAlign: 'center',
   },
   statRow: {
     flexDirection: 'row',
-    gap: 10,
+    gap: spacing.md,
   },
   statTile: {
     flex: 1,
     alignItems: 'center',
-    gap: 2,
+    gap: spacing.xs,
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    paddingVertical: 14,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
   },
   statValue: {
-    fontSize: 22,
+    fontSize: fontSize.xxl,
     fontWeight: '800',
     color: colors.textPrimary,
   },
   statValueWarn: {
-    color: '#fbbf24',
+    color: colors.warning,
   },
   statValueBad: {
-    color: '#f87171',
+    color: colors.danger,
   },
   statLabel: {
-    fontSize: 11,
+    fontSize: fontSize.xs,
     color: colors.textMuted,
     fontWeight: '600',
   },
   planChipRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
+    gap: spacing.sm,
   },
   planChip: {
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 999,
-    paddingVertical: 5,
-    paddingHorizontal: 12,
+    borderRadius: radius.pill,
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.md,
   },
   planChipText: {
     color: colors.textMuted,
-    fontSize: 12,
+    fontSize: fontSize.sm,
     fontWeight: '600',
   },
   sevenDayNote: {
-    color: '#fbbf24',
-    fontSize: 12,
+    color: colors.warning,
+    fontSize: fontSize.sm,
     fontWeight: '600',
   },
   tabRow: {
-    gap: 8,
-    paddingVertical: 2,
+    gap: spacing.sm,
+    paddingVertical: spacing.xs,
   },
   tab: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: spacing.sm,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 999,
-    paddingVertical: 7,
-    paddingHorizontal: 14,
+    borderRadius: radius.pill,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
   },
   tabActive: {
     backgroundColor: colors.emerald,
@@ -472,18 +472,18 @@ const styles = StyleSheet.create({
   },
   tabText: {
     color: colors.textMuted,
-    fontSize: 13,
+    fontSize: fontSize.base,
     fontWeight: '600',
   },
   tabTextActive: {
-    color: '#fff',
+    color: colors.white,
   },
   tabCount: {
     minWidth: 20,
     alignItems: 'center',
     backgroundColor: colors.card,
-    borderRadius: 999,
-    paddingHorizontal: 6,
+    borderRadius: radius.pill,
+    paddingHorizontal: spacing.sm,
     paddingVertical: 1,
   },
   tabCountActive: {
@@ -497,53 +497,53 @@ const styles = StyleSheet.create({
   },
   tabCountText: {
     color: colors.textMuted,
-    fontSize: 11,
+    fontSize: fontSize.xs,
     fontWeight: '700',
   },
   tabCountTextBadge: {
-    color: '#fff',
+    color: colors.white,
   },
   tabCountTextActive: {
-    color: '#fff',
+    color: colors.white,
   },
   empty: {
     color: colors.textMuted,
-    fontSize: 13,
+    fontSize: fontSize.base,
     textAlign: 'center',
-    paddingVertical: 24,
+    paddingVertical: spacing.xxl,
   },
   list: {
-    gap: 8,
+    gap: spacing.sm,
   },
   row: {
-    gap: 10,
+    gap: spacing.md,
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    padding: 12,
+    borderRadius: radius.md,
+    padding: spacing.md,
   },
   rowTop: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: spacing.md,
   },
   rowInfo: {
     flex: 1,
-    gap: 3,
+    gap: spacing.xs,
   },
   nameLine: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: spacing.sm,
   },
   avatar: {
     width: 40,
     height: 40,
-    borderRadius: 20,
+    borderRadius: radius.pill,
   },
   avatarFallback: {
-    backgroundColor: '#1e293b',
+    backgroundColor: colors.surfaceRaised,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -555,15 +555,15 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     color: colors.textPrimary,
     fontWeight: '700',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
   badge: {
-    backgroundColor: '#052e1f',
+    backgroundColor: colors.emeraldTint,
     borderWidth: 1,
     borderColor: colors.emerald,
-    borderRadius: 999,
-    paddingVertical: 2,
-    paddingHorizontal: 8,
+    borderRadius: radius.pill,
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.sm,
   },
   badgeMuted: {
     backgroundColor: colors.background,
@@ -571,7 +571,7 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     color: colors.emeraldLight,
-    fontSize: 11,
+    fontSize: fontSize.xs,
     fontWeight: '700',
   },
   badgeTextMuted: {
@@ -579,58 +579,58 @@ const styles = StyleSheet.create({
   },
   meta: {
     color: colors.textMuted,
-    fontSize: 12,
+    fontSize: fontSize.sm,
   },
   metaWarn: {
-    color: '#fbbf24',
+    color: colors.warning,
     fontWeight: '600',
   },
   metaBad: {
-    color: '#f87171',
+    color: colors.danger,
     fontWeight: '600',
   },
   renewButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 6,
+    gap: spacing.sm,
     borderWidth: 1,
     borderColor: colors.emerald,
-    borderRadius: 10,
-    paddingVertical: 9,
+    borderRadius: radius.md,
+    paddingVertical: spacing.sm,
   },
   renewButtonText: {
     color: colors.emerald,
     fontWeight: '700',
-    fontSize: 13,
+    fontSize: fontSize.base,
   },
   actionRow: {
     flexDirection: 'row',
-    gap: 10,
+    gap: spacing.md,
   },
   approveButton: {
     flex: 1,
     backgroundColor: colors.emerald,
-    borderRadius: 10,
-    paddingVertical: 10,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
     alignItems: 'center',
   },
   approveButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontWeight: '700',
-    fontSize: 13,
+    fontSize: fontSize.base,
   },
   declineButton: {
     flex: 1,
     borderWidth: 1,
-    borderColor: '#f8717166',
-    borderRadius: 10,
-    paddingVertical: 10,
+    borderColor: colors.dangerBorder,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
     alignItems: 'center',
   },
   declineButtonText: {
-    color: '#f87171',
+    color: colors.danger,
     fontWeight: '600',
-    fontSize: 13,
+    fontSize: fontSize.base,
   },
 });

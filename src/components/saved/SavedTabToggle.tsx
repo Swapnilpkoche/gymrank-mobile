@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 
 export type SavedTab = 'gyms' | 'members';
 
@@ -40,25 +40,25 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 999,
-    padding: 4,
-    gap: 4,
+    borderRadius: radius.pill,
+    padding: spacing.xs,
+    gap: spacing.xs,
   },
   segment: {
     flex: 1,
-    paddingVertical: 8,
-    borderRadius: 999,
+    paddingVertical: spacing.sm,
+    borderRadius: radius.pill,
     alignItems: 'center',
   },
   segmentActive: {
     backgroundColor: colors.emerald,
   },
   label: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     fontWeight: '600',
     color: colors.textMuted,
   },
   labelActive: {
-    color: '#fff',
+    color: colors.white,
   },
 });

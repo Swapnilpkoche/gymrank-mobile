@@ -23,7 +23,7 @@ import {
   fetchMyBracketVote,
   fetchNominationById,
 } from '../../src/lib/contests';
-import { colors } from '../../src/theme/colors';
+import { colors, fontSize, radius, spacing } from '../../src/theme';
 import type { BracketMatchup, BracketRound, ContestPeriod, Nomination } from '../../src/types/database';
 
 export default function CityBracketScreen() {
@@ -195,9 +195,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   content: {
-    padding: 16,
+    padding: spacing.lg,
     paddingBottom: 40,
-    gap: 20,
+    gap: spacing.xl,
   },
   centered: {
     flex: 1,
@@ -206,21 +206,21 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   error: {
-    color: '#f87171',
-    fontSize: 13,
+    color: colors.danger,
+    fontSize: fontSize.base,
   },
   empty: {
     color: colors.textMuted,
-    fontSize: 13,
+    fontSize: fontSize.base,
   },
   championCard: {
     alignItems: 'center',
-    gap: 8,
+    gap: spacing.sm,
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 16,
-    padding: 20,
+    borderRadius: radius.lg,
+    padding: spacing.xl,
   },
   championPhoto: {
     width: 140,
@@ -228,16 +228,16 @@ const styles = StyleSheet.create({
     borderRadius: 70,
   },
   championName: {
-    fontSize: 18,
+    fontSize: fontSize.xl,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   championLabel: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     color: colors.textMuted,
   },
   section: {
-    gap: 12,
+    gap: spacing.md,
   },
   roundHeaderRow: {
     flexDirection: 'row',
@@ -245,15 +245,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   sectionTitle: {
-    fontSize: 17,
+    fontSize: fontSize.xl,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   roundStatus: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     color: colors.textMuted,
   },
   matchupList: {
-    gap: 12,
+    gap: spacing.md,
   },
 });

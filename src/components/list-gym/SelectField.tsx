@@ -2,7 +2,7 @@ import { Feather } from '@expo/vector-icons';
 import { useState } from 'react';
 import { FlatList, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 import type { LocationOption } from '../../types/database';
 
 export function SelectField({
@@ -65,10 +65,10 @@ export function SelectField({
 
 const styles = StyleSheet.create({
   container: {
-    gap: 6,
+    gap: spacing.sm,
   },
   label: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     fontWeight: '600',
     color: colors.textMuted,
   },
@@ -79,24 +79,24 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    borderRadius: radius.md,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
   },
   fieldDisabled: {
     opacity: 0.5,
   },
   valueText: {
     color: colors.textPrimary,
-    fontSize: 15,
+    fontSize: fontSize.lg,
   },
   placeholderText: {
     color: colors.textMuted,
-    fontSize: 15,
+    fontSize: fontSize.lg,
   },
   backdrop: {
     flex: 1,
-    backgroundColor: '#00000099',
+    backgroundColor: colors.scrimLight,
     justifyContent: 'flex-end',
   },
   sheet: {
@@ -104,30 +104,30 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
     maxHeight: '60%',
-    paddingTop: 16,
-    paddingBottom: 24,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.xxl,
   },
   sheetTitle: {
-    fontSize: 16,
+    fontSize: fontSize.xl,
     fontWeight: '700',
     color: colors.textPrimary,
-    paddingHorizontal: 16,
-    marginBottom: 8,
+    paddingHorizontal: spacing.lg,
+    marginBottom: spacing.sm,
   },
   option: {
-    paddingHorizontal: 16,
-    paddingVertical: 14,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
     borderTopWidth: 1,
     borderTopColor: colors.border,
   },
   optionText: {
     color: colors.textPrimary,
-    fontSize: 15,
+    fontSize: fontSize.lg,
   },
   emptyText: {
     color: colors.textMuted,
-    fontSize: 14,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
+    fontSize: fontSize.md,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
   },
 });

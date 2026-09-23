@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { formatDateOfBirth } from '../../lib/dateOfBirth';
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 
 const DEFAULT_PICKER_DATE = new Date(2000, 0, 1);
 
@@ -82,38 +82,38 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    borderRadius: radius.md,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
   },
   inputDisabled: {
     opacity: 0.6,
   },
   placeholderText: {
     color: colors.textMuted,
-    fontSize: 15,
+    fontSize: fontSize.lg,
   },
   valueText: {
     color: colors.textPrimary,
-    fontSize: 15,
+    fontSize: fontSize.lg,
   },
   iosPickerWrap: {
     backgroundColor: colors.background,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    marginTop: 8,
+    borderRadius: radius.md,
+    marginTop: spacing.sm,
     overflow: 'hidden',
   },
   doneButton: {
     alignItems: 'center',
-    paddingVertical: 12,
+    paddingVertical: spacing.md,
     borderTopWidth: 1,
     borderTopColor: colors.border,
   },
   doneButtonText: {
     color: colors.emerald,
     fontWeight: '700',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
 });

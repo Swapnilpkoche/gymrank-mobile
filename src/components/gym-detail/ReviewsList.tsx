@@ -2,7 +2,7 @@ import { Feather } from '@expo/vector-icons';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { useProfileNavigation } from '../../hooks/useProfileNavigation';
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 import type { GymReview } from '../../types/database';
 
 export function ReviewsList({ reviews }: { reviews: GymReview[] }) {
@@ -44,27 +44,27 @@ export function ReviewsList({ reviews }: { reviews: GymReview[] }) {
 
 const styles = StyleSheet.create({
   section: {
-    gap: 10,
+    gap: spacing.md,
   },
   title: {
-    fontSize: 15,
+    fontSize: fontSize.lg,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   empty: {
     color: colors.textMuted,
-    fontSize: 13,
+    fontSize: fontSize.base,
   },
   list: {
-    gap: 10,
+    gap: spacing.md,
   },
   card: {
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    padding: 12,
-    gap: 4,
+    borderRadius: radius.md,
+    padding: spacing.md,
+    gap: spacing.xs,
   },
   headerRow: {
     flexDirection: 'row',
@@ -74,31 +74,31 @@ const styles = StyleSheet.create({
   reviewerName: {
     color: colors.textPrimary,
     fontWeight: '600',
-    fontSize: 13,
+    fontSize: fontSize.base,
   },
   ratingRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: spacing.xs,
   },
   ratingText: {
     color: colors.textPrimary,
-    fontSize: 12,
+    fontSize: fontSize.sm,
     fontWeight: '700',
   },
   verifiedBadge: {
     color: colors.emeraldLight,
-    fontSize: 11,
+    fontSize: fontSize.xs,
     fontWeight: '600',
   },
   reviewTitle: {
     color: colors.textPrimary,
-    fontSize: 13,
+    fontSize: fontSize.base,
     fontWeight: '600',
   },
   reviewText: {
     color: colors.textMuted,
-    fontSize: 13,
+    fontSize: fontSize.base,
     lineHeight: 18,
   },
 });

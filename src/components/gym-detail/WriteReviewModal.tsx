@@ -15,7 +15,7 @@ import {
 
 import { StarRatingInput } from './StarRatingInput';
 import { fetchHasGymCheckIn, submitGymReview } from '../../lib/gymDetail';
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 
 const SUB_RATINGS: Array<{ key: SubRatingKey; label: string }> = [
   { key: 'equipment', label: 'Equipment' },
@@ -219,7 +219,7 @@ export function WriteReviewModal({
 
             {errorMessage ? (
               <View style={styles.errorBox}>
-                <Feather name="alert-triangle" size={14} color="#f87171" />
+                <Feather name="alert-triangle" size={14} color={colors.danger} />
                 <Text style={styles.errorText}>{errorMessage}</Text>
               </View>
             ) : null}
@@ -242,7 +242,7 @@ export function WriteReviewModal({
               disabled={!canSubmit}
             >
               {isSubmitting ? (
-                <ActivityIndicator color="#fff" size="small" />
+                <ActivityIndicator color={colors.white} size="small" />
               ) : (
                 <Text style={styles.primaryButtonText}>Submit</Text>
               )}
@@ -257,7 +257,7 @@ export function WriteReviewModal({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: '#000000b3',
+    backgroundColor: colors.scrim,
     justifyContent: 'flex-end',
   },
   card: {
@@ -267,10 +267,10 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     borderWidth: 1,
     borderColor: colors.border,
-    paddingTop: 16,
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-    gap: 14,
+    paddingTop: spacing.lg,
+    paddingHorizontal: spacing.xl,
+    paddingBottom: spacing.xl,
+    gap: spacing.md,
   },
   headerRow: {
     flexDirection: 'row',
@@ -278,34 +278,34 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   title: {
-    fontSize: 17,
+    fontSize: fontSize.xl,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   content: {
-    gap: 18,
-    paddingBottom: 4,
+    gap: spacing.lg,
+    paddingBottom: spacing.xs,
   },
   verifiedBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: spacing.sm,
     alignSelf: 'flex-start',
     backgroundColor: colors.background,
-    borderRadius: 999,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
+    borderRadius: radius.pill,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
   },
   verifiedBadgeText: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     fontWeight: '600',
     color: colors.emeraldLight,
   },
   field: {
-    gap: 8,
+    gap: spacing.sm,
   },
   label: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     fontWeight: '700',
     color: colors.textPrimary,
   },
@@ -315,16 +315,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   overallText: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     fontWeight: '700',
     color: colors.emeraldLight,
   },
   helperText: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     color: colors.textMuted,
   },
   subRatingList: {
-    gap: 10,
+    gap: spacing.md,
   },
   subRatingRow: {
     flexDirection: 'row',
@@ -332,16 +332,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   subRatingLabel: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     color: colors.textMuted,
   },
   input: {
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    padding: 12,
+    borderRadius: radius.md,
+    padding: spacing.md,
     color: colors.textPrimary,
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
   textArea: {
     minHeight: 100,
@@ -350,51 +350,51 @@ const styles = StyleSheet.create({
   errorBox: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: 8,
-    backgroundColor: '#f8717126',
+    gap: spacing.sm,
+    backgroundColor: colors.dangerTint,
     borderWidth: 1,
-    borderColor: '#f8717166',
-    borderRadius: 12,
-    padding: 12,
+    borderColor: colors.dangerBorder,
+    borderRadius: radius.md,
+    padding: spacing.md,
   },
   errorText: {
     flex: 1,
-    fontSize: 13,
-    color: '#f87171',
+    fontSize: fontSize.base,
+    color: colors.danger,
     lineHeight: 18,
   },
   buttonRow: {
     flexDirection: 'row',
-    gap: 10,
-    marginTop: 4,
+    gap: spacing.md,
+    marginTop: spacing.xs,
   },
   primaryButton: {
     flex: 1,
     backgroundColor: colors.emerald,
-    borderRadius: 12,
-    paddingVertical: 12,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
     alignItems: 'center',
   },
   primaryButtonDisabled: {
     opacity: 0.5,
   },
   primaryButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontWeight: '700',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
   secondaryButton: {
     flex: 1,
     backgroundColor: 'transparent',
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    paddingVertical: 12,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
     alignItems: 'center',
   },
   secondaryButtonText: {
     color: colors.textPrimary,
     fontWeight: '600',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
 });

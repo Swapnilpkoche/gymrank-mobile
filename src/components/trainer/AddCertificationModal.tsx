@@ -16,7 +16,7 @@ import {
 
 import { pickImage } from '../../lib/pickImage';
 import { addTrainerCertification, type PickedImage } from '../../lib/trainer';
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 
 const MAX_FIELD_LENGTH = 120;
 
@@ -140,7 +140,7 @@ export function AddCertificationModal({
 
             {errorMessage ? (
               <View style={styles.errorBox}>
-                <Feather name="alert-triangle" size={14} color="#f87171" />
+                <Feather name="alert-triangle" size={14} color={colors.danger} />
                 <Text style={styles.errorText}>{errorMessage}</Text>
               </View>
             ) : null}
@@ -152,7 +152,7 @@ export function AddCertificationModal({
             </Pressable>
             <Pressable style={styles.primaryButton} onPress={handleSave} disabled={isSaving}>
               {isSaving ? (
-                <ActivityIndicator color="#fff" size="small" />
+                <ActivityIndicator color={colors.white} size="small" />
               ) : (
                 <Text style={styles.primaryButtonText}>Add</Text>
               )}
@@ -167,7 +167,7 @@ export function AddCertificationModal({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: '#000000b3',
+    backgroundColor: colors.scrim,
     justifyContent: 'flex-end',
   },
   card: {
@@ -177,10 +177,10 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     borderWidth: 1,
     borderColor: colors.border,
-    paddingTop: 16,
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-    gap: 14,
+    paddingTop: spacing.lg,
+    paddingHorizontal: spacing.xl,
+    paddingBottom: spacing.xl,
+    gap: spacing.md,
   },
   headerRow: {
     flexDirection: 'row',
@@ -188,19 +188,19 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   title: {
-    fontSize: 17,
+    fontSize: fontSize.xl,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   content: {
-    gap: 16,
-    paddingBottom: 4,
+    gap: spacing.lg,
+    paddingBottom: spacing.xs,
   },
   field: {
-    gap: 6,
+    gap: spacing.sm,
   },
   label: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     fontWeight: '600',
     color: colors.textMuted,
   },
@@ -208,92 +208,92 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    borderRadius: radius.md,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
     color: colors.textPrimary,
-    fontSize: 15,
+    fontSize: fontSize.lg,
   },
   photoButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
+    gap: spacing.sm,
     borderWidth: 1,
     borderColor: colors.emerald,
-    borderRadius: 12,
-    paddingVertical: 12,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
   },
   photoButtonText: {
     color: colors.emerald,
     fontWeight: '700',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
   previewRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 14,
+    gap: spacing.md,
   },
   preview: {
     width: 72,
     height: 72,
-    borderRadius: 10,
+    borderRadius: radius.md,
   },
   removeText: {
-    color: '#f87171',
+    color: colors.danger,
     fontWeight: '600',
-    fontSize: 13,
+    fontSize: fontSize.base,
   },
   privacyNote: {
-    fontSize: 11,
+    fontSize: fontSize.xs,
     color: colors.textMuted,
     lineHeight: 16,
   },
   errorBox: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: 8,
-    backgroundColor: '#f8717126',
+    gap: spacing.sm,
+    backgroundColor: colors.dangerTint,
     borderWidth: 1,
-    borderColor: '#f8717166',
-    borderRadius: 12,
-    padding: 12,
+    borderColor: colors.dangerBorder,
+    borderRadius: radius.md,
+    padding: spacing.md,
   },
   errorText: {
     flex: 1,
-    fontSize: 13,
-    color: '#f87171',
+    fontSize: fontSize.base,
+    color: colors.danger,
     lineHeight: 18,
   },
   buttonRow: {
     flexDirection: 'row',
-    gap: 10,
-    marginTop: 4,
+    gap: spacing.md,
+    marginTop: spacing.xs,
   },
   primaryButton: {
     flex: 1,
     backgroundColor: colors.emerald,
-    borderRadius: 12,
-    paddingVertical: 12,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
     alignItems: 'center',
   },
   primaryButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontWeight: '700',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
   secondaryButton: {
     flex: 1,
     backgroundColor: 'transparent',
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    paddingVertical: 12,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
     alignItems: 'center',
   },
   secondaryButtonText: {
     color: colors.textPrimary,
     fontWeight: '600',
-    fontSize: 14,
+    fontSize: fontSize.md,
   },
 });

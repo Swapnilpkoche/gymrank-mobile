@@ -2,7 +2,7 @@ import { Feather } from '@expo/vector-icons';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { AvatarPicker } from './AvatarPicker';
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 import type { Profile } from '../../types/database';
 
 export function ProfileHeader({
@@ -70,36 +70,36 @@ export function ProfileHeader({
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    gap: 10,
+    gap: spacing.md,
   },
   info: {
     alignItems: 'center',
-    gap: 3,
+    gap: spacing.xs,
   },
   name: {
-    fontSize: 19,
+    fontSize: fontSize.xxl,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   username: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     color: colors.textMuted,
   },
   metaRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
-    marginTop: 2,
+    gap: spacing.xs,
+    marginTop: spacing.xs,
   },
   metaText: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     color: colors.textMuted,
   },
   statsRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 16,
-    marginTop: 8,
+    gap: spacing.lg,
+    marginTop: spacing.sm,
   },
   statItem: {
     alignItems: 'center',
@@ -110,35 +110,35 @@ const styles = StyleSheet.create({
     backgroundColor: colors.border,
   },
   statValue: {
-    fontSize: 15,
+    fontSize: fontSize.lg,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   statLabel: {
-    fontSize: 11,
+    fontSize: fontSize.xs,
     color: colors.textMuted,
   },
   bio: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     color: colors.textPrimary,
     textAlign: 'center',
-    marginTop: 4,
+    marginTop: spacing.xs,
     lineHeight: 18,
   },
   editButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: spacing.sm,
     borderWidth: 1,
     borderColor: colors.emerald,
-    borderRadius: 999,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    marginTop: 4,
+    borderRadius: radius.pill,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.lg,
+    marginTop: spacing.xs,
   },
   editButtonText: {
     color: colors.emerald,
     fontWeight: '700',
-    fontSize: 13,
+    fontSize: fontSize.base,
   },
 });

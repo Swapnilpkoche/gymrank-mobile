@@ -1,7 +1,7 @@
 import { Feather } from '@expo/vector-icons';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 import type { BracketMatchup } from '../../types/database';
 
 function displayName(nomination: { fullName: string | null; username: string | null } | null): string {
@@ -77,7 +77,7 @@ export function BracketMatchupCard({
 
               {matchup.status === 'completed' && matchup.winnerId === nomination.id ? (
                 <View style={styles.winnerBadge}>
-                  <Feather name="award" size={11} color="#fff" />
+                  <Feather name="award" size={11} color={colors.white} />
                 </View>
               ) : null}
             </View>
@@ -95,17 +95,17 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 16,
-    padding: 12,
+    borderRadius: radius.lg,
+    padding: spacing.md,
   },
   row: {
     flexDirection: 'row',
-    gap: 12,
+    gap: spacing.md,
   },
   side: {
     flex: 1,
     alignItems: 'center',
-    gap: 6,
+    gap: spacing.sm,
   },
   photo: {
     width: 64,
@@ -113,22 +113,22 @@ const styles = StyleSheet.create({
     borderRadius: 32,
   },
   name: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     fontWeight: '600',
     color: colors.textPrimary,
     textAlign: 'center',
   },
   voteCount: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     fontWeight: '700',
     color: colors.emerald,
   },
   voteButton: {
     borderWidth: 1,
     borderColor: colors.emerald,
-    borderRadius: 999,
-    paddingVertical: 6,
-    paddingHorizontal: 14,
+    borderRadius: radius.pill,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
   },
   voteButtonActive: {
     backgroundColor: colors.emerald,
@@ -136,15 +136,15 @@ const styles = StyleSheet.create({
   voteButtonText: {
     color: colors.emerald,
     fontWeight: '700',
-    fontSize: 12,
+    fontSize: fontSize.sm,
   },
   voteButtonTextActive: {
-    color: '#fff',
+    color: colors.white,
   },
   winnerBadge: {
     width: 20,
     height: 20,
-    borderRadius: 10,
+    borderRadius: radius.md,
     backgroundColor: colors.emerald,
     alignItems: 'center',
     justifyContent: 'center',
@@ -153,11 +153,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 6,
-    marginTop: 8,
+    gap: spacing.sm,
+    marginTop: spacing.sm,
   },
   byeText: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     color: colors.textMuted,
   },
 });

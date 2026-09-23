@@ -1,7 +1,8 @@
 import { Feather } from '@expo/vector-icons';
 import { ActivityIndicator, Pressable, StyleSheet, TextInput, View } from 'react-native';
 
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius } from '../../theme';
+import { spacing } from '../../theme';
 
 export function SearchBar({
   value,
@@ -39,17 +40,17 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: spacing.md,
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    borderRadius: radius.md,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
   },
   input: {
     flex: 1,
     color: colors.textPrimary,
-    fontSize: 15,
+    fontSize: fontSize.lg,
   },
 });

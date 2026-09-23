@@ -2,7 +2,7 @@ import { Feather } from '@expo/vector-icons';
 import * as ExpoDocumentPicker from 'expo-document-picker';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 import type { OnboardingDocumentType } from '../../types/database';
 
 export type PickedDocument = {
@@ -77,15 +77,15 @@ export function DocumentPicker({
 
 const styles = StyleSheet.create({
   container: {
-    gap: 10,
+    gap: spacing.md,
   },
   label: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     fontWeight: '600',
     color: colors.textMuted,
   },
   hint: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     color: colors.textMuted,
     lineHeight: 17,
   },
@@ -96,42 +96,42 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    borderRadius: radius.md,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
   },
   slotInfo: {
     flex: 1,
-    marginRight: 12,
+    marginRight: spacing.md,
   },
   slotLabel: {
     color: colors.textPrimary,
-    fontSize: 14,
+    fontSize: fontSize.md,
     fontWeight: '600',
   },
   slotFileName: {
     color: colors.emeraldLight,
-    fontSize: 12,
-    marginTop: 2,
+    fontSize: fontSize.sm,
+    marginTop: spacing.xs,
   },
   slotEmpty: {
     color: colors.textMuted,
-    fontSize: 12,
-    marginTop: 2,
+    fontSize: fontSize.sm,
+    marginTop: spacing.xs,
   },
   addButton: {
     borderWidth: 1,
     borderColor: colors.emerald,
-    borderRadius: 999,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    borderRadius: radius.pill,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
   },
   addButtonText: {
     color: colors.emerald,
-    fontSize: 12,
+    fontSize: fontSize.sm,
     fontWeight: '600',
   },
   removeButton: {
-    padding: 6,
+    padding: spacing.sm,
   },
 });

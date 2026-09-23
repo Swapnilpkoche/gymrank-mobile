@@ -5,7 +5,7 @@ import { ActivityIndicator, FlatList, Modal, Pressable, StyleSheet, Text, View }
 import { SearchBar } from '../discover/SearchBar';
 import { fetchGymsInSameCity } from '../../lib/gymCompare';
 import { searchGyms } from '../../lib/gyms';
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 import type { GymWithDiscoverData } from '../../types/database';
 
 const SEARCH_DEBOUNCE_MS = 400;
@@ -144,8 +144,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
-    padding: 16,
-    gap: 14,
+    padding: spacing.lg,
+    gap: spacing.md,
   },
   headerRow: {
     flexDirection: 'row',
@@ -153,42 +153,42 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   title: {
-    fontSize: 17,
+    fontSize: fontSize.xl,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   error: {
-    color: '#f87171',
-    fontSize: 13,
+    color: colors.danger,
+    fontSize: fontSize.base,
   },
   loading: {
-    marginTop: 24,
+    marginTop: spacing.xxl,
   },
   listContent: {
-    paddingBottom: 24,
+    paddingBottom: spacing.xxl,
   },
   gymRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: 10,
+    gap: spacing.md,
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 14,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.md,
   },
   gymInfo: {
     flex: 1,
   },
   gymName: {
-    fontSize: 14,
+    fontSize: fontSize.md,
     fontWeight: '600',
     color: colors.textPrimary,
   },
   gymCity: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     color: colors.textMuted,
     marginTop: 1,
   },
@@ -197,8 +197,8 @@ const styles = StyleSheet.create({
   },
   empty: {
     color: colors.textMuted,
-    fontSize: 13,
+    fontSize: fontSize.base,
     textAlign: 'center',
-    marginTop: 24,
+    marginTop: spacing.xxl,
   },
 });

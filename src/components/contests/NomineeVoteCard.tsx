@@ -1,7 +1,7 @@
 import { Feather } from '@expo/vector-icons';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 import type { Nomination } from '../../types/database';
 
 export function NomineeVoteCard({
@@ -35,7 +35,7 @@ export function NomineeVoteCard({
           <Feather
             name={isVotedForThis ? 'check-circle' : 'heart'}
             size={14}
-            color={isVotedForThis ? '#fff' : colors.emerald}
+            color={isVotedForThis ? colors.white : colors.emerald}
           />
           <Text style={[styles.voteButtonText, isVotedForThis && styles.voteButtonTextActive]}>
             {isVotedForThis ? 'Voted' : 'Vote'}
@@ -52,32 +52,32 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 16,
+    borderRadius: radius.lg,
     overflow: 'hidden',
-    paddingBottom: 10,
+    paddingBottom: spacing.md,
   },
   photo: {
     width: '100%',
     height: 150,
   },
   name: {
-    fontSize: 14,
+    fontSize: fontSize.md,
     fontWeight: '600',
     color: colors.textPrimary,
-    marginTop: 8,
-    marginHorizontal: 10,
+    marginTop: spacing.sm,
+    marginHorizontal: spacing.md,
   },
   voteButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 6,
+    gap: spacing.sm,
     borderWidth: 1,
     borderColor: colors.emerald,
-    borderRadius: 999,
-    paddingVertical: 8,
-    marginTop: 8,
-    marginHorizontal: 10,
+    borderRadius: radius.pill,
+    paddingVertical: spacing.sm,
+    marginTop: spacing.sm,
+    marginHorizontal: spacing.md,
   },
   voteButtonActive: {
     backgroundColor: colors.emerald,
@@ -85,9 +85,9 @@ const styles = StyleSheet.create({
   voteButtonText: {
     color: colors.emerald,
     fontWeight: '700',
-    fontSize: 13,
+    fontSize: fontSize.base,
   },
   voteButtonTextActive: {
-    color: '#fff',
+    color: colors.white,
   },
 });

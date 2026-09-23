@@ -3,7 +3,7 @@ import { ActivityIndicator, FlatList, RefreshControl, StyleSheet, Text, View } f
 
 import { useAuth } from '../src/context/auth-context';
 import { fetchCheckInHistoryPage, formatCheckInTimestamp } from '../src/lib/checkin';
-import { colors } from '../src/theme/colors';
+import { colors, fontSize, spacing } from '../src/theme';
 import type { CheckInHistoryEntry } from '../src/types/database';
 
 const PAGE_SIZE = 20;
@@ -115,20 +115,20 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   content: {
-    padding: 16,
+    padding: spacing.lg,
     paddingBottom: 40,
     flexGrow: 1,
   },
   error: {
-    color: '#f87171',
-    fontSize: 13,
-    marginBottom: 8,
+    color: colors.danger,
+    fontSize: fontSize.base,
+    marginBottom: spacing.sm,
   },
   historyRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
-    paddingVertical: 10,
+    gap: spacing.md,
+    paddingVertical: spacing.md,
   },
   historyDot: {
     width: 8,
@@ -140,24 +140,24 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   historyGymName: {
-    fontSize: 14,
+    fontSize: fontSize.md,
     fontWeight: '600',
     color: colors.textPrimary,
   },
   historyTimestamp: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     color: colors.textMuted,
-    marginTop: 2,
+    marginTop: spacing.xs,
   },
   separator: {
     height: 4,
   },
   emptyText: {
     color: colors.textMuted,
-    fontSize: 13,
-    paddingVertical: 12,
+    fontSize: fontSize.base,
+    paddingVertical: spacing.md,
   },
   footerSpinner: {
-    paddingVertical: 16,
+    paddingVertical: spacing.lg,
   },
 });

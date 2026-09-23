@@ -67,7 +67,7 @@ import {
   promptCreateTrainerProfile,
   sendTrainerRequest,
 } from '../../src/lib/trainerRequestFlow';
-import { colors } from '../../src/theme/colors';
+import { colors, radius, spacing } from '../../src/theme';
 import type {
   BusyHour,
   CheckInSummary,
@@ -661,29 +661,29 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   body: {
-    padding: 16,
-    gap: 20,
+    padding: spacing.lg,
+    gap: spacing.xl,
   },
   centered: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.background,
-    padding: 16,
+    padding: spacing.lg,
   },
   error: {
-    color: '#f87171',
+    color: colors.danger,
     textAlign: 'center',
   },
   reviewsWrapper: {
-    borderRadius: 12,
+    borderRadius: radius.md,
     borderWidth: 1,
     borderColor: 'transparent',
-    padding: 8,
+    padding: spacing.sm,
     margin: -8,
   },
   reviewsWrapperHighlighted: {
     borderColor: colors.emerald,
-    backgroundColor: '#052e1f',
+    backgroundColor: colors.emeraldTint,
   },
 });

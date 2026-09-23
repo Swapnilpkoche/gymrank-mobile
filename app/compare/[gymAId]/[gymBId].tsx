@@ -9,7 +9,7 @@ import { PRICE_TIER_SYMBOL } from '../../../src/components/discover/GymCard';
 import { useDeviceLocation } from '../../../src/hooks/useDeviceLocation';
 import { fetchGymCompareData, type GymCompareData } from '../../../src/lib/gymCompare';
 import { formatDistanceKm, haversineDistanceKm } from '../../../src/lib/location';
-import { colors } from '../../../src/theme/colors';
+import { colors, fontSize, radius, spacing } from '../../../src/theme';
 
 function formatRating(value: number): string {
   return `${value.toFixed(1)} ★`;
@@ -194,79 +194,79 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   content: {
-    padding: 16,
+    padding: spacing.lg,
     paddingBottom: 40,
-    gap: 24,
+    gap: spacing.xxl,
   },
   centered: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.background,
-    padding: 16,
+    padding: spacing.lg,
   },
   error: {
-    color: '#f87171',
+    color: colors.danger,
     textAlign: 'center',
   },
   headerRow: {
     flexDirection: 'row',
-    gap: 12,
+    gap: spacing.md,
   },
   headerCard: {
     flex: 1,
     alignItems: 'center',
-    gap: 4,
+    gap: spacing.xs,
   },
   headerPhoto: {
     width: '100%',
     height: 90,
-    borderRadius: 12,
+    borderRadius: radius.md,
   },
   headerPhotoPlaceholder: {
-    backgroundColor: '#1e293b',
+    backgroundColor: colors.surfaceRaised,
   },
   headerName: {
-    fontSize: 14,
+    fontSize: fontSize.md,
     fontWeight: '700',
     color: colors.textPrimary,
     textAlign: 'center',
   },
   headerCity: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     color: colors.textMuted,
   },
   section: {
-    gap: 12,
+    gap: spacing.md,
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: fontSize.xl,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   row: {
-    gap: 6,
+    gap: spacing.sm,
   },
   label: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     fontWeight: '600',
     color: colors.textMuted,
   },
   valuesRow: {
     flexDirection: 'row',
-    gap: 8,
+    gap: spacing.sm,
   },
   tierBox: {
     flex: 1,
     alignItems: 'center',
-    paddingVertical: 10,
-    borderRadius: 10,
+    paddingVertical: spacing.md,
+    borderRadius: radius.md,
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
   },
   tierText: {
-    fontSize: 14,
+    fontSize: fontSize.md,
     fontWeight: '700',
     color: colors.textPrimary,
   },

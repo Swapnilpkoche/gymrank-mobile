@@ -14,7 +14,7 @@ import {
 import { PasswordStrengthMeter } from '../src/components/auth/PasswordStrengthMeter';
 import { useAuth } from '../src/context/auth-context';
 import { supabase } from '../src/lib/supabase';
-import { colors } from '../src/theme/colors';
+import { colors, fontSize, radius, spacing } from '../src/theme';
 
 export default function ChangePasswordScreen() {
   const { session } = useAuth();
@@ -137,7 +137,7 @@ export default function ChangePasswordScreen() {
         disabled={isSubmitting}
       >
         {isSubmitting ? (
-          <ActivityIndicator color="#fff" />
+          <ActivityIndicator color={colors.white} />
         ) : (
           <Text style={styles.buttonText}>Update Password</Text>
         )}
@@ -152,20 +152,20 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   content: {
-    padding: 16,
+    padding: spacing.lg,
     paddingBottom: 40,
-    gap: 16,
+    gap: spacing.lg,
   },
   title: {
-    fontSize: 24,
+    fontSize: fontSize.display,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   field: {
-    gap: 6,
+    gap: spacing.sm,
   },
   label: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     fontWeight: '600',
     color: colors.textMuted,
   },
@@ -173,37 +173,37 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    borderRadius: radius.md,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
     color: colors.textPrimary,
-    fontSize: 15,
+    fontSize: fontSize.lg,
   },
   errorBox: {
-    backgroundColor: '#f8717126',
+    backgroundColor: colors.dangerTint,
     borderWidth: 1,
-    borderColor: '#f8717166',
-    borderRadius: 12,
-    padding: 12,
+    borderColor: colors.dangerBorder,
+    borderRadius: radius.md,
+    padding: spacing.md,
   },
   errorText: {
-    fontSize: 13,
-    color: '#f87171',
+    fontSize: fontSize.base,
+    color: colors.danger,
     lineHeight: 18,
   },
   button: {
     backgroundColor: colors.emerald,
-    borderRadius: 12,
-    paddingVertical: 14,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
     alignItems: 'center',
-    marginTop: 4,
+    marginTop: spacing.xs,
   },
   buttonDisabled: {
     opacity: 0.5,
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 15,
+    color: colors.white,
+    fontSize: fontSize.lg,
     fontWeight: '700',
   },
 });

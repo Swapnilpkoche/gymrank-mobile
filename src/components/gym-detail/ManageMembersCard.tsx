@@ -2,7 +2,7 @@ import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 
 // The owner/admin's entry to the Members screen (plans, renewals, expiring
 // members and join requests). Rendered only for a gym's owners/admins - the
@@ -29,24 +29,24 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: spacing.md,
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.emerald,
-    borderRadius: 12,
-    padding: 14,
+    borderRadius: radius.md,
+    padding: spacing.md,
   },
   body: {
     flex: 1,
-    gap: 2,
+    gap: spacing.xs,
   },
   title: {
     color: colors.textPrimary,
-    fontSize: 15,
+    fontSize: fontSize.lg,
     fontWeight: '700',
   },
   subtitle: {
     color: colors.textMuted,
-    fontSize: 12,
+    fontSize: fontSize.sm,
   },
 });

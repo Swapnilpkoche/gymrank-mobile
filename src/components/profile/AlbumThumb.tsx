@@ -1,7 +1,7 @@
 import { Feather } from '@expo/vector-icons';
 import { Alert, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 import type { AlbumItem } from '../../types/database';
 
 function formatDuration(seconds: number): string {
@@ -58,7 +58,7 @@ export function AlbumThumb({
             <View style={[styles.videoBackground, styles.videoPlaceholder]} />
           )}
           <View style={styles.playIconWrap} pointerEvents="none">
-            <Feather name="play-circle" size={26} color="#fff" />
+            <Feather name="play-circle" size={26} color={colors.white} />
           </View>
           {item.durationSeconds !== null ? (
             <Text style={styles.durationBadge}>{formatDuration(item.durationSeconds)}</Text>
@@ -68,7 +68,7 @@ export function AlbumThumb({
 
       {item.visibility === 'private' ? (
         <View style={styles.privateBadge} pointerEvents="none">
-          <Feather name="lock" size={10} color="#fff" />
+          <Feather name="lock" size={10} color={colors.white} />
         </View>
       ) : null}
 
@@ -78,7 +78,7 @@ export function AlbumThumb({
         </View>
       ) : onDelete || onToggleVisibility ? (
         <Pressable style={styles.manageBadge} onPress={handleManagePress} hitSlop={6}>
-          <Feather name="more-vertical" size={12} color="#fff" />
+          <Feather name="more-vertical" size={12} color={colors.white} />
         </Pressable>
       ) : null}
     </Pressable>
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   tile: {
     width: ALBUM_TILE_WIDTH,
     aspectRatio: 1,
-    borderRadius: 10,
+    borderRadius: radius.md,
     overflow: 'hidden',
     backgroundColor: colors.card,
   },
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   videoPlaceholder: {
-    backgroundColor: '#1e293b',
+    backgroundColor: colors.surfaceRaised,
   },
   playIconWrap: {
     position: 'absolute',
@@ -120,12 +120,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 6,
     right: 6,
-    fontSize: 10,
+    fontSize: fontSize.xs,
     fontWeight: '700',
-    color: '#fff',
-    backgroundColor: '#00000099',
-    paddingHorizontal: 5,
-    paddingVertical: 2,
+    color: colors.white,
+    backgroundColor: colors.scrimLight,
+    paddingHorizontal: spacing.xs,
+    paddingVertical: spacing.xs,
     borderRadius: 4,
   },
   privateBadge: {
@@ -134,8 +134,8 @@ const styles = StyleSheet.create({
     left: 6,
     width: 18,
     height: 18,
-    borderRadius: 9,
-    backgroundColor: '#00000099',
+    borderRadius: radius.pill,
+    backgroundColor: colors.scrimLight,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -145,8 +145,8 @@ const styles = StyleSheet.create({
     right: 4,
     width: 20,
     height: 20,
-    borderRadius: 10,
-    backgroundColor: '#00000099',
+    borderRadius: radius.md,
+    backgroundColor: colors.scrimLight,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -156,13 +156,13 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: '#000000b3',
+    backgroundColor: colors.scrim,
     alignItems: 'center',
     justifyContent: 'center',
   },
   moreOverlayText: {
-    color: '#fff',
-    fontSize: 20,
+    color: colors.white,
+    fontSize: fontSize.xxl,
     fontWeight: '700',
   },
 });

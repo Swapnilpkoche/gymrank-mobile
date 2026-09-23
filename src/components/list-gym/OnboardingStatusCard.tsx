@@ -1,12 +1,12 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-import { colors } from '../../theme/colors';
+import { colors, fontSize, radius, spacing } from '../../theme';
 import type { OnboardingAdminStatus, OnboardingRequest } from '../../types/database';
 
 const STATUS_COPY: Record<OnboardingAdminStatus, { label: string; color: string }> = {
   pending_review: { label: 'Pending review', color: '#facc15' },
   verified: { label: 'Verified', color: colors.emeraldLight },
-  rejected: { label: 'Rejected', color: '#f87171' },
+  rejected: { label: 'Rejected', color: colors.danger },
 };
 
 export function OnboardingStatusCard({ request }: { request: OnboardingRequest }) {
@@ -41,9 +41,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    padding: 14,
-    gap: 6,
+    borderRadius: radius.md,
+    padding: spacing.md,
+    gap: spacing.sm,
   },
   headerRow: {
     flexDirection: 'row',
@@ -51,23 +51,23 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   gymName: {
-    fontSize: 15,
+    fontSize: fontSize.lg,
     fontWeight: '700',
     color: colors.textPrimary,
     flexShrink: 1,
   },
   badge: {
-    borderRadius: 999,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
+    borderRadius: radius.pill,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
   },
   badgeText: {
-    fontSize: 11,
+    fontSize: fontSize.xs,
     fontWeight: '700',
-    color: '#020617',
+    color: colors.textOnAccent,
   },
   note: {
-    fontSize: 13,
+    fontSize: fontSize.base,
     color: colors.textMuted,
   },
 });
