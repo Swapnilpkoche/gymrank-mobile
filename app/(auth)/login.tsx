@@ -16,6 +16,7 @@ import {
   saveRememberedCredentials,
 } from '../../src/lib/rememberMe';
 import { supabase } from '../../src/lib/supabase';
+import { AuthScreenContainer } from '../../src/components/auth/AuthScreenContainer';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -66,7 +67,7 @@ export default function LoginScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <AuthScreenContainer>
       <Text style={styles.title}>Log in</Text>
 
       <TextInput
@@ -121,18 +122,11 @@ export default function LoginScreen() {
       <Link href="/signup" style={styles.link}>
         Don&apos;t have an account? Sign up
       </Link>
-    </View>
+    </AuthScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: 24,
-    gap: 12,
-    backgroundColor: '#fff',
-  },
   title: {
     fontSize: 28,
     fontWeight: '700',

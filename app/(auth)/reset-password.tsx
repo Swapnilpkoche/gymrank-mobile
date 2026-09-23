@@ -1,9 +1,10 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput } from 'react-native';
 
 import { PasswordStrengthMeter } from '../../src/components/auth/PasswordStrengthMeter';
 import { supabase } from '../../src/lib/supabase';
+import { AuthScreenContainer } from '../../src/components/auth/AuthScreenContainer';
 
 export default function ResetPasswordScreen() {
   const { email } = useLocalSearchParams<{ email?: string }>();
@@ -106,7 +107,7 @@ export default function ResetPasswordScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <AuthScreenContainer>
       <Text style={styles.title}>Reset password</Text>
       <Text style={styles.subtitle}>
         Enter the code sent to {email ?? 'your email'} and choose a new password.
@@ -157,18 +158,11 @@ export default function ResetPasswordScreen() {
           {isResending ? 'Resending…' : "Didn't get a code? Resend"}
         </Text>
       </Pressable>
-    </View>
+    </AuthScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: 24,
-    gap: 12,
-    backgroundColor: '#fff',
-  },
   title: {
     fontSize: 28,
     fontWeight: '700',

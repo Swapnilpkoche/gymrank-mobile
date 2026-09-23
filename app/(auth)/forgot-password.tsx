@@ -1,8 +1,9 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput } from 'react-native';
 
 import { supabase } from '../../src/lib/supabase';
+import { AuthScreenContainer } from '../../src/components/auth/AuthScreenContainer';
 
 export default function ForgotPasswordScreen() {
   const router = useRouter();
@@ -26,7 +27,7 @@ export default function ForgotPasswordScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <AuthScreenContainer>
       <Text style={styles.title}>Forgot password</Text>
       <Text style={styles.subtitle}>
         Enter your email and we&apos;ll send you a code to reset your password.
@@ -59,18 +60,11 @@ export default function ForgotPasswordScreen() {
       <Pressable onPress={() => router.back()}>
         <Text style={styles.link}>Back to log in</Text>
       </Pressable>
-    </View>
+    </AuthScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: 24,
-    gap: 12,
-    backgroundColor: '#fff',
-  },
   title: {
     fontSize: 28,
     fontWeight: '700',

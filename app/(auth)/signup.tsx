@@ -6,13 +6,13 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  View,
 } from 'react-native';
 
 import { PasswordStrengthMeter } from '../../src/components/auth/PasswordStrengthMeter';
 import { DateOfBirthPicker } from '../../src/components/profile/DateOfBirthPicker';
 import { calculateAge, dateToIsoDateString, MIN_SIGNUP_AGE } from '../../src/lib/dateOfBirth';
 import { supabase } from '../../src/lib/supabase';
+import { AuthScreenContainer } from '../../src/components/auth/AuthScreenContainer';
 
 export default function SignupScreen() {
   const [email, setEmail] = useState('');
@@ -60,7 +60,7 @@ export default function SignupScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <AuthScreenContainer>
       <Text style={styles.title}>Sign up</Text>
 
       <TextInput
@@ -102,18 +102,11 @@ export default function SignupScreen() {
       <Link href="/login" style={styles.link}>
         Already have an account? Log in
       </Link>
-    </View>
+    </AuthScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: 24,
-    gap: 12,
-    backgroundColor: '#fff',
-  },
   title: {
     fontSize: 28,
     fontWeight: '700',
