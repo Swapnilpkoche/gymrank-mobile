@@ -36,6 +36,7 @@ export default function CheckInScreen() {
   const router = useRouter();
 
   const [myGyms, setMyGyms] = useState<MyGym[]>([]);
+  const [hasExpiredMembership, setHasExpiredMembership] = useState(false);
   // checkin_to_gym enforces once-per-day GLOBALLY - one record (or null)
   // applies to every gym in the list below; each row compares its own gymId
   // against it to tell "checked in here" apart from "checked in elsewhere".
@@ -62,7 +63,8 @@ export default function CheckInScreen() {
         fetchOverallCheckInSummary(session.user.id),
         fetchLatestValidCheckIn(session.user.id),
       ]);
-      setMyGyms(gymsData);
+      setMyGyms(gymsData.gyms);
+      setHasExpiredMembership(gymsData.hasExpiredMembership);
       setHistory(historyPage.entries);
       setHistoryTotalCount(historyPage.totalCount);
       setSummary(summaryData);
@@ -141,10 +143,18 @@ export default function CheckInScreen() {
               </View>
             ) : (
               <View style={styles.emptyCard}>
-                <Text style={styles.emptyCardText}>Join a gym from Discover to check in.</Text>
-                <Pressable onPress={() => router.push('/')}>
-                  <Text style={styles.link}>Go to Discover</Text>
-                </Pressable>
+                {hasExpiredMembership ? (
+                  <Text style={styles.emptyCardText}>
+                    Your membership has ended - renew at the gym to check in.
+                  </Text>
+                ) : (
+                  <>
+                    <Text style={styles.emptyCardText}>Join a gym from Discover to check in.</Text>
+                    <Pressable onPress={() => router.push('/')}>
+                      <Text style={styles.link}>Go to Discover</Text>
+                    </Pressable>
+                  </>
+                )}
               </View>
             )}
 

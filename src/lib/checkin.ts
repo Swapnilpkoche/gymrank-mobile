@@ -113,10 +113,18 @@ export async function fetchLatestValidCheckIn(userId: string): Promise<LatestVal
   return data ? { gymId: data.gym_id, checkedInAt: data.checked_in_at } : null;
 }
 
-export async function fetchMyGyms(userId: string): Promise<MyGym[]> {
+export type MyGymsResult = {
+  gyms: MyGym[];
+  // True when the caller has an approved membership that has lapsed. Lets the
+  // Check In tab say "renew" instead of "join" when `gyms` is empty.
+  hasExpiredMembership: boolean;
+};
+
+export async function fetchMyGyms(userId: string): Promise<MyGymsResult> {
   const [memberships, staffResult] = await Promise.all([
-    // Only memberships that currently count - an expired member drops off this
-    // list (expiry is resolved server-side; own rows only).
+    // Only memberships that currently count make the list - an expired member
+    // drops off it (expiry is resolved server-side; own rows only) but is
+    // flagged via hasExpiredMembership.
     fetchMyMemberships(),
     supabase.from('gym_staff').select('gym_id').eq('user_id', userId).eq('status', 'active'),
   ]);
@@ -132,9 +140,14 @@ export async function fetchMyGyms(userId: string): Promise<MyGym[]> {
 
   const names = await fetchGymNames(gymIds);
 
-  return gymIds
+  const gyms = gymIds
     .map((gymId) => ({ gymId, gymName: names.get(gymId) ?? 'Unknown gym' }))
     .sort((a, b) => a.gymName.localeCompare(b.gymName));
+
+  return {
+    gyms,
+    hasExpiredMembership: memberships.some((membership) => membership.state === 'expired'),
+  };
 }
 
 // Capped inline preview for the Check In tab - fetches only `limit` rows
