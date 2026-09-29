@@ -61,7 +61,9 @@ function RootNavigation() {
 
   // Any screen outside the 4 main tabs is pushed on top of this stack, so it
   // gets a header with a standard back arrow to Discover/whatever screen it
-  // was opened from. The (tabs) and (auth) groups manage their own chrome.
+  // was opened from. (tabs) has its own tab bar. (auth) is pushed full-screen
+  // on top (no tab bar) with the header hidden - AuthScreenContainer draws its
+  // own close (X) / back button instead, so the keyboard offset stays simple.
   return (
     <>
       <Stack

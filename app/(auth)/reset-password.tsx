@@ -108,7 +108,7 @@ export default function ResetPasswordScreen() {
   }
 
   return (
-    <AuthScreenContainer>
+    <AuthScreenContainer topAction="back">
       <Text style={styles.title}>Reset password</Text>
       <Text style={styles.subtitle}>
         Enter the code sent to {email ?? 'your email'} and choose a new password.
@@ -116,6 +116,7 @@ export default function ResetPasswordScreen() {
 
       <TextInput
         style={styles.input}
+        placeholderTextColor={colors.textMuted}
         placeholder="Code from email"
         keyboardType="number-pad"
         value={code}
@@ -123,15 +124,17 @@ export default function ResetPasswordScreen() {
       />
       <TextInput
         style={styles.input}
+        placeholderTextColor={colors.textMuted}
         placeholder="New password"
         secureTextEntry
         autoComplete="password-new"
         value={newPassword}
         onChangeText={setNewPassword}
       />
-      <PasswordStrengthMeter password={newPassword} />
+      <PasswordStrengthMeter password={newPassword} variant="dark" />
       <TextInput
         style={styles.input}
+        placeholderTextColor={colors.textMuted}
         placeholder="Confirm new password"
         secureTextEntry
         autoComplete="password-new"
@@ -167,24 +170,27 @@ const styles = StyleSheet.create({
   title: {
     fontSize: fontSize.display,
     fontWeight: '700',
+    color: colors.textPrimary,
     marginBottom: spacing.xs,
   },
   subtitle: {
     fontSize: fontSize.md,
-    color: '#6b7280',
+    color: colors.textMuted,
     marginBottom: spacing.sm,
   },
   input: {
+    backgroundColor: colors.card,
     borderWidth: 1,
-    borderColor: '#d1d5db',
-    borderRadius: radius.sm,
+    borderColor: colors.border,
+    borderRadius: radius.md,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.md,
-    fontSize: fontSize.xl,
+    color: colors.textPrimary,
+    fontSize: fontSize.lg,
   },
   button: {
-    backgroundColor: '#111827',
-    borderRadius: radius.sm,
+    backgroundColor: colors.emerald,
+    borderRadius: radius.md,
     paddingVertical: spacing.md,
     alignItems: 'center',
     marginTop: spacing.sm,
@@ -194,18 +200,18 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: colors.white,
-    fontSize: fontSize.xl,
-    fontWeight: '600',
+    fontSize: fontSize.lg,
+    fontWeight: '700',
   },
   error: {
-    color: '#dc2626',
+    color: colors.danger,
   },
   message: {
-    color: colors.emeraldDark,
+    color: colors.emerald,
   },
   link: {
     textAlign: 'center',
     marginTop: spacing.lg,
-    color: '#2563eb',
+    color: colors.emerald,
   },
 });

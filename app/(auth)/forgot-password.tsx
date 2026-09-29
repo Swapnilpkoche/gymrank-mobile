@@ -28,7 +28,7 @@ export default function ForgotPasswordScreen() {
   }
 
   return (
-    <AuthScreenContainer>
+    <AuthScreenContainer topAction="back">
       <Text style={styles.title}>Forgot password</Text>
       <Text style={styles.subtitle}>
         Enter your email and we&apos;ll send you a code to reset your password.
@@ -36,6 +36,7 @@ export default function ForgotPasswordScreen() {
 
       <TextInput
         style={styles.input}
+        placeholderTextColor={colors.textMuted}
         placeholder="Email"
         autoCapitalize="none"
         autoComplete="email"
@@ -69,24 +70,27 @@ const styles = StyleSheet.create({
   title: {
     fontSize: fontSize.display,
     fontWeight: '700',
+    color: colors.textPrimary,
     marginBottom: spacing.xs,
   },
   subtitle: {
     fontSize: fontSize.md,
-    color: '#6b7280',
+    color: colors.textMuted,
     marginBottom: spacing.sm,
   },
   input: {
+    backgroundColor: colors.card,
     borderWidth: 1,
-    borderColor: '#d1d5db',
-    borderRadius: radius.sm,
+    borderColor: colors.border,
+    borderRadius: radius.md,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.md,
-    fontSize: fontSize.xl,
+    color: colors.textPrimary,
+    fontSize: fontSize.lg,
   },
   button: {
-    backgroundColor: '#111827',
-    borderRadius: radius.sm,
+    backgroundColor: colors.emerald,
+    borderRadius: radius.md,
     paddingVertical: spacing.md,
     alignItems: 'center',
     marginTop: spacing.sm,
@@ -96,15 +100,15 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: colors.white,
-    fontSize: fontSize.xl,
-    fontWeight: '600',
+    fontSize: fontSize.lg,
+    fontWeight: '700',
   },
   error: {
-    color: '#dc2626',
+    color: colors.danger,
   },
   link: {
     textAlign: 'center',
     marginTop: spacing.lg,
-    color: '#2563eb',
+    color: colors.emerald,
   },
 });

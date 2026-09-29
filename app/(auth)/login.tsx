@@ -68,11 +68,12 @@ export default function LoginScreen() {
   }
 
   return (
-    <AuthScreenContainer>
+    <AuthScreenContainer topAction="close">
       <Text style={styles.title}>Log in</Text>
 
       <TextInput
         style={styles.input}
+        placeholderTextColor={colors.textMuted}
         placeholder="Email"
         autoCapitalize="none"
         autoComplete="email"
@@ -82,6 +83,7 @@ export default function LoginScreen() {
       />
       <TextInput
         style={styles.input}
+        placeholderTextColor={colors.textMuted}
         placeholder="Password"
         secureTextEntry
         autoComplete="password"
@@ -120,7 +122,7 @@ export default function LoginScreen() {
         )}
       </Pressable>
 
-      <Link href="/signup" style={styles.link}>
+      <Link href="/signup" replace style={styles.link}>
         Don&apos;t have an account? Sign up
       </Link>
     </AuthScreenContainer>
@@ -131,19 +133,22 @@ const styles = StyleSheet.create({
   title: {
     fontSize: fontSize.display,
     fontWeight: '700',
+    color: colors.textPrimary,
     marginBottom: spacing.md,
   },
   input: {
+    backgroundColor: colors.card,
     borderWidth: 1,
-    borderColor: '#d1d5db',
-    borderRadius: radius.sm,
+    borderColor: colors.border,
+    borderRadius: radius.md,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.md,
-    fontSize: fontSize.xl,
+    color: colors.textPrimary,
+    fontSize: fontSize.lg,
   },
   button: {
-    backgroundColor: '#111827',
-    borderRadius: radius.sm,
+    backgroundColor: colors.emerald,
+    borderRadius: radius.md,
     paddingVertical: spacing.md,
     alignItems: 'center',
     marginTop: spacing.sm,
@@ -153,11 +158,11 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: colors.white,
-    fontSize: fontSize.xl,
-    fontWeight: '600',
+    fontSize: fontSize.lg,
+    fontWeight: '700',
   },
   error: {
-    color: '#dc2626',
+    color: colors.danger,
   },
   rememberRow: {
     flexDirection: 'row',
@@ -174,25 +179,25 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 4,
     borderWidth: 1,
-    borderColor: '#d1d5db',
+    borderColor: colors.textMuted,
     alignItems: 'center',
     justifyContent: 'center',
   },
   checkboxChecked: {
-    backgroundColor: '#111827',
-    borderColor: '#111827',
+    backgroundColor: colors.emerald,
+    borderColor: colors.emerald,
   },
   rememberLabel: {
     fontSize: fontSize.md,
-    color: '#374151',
+    color: colors.textPrimary,
   },
   forgotLink: {
-    color: '#2563eb',
+    color: colors.emerald,
     fontSize: fontSize.base,
   },
   link: {
     textAlign: 'center',
     marginTop: spacing.lg,
-    color: '#2563eb',
+    color: colors.emerald,
   },
 });

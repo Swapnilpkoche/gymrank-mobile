@@ -61,11 +61,12 @@ export default function SignupScreen() {
   }
 
   return (
-    <AuthScreenContainer>
+    <AuthScreenContainer topAction="close">
       <Text style={styles.title}>Sign up</Text>
 
       <TextInput
         style={styles.input}
+        placeholderTextColor={colors.textMuted}
         placeholder="Email"
         autoCapitalize="none"
         autoComplete="email"
@@ -75,13 +76,14 @@ export default function SignupScreen() {
       />
       <TextInput
         style={styles.input}
+        placeholderTextColor={colors.textMuted}
         placeholder="Password"
         secureTextEntry
         autoComplete="password-new"
         value={password}
         onChangeText={setPassword}
       />
-      <PasswordStrengthMeter password={password} />
+      <PasswordStrengthMeter password={password} variant="dark" />
 
       <DateOfBirthPicker value={dateOfBirth} onChange={setDateOfBirth} />
 
@@ -100,7 +102,7 @@ export default function SignupScreen() {
         )}
       </Pressable>
 
-      <Link href="/login" style={styles.link}>
+      <Link href="/login" replace style={styles.link}>
         Already have an account? Log in
       </Link>
     </AuthScreenContainer>
@@ -111,19 +113,22 @@ const styles = StyleSheet.create({
   title: {
     fontSize: fontSize.display,
     fontWeight: '700',
+    color: colors.textPrimary,
     marginBottom: spacing.md,
   },
   input: {
+    backgroundColor: colors.card,
     borderWidth: 1,
-    borderColor: '#d1d5db',
-    borderRadius: radius.sm,
+    borderColor: colors.border,
+    borderRadius: radius.md,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.md,
-    fontSize: fontSize.xl,
+    color: colors.textPrimary,
+    fontSize: fontSize.lg,
   },
   button: {
-    backgroundColor: '#111827',
-    borderRadius: radius.sm,
+    backgroundColor: colors.emerald,
+    borderRadius: radius.md,
     paddingVertical: spacing.md,
     alignItems: 'center',
     marginTop: spacing.sm,
@@ -133,18 +138,18 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: colors.white,
-    fontSize: fontSize.xl,
-    fontWeight: '600',
+    fontSize: fontSize.lg,
+    fontWeight: '700',
   },
   error: {
-    color: '#dc2626',
+    color: colors.danger,
   },
   message: {
-    color: colors.emeraldDark,
+    color: colors.emerald,
   },
   link: {
     textAlign: 'center',
     marginTop: spacing.lg,
-    color: '#2563eb',
+    color: colors.emerald,
   },
 });
