@@ -66,7 +66,11 @@ export function AlbumSection({ userId, refreshToken }: { userId: string; refresh
         uploadProgress={album.uploadingType === 'video' ? album.uploadProgress : null}
       />
 
-      <AlbumViewerModal item={viewerItem} onClose={() => setViewerItem(null)} />
+      <AlbumViewerModal
+        item={viewerItem}
+        items={album.items}
+        onClose={() => setViewerItem(null)}
+      />
     </View>
   );
 }

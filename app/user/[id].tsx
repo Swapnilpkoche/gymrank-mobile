@@ -349,7 +349,11 @@ export default function PublicProfileScreen() {
         </View>
       ) : null}
 
-      <AlbumViewerModal item={viewerItem} onClose={() => setViewerItem(null)} />
+      <AlbumViewerModal
+        item={viewerItem}
+        items={albumItems}
+        onClose={() => setViewerItem(null)}
+      />
     </ScrollView>
   );
 }

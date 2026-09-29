@@ -109,7 +109,11 @@ export default function FullAlbumScreen() {
         />
       )}
 
-      <AlbumViewerModal item={viewerItem} onClose={() => setViewerItem(null)} />
+      <AlbumViewerModal
+        item={viewerItem}
+        items={album.items}
+        onClose={() => setViewerItem(null)}
+      />
     </ScrollView>
   );
 }
