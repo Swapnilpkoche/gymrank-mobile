@@ -23,6 +23,8 @@ import {
   deleteMessageThread,
   fetchMessageThread,
   fetchThreadMessages,
+  markMessageThreadRead,
+  notifyMessagesChanged,
   reportMessageThread,
   sendMessage,
 } from '../../src/lib/messages';
@@ -68,6 +70,17 @@ export default function ThreadScreen() {
   useEffect(() => {
     load();
   }, [load]);
+
+  // Opening the thread is what counts as reading it. Best-effort: if it fails
+  // the badge just stays until the next successful open.
+  useEffect(() => {
+    if (!session || !Number.isFinite(threadId)) return;
+    markMessageThreadRead(threadId)
+      .then(notifyMessagesChanged)
+      .catch(() => {});
+    // Same reasoning as load(): keyed on the thread, not session identity.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [threadId]);
 
   async function handleSend() {
     const trimmed = draft.trim();

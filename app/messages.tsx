@@ -13,6 +13,7 @@ import {
 
 import { ThreadRow } from '../src/components/messages/ThreadRow';
 import { useAuth } from '../src/context/auth-context';
+import { useUnreadMessageCounts } from '../src/hooks/useUnreadMessageCounts';
 import { fetchMessageThreads } from '../src/lib/messages';
 import { colors, fontSize, radius, spacing } from '../src/theme';
 import type { MessageThread } from '../src/types/database';
@@ -26,6 +27,7 @@ export default function MessagesScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { byThread: unreadByThread } = useUnreadMessageCounts();
 
   const load = useCallback(async () => {
     if (!session) {
@@ -97,7 +99,12 @@ export default function MessagesScreen() {
           <Text style={styles.empty}>No pending requests.</Text>
         ) : (
           pending.map((thread) => (
-            <ThreadRow key={thread.id} thread={thread} onPress={() => openThread(thread)} />
+            <ThreadRow
+              key={thread.id}
+              thread={thread}
+              unreadCount={unreadByThread[thread.id] ?? 0}
+              onPress={() => openThread(thread)}
+            />
           ))
         )}
       </View>
@@ -108,7 +115,12 @@ export default function MessagesScreen() {
           <Text style={styles.empty}>No conversations yet.</Text>
         ) : (
           accepted.map((thread) => (
-            <ThreadRow key={thread.id} thread={thread} onPress={() => openThread(thread)} />
+            <ThreadRow
+              key={thread.id}
+              thread={thread}
+              unreadCount={unreadByThread[thread.id] ?? 0}
+              onPress={() => openThread(thread)}
+            />
           ))
         )}
       </View>

@@ -1,3 +1,5 @@
+import type { RealtimeChannel } from '@supabase/supabase-js';
+
 import { supabase } from './supabase';
 import { fetchPublicProfile } from './userFollows';
 import type { Message, MessageThread, MessageThreadStatus } from '../types/database';
@@ -204,4 +206,62 @@ export async function reportMessageThread(
 export async function deleteMessageThread(threadId: number): Promise<void> {
   const { error } = await supabase.from('message_threads').delete().eq('id', threadId);
   if (error) throw error;
+}
+
+// Unread counts for the signed-in user, keyed by thread id - threads with
+// nothing unread are simply absent. get_unread_message_counts runs under the
+// caller's own RLS and already excludes their own messages and reported threads.
+export async function fetchUnreadMessageCounts(): Promise<Record<number, number>> {
+  const { data, error } = await supabase.rpc('get_unread_message_counts');
+  if (error) throw error;
+
+  const counts: Record<number, number> = {};
+  for (const row of (data ?? []) as { thread_id: number; unread_count: number }[]) {
+    counts[row.thread_id] = row.unread_count;
+  }
+  return counts;
+}
+
+// Upserts the caller's own last_read_at for this thread to now() - the RPC is
+// the only write path to message_thread_reads (no table-level write grants).
+export async function markMessageThreadRead(threadId: number): Promise<void> {
+  const { error } = await supabase.rpc('mark_message_thread_read', { p_thread_id: threadId });
+  if (error) throw error;
+}
+
+// Same tiny pub/sub as notifications.ts, plus one shared Realtime channel on
+// new `messages` rows (RLS limits delivery to the caller's own threads). The
+// channel opens with the first listener and closes with the last, so several
+// badges on screen share one subscription rather than each holding their own.
+const messageListeners = new Set<() => void>();
+let messagesChannel: RealtimeChannel | null = null;
+let channelSequence = 0;
+
+export function notifyMessagesChanged(): void {
+  messageListeners.forEach((listener) => listener());
+}
+
+export function subscribeToMessageChanges(listener: () => void): () => void {
+  messageListeners.add(listener);
+
+  if (!messagesChannel) {
+    // supabase.channel() hands back an existing channel with the same name, and
+    // removeChannel() is async - a unique name keeps a quick close/reopen (e.g.
+    // sign out then straight back in) from reusing the one still tearing down.
+    channelSequence += 1;
+    messagesChannel = supabase
+      .channel(`unread-messages-${channelSequence}`)
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, () =>
+        notifyMessagesChanged()
+      )
+      .subscribe();
+  }
+
+  return () => {
+    messageListeners.delete(listener);
+    if (messageListeners.size === 0 && messagesChannel) {
+      supabase.removeChannel(messagesChannel);
+      messagesChannel = null;
+    }
+  };
 }

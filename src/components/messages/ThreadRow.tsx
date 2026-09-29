@@ -2,6 +2,7 @@ import { Feather } from '@expo/vector-icons';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { colors, fontSize, radius, spacing } from '../../theme';
+import { UnreadBadge } from '../UnreadBadge';
 import type { MessageThread } from '../../types/database';
 
 function initials(name: string): string {
@@ -9,7 +10,15 @@ function initials(name: string): string {
   return trimmed ? trimmed.charAt(0).toUpperCase() : '?';
 }
 
-export function ThreadRow({ thread, onPress }: { thread: MessageThread; onPress: () => void }) {
+export function ThreadRow({
+  thread,
+  unreadCount = 0,
+  onPress,
+}: {
+  thread: MessageThread;
+  unreadCount?: number;
+  onPress: () => void;
+}) {
   const displayName = thread.otherUserFullName || thread.otherUserUsername || 'GymTrust member';
 
   return (
@@ -33,6 +42,7 @@ export function ThreadRow({ thread, onPress }: { thread: MessageThread; onPress:
         ) : null}
       </View>
 
+      <UnreadBadge count={unreadCount} />
       <Feather name="chevron-right" size={16} color={colors.textMuted} />
     </Pressable>
   );

@@ -20,6 +20,8 @@ import { EditProfileModal } from '../../src/components/profile/EditProfileModal'
 import { GymListSection } from '../../src/components/profile/GymListSection';
 import { ProfileHeader } from '../../src/components/profile/ProfileHeader';
 import { useAuth } from '../../src/context/auth-context';
+import { UnreadBadge } from '../../src/components/UnreadBadge';
+import { useUnreadMessageCounts } from '../../src/hooks/useUnreadMessageCounts';
 import { useUnreadNotificationCount } from '../../src/hooks/useUnreadNotificationCount';
 import { fetchOverallCheckInSummary } from '../../src/lib/checkin';
 import { fetchMyOnboardingRequests } from '../../src/lib/onboarding';
@@ -60,6 +62,7 @@ export default function ProfileScreen() {
   const [albumRefreshToken, setAlbumRefreshToken] = useState(0);
   const { count: unreadNotifications, refresh: refreshUnreadNotifications } =
     useUnreadNotificationCount();
+  const { total: unreadMessages } = useUnreadMessageCounts();
 
   const load = useCallback(async () => {
     if (!session) {
@@ -191,15 +194,12 @@ export default function ProfileScreen() {
         <Pressable style={styles.listGymButton} onPress={() => router.push('/messages')}>
           <Feather name="message-circle" size={18} color={colors.emerald} />
           <Text style={styles.listGymButtonText}>View your messages</Text>
+          <UnreadBadge count={unreadMessages} />
         </Pressable>
         <Pressable style={styles.listGymButton} onPress={() => router.push('/notifications')}>
           <Feather name="bell" size={18} color={colors.emerald} />
           <Text style={styles.listGymButtonText}>Notifications</Text>
-          {unreadNotifications > 0 ? (
-            <View style={styles.unreadBadge}>
-              <Text style={styles.unreadBadgeText}>{unreadNotifications}</Text>
-            </View>
-          ) : null}
+          <UnreadBadge count={unreadNotifications} />
         </Pressable>
       </View>
 
@@ -359,20 +359,6 @@ const styles = StyleSheet.create({
     color: colors.emerald,
     fontWeight: '700',
     fontSize: fontSize.md,
-  },
-  unreadBadge: {
-    minWidth: 20,
-    height: 20,
-    borderRadius: radius.md,
-    paddingHorizontal: spacing.sm,
-    backgroundColor: '#ef4444',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  unreadBadgeText: {
-    color: colors.white,
-    fontSize: fontSize.xs,
-    fontWeight: '800',
   },
   email: {
     fontSize: fontSize.md,
