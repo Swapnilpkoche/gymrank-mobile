@@ -13,7 +13,7 @@ export function GymListSection({
   onViewAll,
 }: {
   title: string;
-  gyms: Array<{ gymId: number; gymName: string; badge?: string; note?: string }>;
+  gyms: Array<{ gymId: number; gymName: string; badge?: string; subtitle?: string; note?: string }>;
   emptyLabel: string;
   maxVisible?: number;
   onViewAll?: () => void;
@@ -36,6 +36,7 @@ export function GymListSection({
                 key={gym.gymId}
                 name={gym.gymName}
                 badge={gym.badge}
+                subtitle={gym.subtitle}
                 note={gym.note}
                 onPress={() =>
                   router.push({ pathname: '/gym/[id]', params: { id: String(gym.gymId) } })
@@ -44,11 +45,19 @@ export function GymListSection({
             ))}
           </View>
 
-          {hasMore && onViewAll ? (
-            <Pressable style={styles.viewAllRow} onPress={onViewAll}>
-              <Text style={styles.viewAllText}>View all ({gyms.length})</Text>
-              <Feather name="arrow-right" size={14} color={colors.emeraldLight} />
-            </Pressable>
+          {/* Without a destination (e.g. another user's owned gyms) the
+              count is shown as plain, non-tappable text. */}
+          {hasMore ? (
+            onViewAll ? (
+              <Pressable style={styles.viewAllRow} onPress={onViewAll}>
+                <Text style={styles.viewAllText}>View all ({gyms.length})</Text>
+                <Feather name="arrow-right" size={14} color={colors.emeraldLight} />
+              </Pressable>
+            ) : (
+              <View style={styles.viewAllRow}>
+                <Text style={styles.viewAllTextStatic}>View all ({gyms.length})</Text>
+              </View>
+            )
           ) : null}
         </>
       )}
@@ -81,6 +90,11 @@ const styles = StyleSheet.create({
   },
   viewAllText: {
     color: colors.emeraldLight,
+    fontWeight: '600',
+    fontSize: fontSize.base,
+  },
+  viewAllTextStatic: {
+    color: colors.textMuted,
     fontWeight: '600',
     fontSize: fontSize.base,
   },

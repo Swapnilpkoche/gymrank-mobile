@@ -111,9 +111,14 @@ const NOMINATION_COLUMNS =
 
 // profiles RLS only exposes your own row or an active gym staff row, so a
 // nominee's display info has to come through get_public_profile - same
-// reason messages.ts and fetchFollowedUsers do this.
+// reason messages.ts and fetchFollowedUsers do this. get_public_profile is
+// signed-in only but nominations are readable by guests, so a guest's
+// permission error (42501) just means no name, not a failed screen.
 async function toNomination(row: RawNominationRow): Promise<Nomination> {
-  const profile = await fetchPublicProfile(row.user_id);
+  const profile = await fetchPublicProfile(row.user_id).catch((err) => {
+    if (err?.code === '42501') return null;
+    throw err;
+  });
   return {
     id: row.id,
     contestPeriodId: row.contest_period_id,

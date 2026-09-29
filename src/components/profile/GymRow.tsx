@@ -6,11 +6,14 @@ import { colors, fontSize, radius, spacing } from '../../theme';
 export function GymRow({
   name,
   badge,
+  subtitle,
   note,
   onPress,
 }: {
   name: string;
   badge?: string;
+  // Muted line under the name, e.g. "Nagpur · ★ 4.0 · 12 members".
+  subtitle?: string;
   // Amber line under the name, e.g. a renewal reminder ("Ends 24 Oct · 12 days left").
   note?: string;
   onPress: () => void;
@@ -21,6 +24,11 @@ export function GymRow({
         <Text style={styles.name} numberOfLines={1}>
           {name}
         </Text>
+        {subtitle ? (
+          <Text style={styles.subtitle} numberOfLines={1}>
+            {subtitle}
+          </Text>
+        ) : null}
         {note ? (
           <Text style={styles.note} numberOfLines={1}>
             {note}
@@ -60,6 +68,10 @@ const styles = StyleSheet.create({
     fontSize: fontSize.md,
     fontWeight: '600',
     color: colors.textPrimary,
+  },
+  subtitle: {
+    fontSize: fontSize.xs,
+    color: colors.textMuted,
   },
   note: {
     fontSize: fontSize.xs,

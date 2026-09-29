@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import type { FollowedUser, PublicProfile } from '../types/database';
+import type { FollowedUser, PublicOwnedGym, PublicProfile } from '../types/database';
 
 export async function fetchPublicProfile(userId: string): Promise<PublicProfile | null> {
   const { data, error } = await supabase.rpc('get_public_profile', { p_user_id: userId });
@@ -15,6 +15,33 @@ export async function fetchPublicProfile(userId: string): Promise<PublicProfile 
     avatarUrl: row.avatar_url,
     bio: row.bio,
   };
+}
+
+type RawPublicOwnedGymRow = {
+  gym_id: number;
+  name: string;
+  city: string | null;
+  avg_rating: number | string | null;
+  review_count: number | string;
+  member_count: number | string;
+};
+
+// get_public_owned_gyms is a SECURITY DEFINER RPC (signed-in only, like
+// get_public_profile) returning just the public summary of the active gyms a
+// user owns - rating via get_location_stats (same as the gym page) and
+// member count via get_gym_member_counts (same as Discover).
+export async function fetchPublicOwnedGyms(userId: string): Promise<PublicOwnedGym[]> {
+  const { data, error } = await supabase.rpc('get_public_owned_gyms', { p_user_id: userId });
+  if (error) throw error;
+
+  return ((data ?? []) as RawPublicOwnedGymRow[]).map((row) => ({
+    gymId: row.gym_id,
+    name: row.name,
+    city: row.city,
+    avgRating: row.avg_rating === null ? null : Number(row.avg_rating),
+    reviewCount: Number(row.review_count),
+    memberCount: Number(row.member_count),
+  }));
 }
 
 type RawSearchProfileRow = {

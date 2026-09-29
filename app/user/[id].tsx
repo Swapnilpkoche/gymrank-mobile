@@ -15,11 +15,13 @@ import {
 
 import { AlbumCategoryPreview } from '../../src/components/profile/AlbumCategoryPreview';
 import { AlbumViewerModal } from '../../src/components/profile/AlbumViewerModal';
+import { GymListSection } from '../../src/components/profile/GymListSection';
 import { useAuth } from '../../src/context/auth-context';
 import { fetchAlbumItems } from '../../src/lib/album';
 import { confirmUnfollow } from '../../src/lib/confirmations';
 import { getOrCreateMessageThread } from '../../src/lib/messages';
 import {
+  fetchPublicOwnedGyms,
   fetchPublicProfile,
   fetchRelationshipStatus,
   followUser,
@@ -27,11 +29,26 @@ import {
   type RelationshipStatus,
 } from '../../src/lib/userFollows';
 import { colors, fontSize, radius, spacing } from '../../src/theme';
-import type { AlbumItem, PublicProfile } from '../../src/types/database';
+import type { AlbumItem, PublicOwnedGym, PublicProfile } from '../../src/types/database';
+
+// Owners see at most this many gyms on their public profile; the rest are
+// summarised as a plain "View all (N)" count.
+const OWNED_GYMS_PREVIEW = 3;
 
 function initials(name: string): string {
   const trimmed = name.trim();
   return trimmed ? trimmed.charAt(0).toUpperCase() : '?';
+}
+
+// Member count is hidden at 0, same as Discover's GymCard.
+function ownedGymSubtitle(gym: PublicOwnedGym): string {
+  return [
+    gym.city,
+    gym.avgRating !== null ? `★ ${gym.avgRating.toFixed(1)}` : null,
+    gym.memberCount > 0 ? `${gym.memberCount} members` : null,
+  ]
+    .filter((part): part is string => Boolean(part))
+    .join(' · ');
 }
 
 export default function PublicProfileScreen() {
@@ -42,6 +59,7 @@ export default function PublicProfileScreen() {
 
   const [profile, setProfile] = useState<PublicProfile | null>(null);
   const [relationship, setRelationship] = useState<RelationshipStatus | null>(null);
+  const [ownedGyms, setOwnedGyms] = useState<PublicOwnedGym[]>([]);
   const [albumItems, setAlbumItems] = useState<AlbumItem[]>([]);
   const [viewerItem, setViewerItem] = useState<AlbumItem | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -52,14 +70,22 @@ export default function PublicProfileScreen() {
 
   const load = useCallback(async () => {
     setError(null);
+    // get_public_profile and get_public_owned_gyms are signed-in only, so a
+    // guest gets a sign-in prompt instead of a permission error.
+    if (!session) {
+      setIsLoading(false);
+      return;
+    }
     try {
-      const [profileData, relationshipData, albumData] = await Promise.all([
+      const [profileData, relationshipData, ownedGymsData, albumData] = await Promise.all([
         fetchPublicProfile(targetUserId),
-        session ? fetchRelationshipStatus(session.user.id, targetUserId) : Promise.resolve(null),
+        fetchRelationshipStatus(session.user.id, targetUserId),
+        fetchPublicOwnedGyms(targetUserId),
         fetchAlbumItems(targetUserId),
       ]);
       setProfile(profileData);
       setRelationship(relationshipData);
+      setOwnedGyms(ownedGymsData);
       setAlbumItems(albumData);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load this profile.');
@@ -173,6 +199,18 @@ export default function PublicProfileScreen() {
     );
   }
 
+  if (!session) {
+    return (
+      <View style={styles.centered}>
+        <Stack.Screen options={{ title: '' }} />
+        <Text style={styles.signInText}>Sign in to view this profile.</Text>
+        <Pressable style={styles.followButton} onPress={() => router.push('/login')}>
+          <Text style={styles.followButtonText}>Sign in</Text>
+        </Pressable>
+      </View>
+    );
+  }
+
   if (error || !profile) {
     return (
       <View style={styles.centered}>
@@ -206,6 +244,13 @@ export default function PublicProfileScreen() {
 
       <Text style={styles.name}>{displayName}</Text>
       {profile.username ? <Text style={styles.username}>@{profile.username}</Text> : null}
+
+      {ownedGyms.length > 0 ? (
+        <View style={styles.ownerBadge}>
+          <Feather name="briefcase" size={12} color={colors.emeraldLight} />
+          <Text style={styles.ownerBadgeText}>Owner</Text>
+        </View>
+      ) : null}
 
       {relationship?.isFollowedBy ? (
         <View style={styles.followsYouBadge}>
@@ -267,6 +312,21 @@ export default function PublicProfileScreen() {
         </View>
       ) : null}
 
+      {ownedGyms.length > 0 ? (
+        <View style={styles.ownedGymsSection}>
+          <GymListSection
+            title={ownedGyms.length === 1 ? 'Gym Owned' : 'Gyms Owned'}
+            gyms={ownedGyms.map((gym) => ({
+              gymId: gym.gymId,
+              gymName: gym.name,
+              subtitle: ownedGymSubtitle(gym),
+            }))}
+            emptyLabel=""
+            maxVisible={OWNED_GYMS_PREVIEW}
+          />
+        </View>
+      ) : null}
+
       {albumPhotos.length > 0 || albumVideos.length > 0 ? (
         <View style={styles.albumSection}>
           {albumPhotos.length > 0 ? (
@@ -318,6 +378,12 @@ const styles = StyleSheet.create({
     color: colors.danger,
     textAlign: 'center',
   },
+  signInText: {
+    color: colors.textMuted,
+    fontSize: fontSize.md,
+    textAlign: 'center',
+    marginBottom: spacing.md,
+  },
   avatar: {
     width: AVATAR_SIZE,
     height: AVATAR_SIZE,
@@ -342,6 +408,24 @@ const styles = StyleSheet.create({
   username: {
     fontSize: fontSize.base,
     color: colors.textMuted,
+  },
+  // Same look as the Trainer badge on app/trainer/[id].tsx.
+  ownerBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+    backgroundColor: colors.emeraldTint,
+    borderWidth: 1,
+    borderColor: colors.emerald,
+    borderRadius: radius.pill,
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.md,
+    marginTop: spacing.xs,
+  },
+  ownerBadgeText: {
+    color: colors.emeraldLight,
+    fontSize: fontSize.sm,
+    fontWeight: '700',
   },
   followsYouBadge: {
     backgroundColor: colors.card,
@@ -408,6 +492,10 @@ const styles = StyleSheet.create({
     color: colors.emerald,
     fontWeight: '700',
     fontSize: fontSize.md,
+  },
+  ownedGymsSection: {
+    width: '100%',
+    marginTop: spacing.xl,
   },
   albumSection: {
     width: '100%',

@@ -321,6 +321,15 @@ export type PublicProfile = {
   bio: string | null;
 };
 
+export type PublicOwnedGym = {
+  gymId: number;
+  name: string;
+  city: string | null;
+  avgRating: number | null;
+  reviewCount: number;
+  memberCount: number;
+};
+
 export type FollowedUser = {
   userId: string;
   fullName: string | null;
