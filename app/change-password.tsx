@@ -7,10 +7,10 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from 'react-native';
 
+import { PasswordInput } from '../src/components/auth/PasswordInput';
 import { PasswordStrengthMeter } from '../src/components/auth/PasswordStrengthMeter';
 import { useAuth } from '../src/context/auth-context';
 import { supabase } from '../src/lib/supabase';
@@ -27,6 +27,8 @@ export default function ChangePasswordScreen() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const email = session?.user.email;
+  // Only flag a mismatch once they've started typing the confirmation.
+  const passwordsMismatch = confirmPassword.length > 0 && confirmPassword !== newPassword;
 
   async function handleSubmit() {
     setError(null);
@@ -40,7 +42,7 @@ export default function ChangePasswordScreen() {
       return;
     }
     if (newPassword !== confirmPassword) {
-      setError('New passwords do not match.');
+      setError("Passwords don't match.");
       return;
     }
     if (newPassword === currentPassword) {
@@ -87,26 +89,24 @@ export default function ChangePasswordScreen() {
 
       <View style={styles.field}>
         <Text style={styles.label}>Current password</Text>
-        <TextInput
+        <PasswordInput
           style={styles.input}
           value={currentPassword}
           onChangeText={setCurrentPassword}
           placeholder="Enter your current password"
           placeholderTextColor={colors.textMuted}
-          secureTextEntry
           autoComplete="current-password"
         />
       </View>
 
       <View style={styles.field}>
         <Text style={styles.label}>New password</Text>
-        <TextInput
+        <PasswordInput
           style={styles.input}
           value={newPassword}
           onChangeText={setNewPassword}
           placeholder="Enter a new password"
           placeholderTextColor={colors.textMuted}
-          secureTextEntry
           autoComplete="password-new"
         />
         <PasswordStrengthMeter password={newPassword} variant="dark" />
@@ -114,15 +114,15 @@ export default function ChangePasswordScreen() {
 
       <View style={styles.field}>
         <Text style={styles.label}>Confirm new password</Text>
-        <TextInput
+        <PasswordInput
           style={styles.input}
           value={confirmPassword}
           onChangeText={setConfirmPassword}
           placeholder="Re-enter your new password"
           placeholderTextColor={colors.textMuted}
-          secureTextEntry
           autoComplete="password-new"
         />
+        {passwordsMismatch ? <Text style={styles.fieldError}>Passwords don&apos;t match</Text> : null}
       </View>
 
       {error ? (
@@ -134,7 +134,7 @@ export default function ChangePasswordScreen() {
       <Pressable
         style={[styles.button, isSubmitting && styles.buttonDisabled]}
         onPress={handleSubmit}
-        disabled={isSubmitting}
+        disabled={isSubmitting || passwordsMismatch}
       >
         {isSubmitting ? (
           <ActivityIndicator color={colors.white} />
@@ -178,6 +178,10 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
     color: colors.textPrimary,
     fontSize: fontSize.lg,
+  },
+  fieldError: {
+    fontSize: fontSize.sm,
+    color: colors.danger,
   },
   errorBox: {
     backgroundColor: colors.dangerTint,

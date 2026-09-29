@@ -17,6 +17,7 @@ import {
 } from '../../src/lib/rememberMe';
 import { supabase } from '../../src/lib/supabase';
 import { AuthScreenContainer } from '../../src/components/auth/AuthScreenContainer';
+import { PasswordInput } from '../../src/components/auth/PasswordInput';
 import { colors, fontSize, radius, spacing } from '../../src/theme';
 
 export default function LoginScreen() {
@@ -81,11 +82,10 @@ export default function LoginScreen() {
         value={email}
         onChangeText={setEmail}
       />
-      <TextInput
+      <PasswordInput
         style={styles.input}
         placeholderTextColor={colors.textMuted}
         placeholder="Password"
-        secureTextEntry
         autoComplete="password"
         value={password}
         onChangeText={setPassword}

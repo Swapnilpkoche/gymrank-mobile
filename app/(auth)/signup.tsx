@@ -13,20 +13,29 @@ import { DateOfBirthPicker } from '../../src/components/profile/DateOfBirthPicke
 import { calculateAge, dateToIsoDateString, MIN_SIGNUP_AGE } from '../../src/lib/dateOfBirth';
 import { supabase } from '../../src/lib/supabase';
 import { AuthScreenContainer } from '../../src/components/auth/AuthScreenContainer';
+import { PasswordInput } from '../../src/components/auth/PasswordInput';
 import { colors, fontSize, radius, spacing } from '../../src/theme';
 
 export default function SignupScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Only flag a mismatch once they've started typing the confirmation.
+  const passwordsMismatch = confirmPassword.length > 0 && confirmPassword !== password;
+
   async function handleSignup() {
     setError(null);
     setMessage(null);
 
+    if (password !== confirmPassword) {
+      setError("Passwords don't match.");
+      return;
+    }
     if (!dateOfBirth) {
       setError('Date of birth is required.');
       return;
@@ -74,16 +83,24 @@ export default function SignupScreen() {
         value={email}
         onChangeText={setEmail}
       />
-      <TextInput
+      <PasswordInput
         style={styles.input}
         placeholderTextColor={colors.textMuted}
         placeholder="Password"
-        secureTextEntry
         autoComplete="password-new"
         value={password}
         onChangeText={setPassword}
       />
       <PasswordStrengthMeter password={password} variant="dark" />
+      <PasswordInput
+        style={styles.input}
+        placeholderTextColor={colors.textMuted}
+        placeholder="Confirm password"
+        autoComplete="password-new"
+        value={confirmPassword}
+        onChangeText={setConfirmPassword}
+      />
+      {passwordsMismatch ? <Text style={styles.fieldError}>Passwords don&apos;t match</Text> : null}
 
       <DateOfBirthPicker value={dateOfBirth} onChange={setDateOfBirth} />
 
@@ -93,7 +110,9 @@ export default function SignupScreen() {
       <Pressable
         style={[styles.button, isSubmitting && styles.buttonDisabled]}
         onPress={handleSignup}
-        disabled={isSubmitting || !email || !password || !dateOfBirth}
+        disabled={
+          isSubmitting || !email || !password || !confirmPassword || passwordsMismatch || !dateOfBirth
+        }
       >
         {isSubmitting ? (
           <ActivityIndicator color={colors.white} />
@@ -143,6 +162,11 @@ const styles = StyleSheet.create({
   },
   error: {
     color: colors.danger,
+  },
+  fieldError: {
+    color: colors.danger,
+    fontSize: fontSize.sm,
+    marginTop: -spacing.xs,
   },
   message: {
     color: colors.emerald,

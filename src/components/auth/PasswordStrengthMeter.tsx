@@ -30,9 +30,8 @@ const LEVEL_CONFIG: Record<StrengthLevel, { label: string; color: string; filled
 };
 
 // The filled-segment colors above read fine on either background, but the
-// unfilled track needs a different shade per surface (light auth screens
-// vs. the app's dark theme) to stay visible without importing theme colors
-// into the (auth) group, which doesn't use them.
+// unfilled track needs a different shade per surface to stay visible. Every
+// current caller (auth screens, change-password) is on the dark theme.
 const TRACK_COLOR: Record<'light' | 'dark', string> = {
   light: '#e5e7eb',
   dark: colors.border,

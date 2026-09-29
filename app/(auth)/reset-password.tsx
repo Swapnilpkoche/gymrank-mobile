@@ -5,6 +5,7 @@ import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput } from 'react
 import { PasswordStrengthMeter } from '../../src/components/auth/PasswordStrengthMeter';
 import { supabase } from '../../src/lib/supabase';
 import { AuthScreenContainer } from '../../src/components/auth/AuthScreenContainer';
+import { PasswordInput } from '../../src/components/auth/PasswordInput';
 import { colors, fontSize, radius, spacing } from '../../src/theme';
 
 export default function ResetPasswordScreen() {
@@ -18,6 +19,9 @@ export default function ResetPasswordScreen() {
   const [resendMessage, setResendMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isResending, setIsResending] = useState(false);
+
+  // Only flag a mismatch once they've started typing the confirmation.
+  const passwordsMismatch = confirmPassword.length > 0 && confirmPassword !== newPassword;
 
   // Recovery tokens are single-use, so a duplicate verifyOtp call for the
   // same code always fails with "Token has expired or is invalid" even
@@ -65,7 +69,7 @@ export default function ResetPasswordScreen() {
       return;
     }
     if (newPassword !== confirmPassword) {
-      setError('Passwords do not match.');
+      setError("Passwords don't match.");
       return;
     }
 
@@ -122,25 +126,24 @@ export default function ResetPasswordScreen() {
         value={code}
         onChangeText={setCode}
       />
-      <TextInput
+      <PasswordInput
         style={styles.input}
         placeholderTextColor={colors.textMuted}
         placeholder="New password"
-        secureTextEntry
         autoComplete="password-new"
         value={newPassword}
         onChangeText={setNewPassword}
       />
       <PasswordStrengthMeter password={newPassword} variant="dark" />
-      <TextInput
+      <PasswordInput
         style={styles.input}
         placeholderTextColor={colors.textMuted}
         placeholder="Confirm new password"
-        secureTextEntry
         autoComplete="password-new"
         value={confirmPassword}
         onChangeText={setConfirmPassword}
       />
+      {passwordsMismatch ? <Text style={styles.fieldError}>Passwords don&apos;t match</Text> : null}
 
       {error ? <Text style={styles.error}>{error}</Text> : null}
       {resendMessage ? <Text style={styles.message}>{resendMessage}</Text> : null}
@@ -148,7 +151,9 @@ export default function ResetPasswordScreen() {
       <Pressable
         style={[styles.button, isSubmitting && styles.buttonDisabled]}
         onPress={handleSubmit}
-        disabled={isSubmitting || !code.trim() || !newPassword || !confirmPassword}
+        disabled={
+          isSubmitting || !code.trim() || !newPassword || !confirmPassword || passwordsMismatch
+        }
       >
         {isSubmitting ? (
           <ActivityIndicator color={colors.white} />
@@ -205,6 +210,11 @@ const styles = StyleSheet.create({
   },
   error: {
     color: colors.danger,
+  },
+  fieldError: {
+    color: colors.danger,
+    fontSize: fontSize.sm,
+    marginTop: -spacing.xs,
   },
   message: {
     color: colors.emerald,
