@@ -90,6 +90,8 @@ const styles = StyleSheet.create({
     width: ALBUM_TILE_WIDTH,
     aspectRatio: 1,
     borderRadius: radius.md,
+    borderWidth: 1.5,
+    borderColor: colors.emerald,
     overflow: 'hidden',
     backgroundColor: colors.card,
   },
