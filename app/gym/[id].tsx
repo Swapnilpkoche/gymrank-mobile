@@ -81,6 +81,8 @@ import type {
 } from '../../src/types/database';
 
 export default function GymDetailScreen() {
+  // highlight: 'reviews' | 'team' scroll to (and flash) that section;
+  // 'pricing' opens the owner's pricing editor.
   const { id, highlight } = useLocalSearchParams<{ id: string; highlight?: string }>();
   const gymId = Number(id);
   const { session } = useAuth();
@@ -92,8 +94,9 @@ export default function GymDetailScreen() {
   // the deprecated old-architecture form and just logs a warning now).
   const scrollContentRef = useRef<View>(null);
   const reviewsWrapperRef = useRef<View>(null);
-  const hasScrolledToReviewsRef = useRef(false);
-  const [isReviewsHighlighted, setIsReviewsHighlighted] = useState(false);
+  const teamWrapperRef = useRef<View>(null);
+  const hasScrolledToHighlightRef = useRef(false);
+  const [highlightedSection, setHighlightedSection] = useState<'reviews' | 'team' | null>(null);
 
   const [gym, setGym] = useState<GymDetail | null>(null);
   const [equipment, setEquipment] = useState<LocationOption[]>([]);
@@ -230,33 +233,43 @@ export default function GymDetailScreen() {
 
   useEffect(() => {
     if (isLoading) return;
-    if (highlight !== 'reviews') return;
-    if (hasScrolledToReviewsRef.current) return;
+    if (highlight !== 'reviews' && highlight !== 'team') return;
+    if (hasScrolledToHighlightRef.current) return;
+    const targetRef = highlight === 'team' ? teamWrapperRef : reviewsWrapperRef;
 
     // Defer a tick so the ScrollView content (reviews included) has actually
     // laid out before we measure - isLoading flipping false and the layout
     // pass completing aren't guaranteed to land in the same frame.
     const scrollTimeout = setTimeout(() => {
-      if (!scrollContentRef.current || !reviewsWrapperRef.current) return;
-      hasScrolledToReviewsRef.current = true;
-      reviewsWrapperRef.current.measureLayout(
+      if (!scrollContentRef.current || !targetRef.current) return;
+      hasScrolledToHighlightRef.current = true;
+      targetRef.current.measureLayout(
         scrollContentRef.current,
         (_x, y) => {
           scrollViewRef.current?.scrollTo({ y: Math.max(y - 16, 0), animated: true });
         },
         () => {}
       );
-      setIsReviewsHighlighted(true);
+      setHighlightedSection(highlight);
     }, 50);
 
     return () => clearTimeout(scrollTimeout);
   }, [isLoading, highlight]);
 
+  // highlight=pricing (the Gym controls card's Pricing link) opens the
+  // owner's pricing editor directly - once, and only for an owner/admin.
   useEffect(() => {
-    if (!isReviewsHighlighted) return;
-    const timeout = setTimeout(() => setIsReviewsHighlighted(false), 2500);
+    if (isLoading || highlight !== 'pricing' || !isGymAdmin) return;
+    if (hasScrolledToHighlightRef.current) return;
+    hasScrolledToHighlightRef.current = true;
+    setIsPricingModalVisible(true);
+  }, [isLoading, highlight, isGymAdmin]);
+
+  useEffect(() => {
+    if (!highlightedSection) return;
+    const timeout = setTimeout(() => setHighlightedSection(null), 2500);
     return () => clearTimeout(timeout);
-  }, [isReviewsHighlighted]);
+  }, [highlightedSection]);
 
   const refreshMyStaffStatus = useCallback(async () => {
     if (!session) {
@@ -602,27 +615,43 @@ export default function GymDetailScreen() {
           <ChipRow title="Equipment" items={equipment} variant="equipment" />
           <ChipRow title="Amenities" items={amenities} variant="amenity" />
 
-          {isGymAdmin && session ? (
-            <StaffRequestsSection
-              gymId={gymId}
-              adminUserId={session.user.id}
-              refreshToken={requestsRefreshToken}
-              onChanged={load}
-            />
+          {/* Pending trainer requests + the team, together, so highlight=team
+              (the Gym controls card's Team link) lands on both. Skipped when
+              neither can render, so it doesn't leave an empty gap. */}
+          {(isGymAdmin && session) || team.length > 0 ? (
+            <View
+              ref={teamWrapperRef}
+              style={[
+                styles.highlightWrapper,
+                styles.teamWrapper,
+                highlightedSection === 'team' && styles.highlightWrapperActive,
+              ]}
+            >
+              {isGymAdmin && session ? (
+                <StaffRequestsSection
+                  gymId={gymId}
+                  adminUserId={session.user.id}
+                  refreshToken={requestsRefreshToken}
+                  onChanged={load}
+                />
+              ) : null}
+              <TeamSection
+                team={team}
+                viewerUserId={session?.user.id ?? null}
+                viewerRole={viewerRole}
+                onRemoveMember={handleRemoveMember}
+              />
+            </View>
           ) : null}
-
-          <TeamSection
-            team={team}
-            viewerUserId={session?.user.id ?? null}
-            viewerRole={viewerRole}
-            onRemoveMember={handleRemoveMember}
-          />
 
           <FaceOfGymCard gymId={gymId} />
 
           <View
             ref={reviewsWrapperRef}
-            style={[styles.reviewsWrapper, isReviewsHighlighted && styles.reviewsWrapperHighlighted]}
+            style={[
+              styles.highlightWrapper,
+              highlightedSection === 'reviews' && styles.highlightWrapperActive,
+            ]}
           >
             <ReviewsList reviews={reviews} />
           </View>
@@ -692,14 +721,17 @@ const styles = StyleSheet.create({
     color: colors.danger,
     textAlign: 'center',
   },
-  reviewsWrapper: {
+  highlightWrapper: {
     borderRadius: radius.md,
     borderWidth: 1,
     borderColor: 'transparent',
     padding: spacing.sm,
     margin: -8,
   },
-  reviewsWrapperHighlighted: {
+  teamWrapper: {
+    gap: spacing.xl,
+  },
+  highlightWrapperActive: {
     borderColor: colors.emerald,
     backgroundColor: colors.emeraldTint,
   },

@@ -79,6 +79,21 @@ export type GymDetail = Gym & {
   acceptingTrainerRequests: boolean;
 };
 
+// The three owner toggles on gyms, changed only via set_gym_controls.
+export type GymControlSettings = {
+  isDiscoverable: boolean;
+  acceptingJoinRequests: boolean;
+  acceptingTrainerRequests: boolean;
+};
+
+// One gym on the owner's "Gym controls" card.
+export type OwnedGymControls = GymControlSettings & {
+  gymId: number;
+  gymName: string;
+  pendingMemberRequests: number;
+  pendingTrainerRequests: number;
+};
+
 export type BusyHour = {
   hour: number;
   count: number;

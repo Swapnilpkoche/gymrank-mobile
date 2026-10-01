@@ -17,6 +17,7 @@ import { CheckInSummaryCard } from '../../src/components/gym-detail/CheckInSumma
 import { OnboardingStatusCard } from '../../src/components/list-gym/OnboardingStatusCard';
 import { AlbumSection } from '../../src/components/profile/AlbumSection';
 import { EditProfileModal } from '../../src/components/profile/EditProfileModal';
+import { GymControlsCard } from '../../src/components/profile/GymControlsCard';
 import { GymListSection } from '../../src/components/profile/GymListSection';
 import { ProfileHeader } from '../../src/components/profile/ProfileHeader';
 import { useAuth } from '../../src/context/auth-context';
@@ -24,6 +25,7 @@ import { UnreadBadge } from '../../src/components/UnreadBadge';
 import { useUnreadMessageCounts } from '../../src/hooks/useUnreadMessageCounts';
 import { useUnreadNotificationCount } from '../../src/hooks/useUnreadNotificationCount';
 import { fetchOverallCheckInSummary } from '../../src/lib/checkin';
+import { fetchOwnedGymControls } from '../../src/lib/gymControls';
 import { fetchMyOnboardingRequests } from '../../src/lib/onboarding';
 import {
   fetchFollowedGyms,
@@ -38,6 +40,7 @@ import type {
   FollowedGym,
   MyGymRelationship,
   OnboardingRequest,
+  OwnedGymControls,
   Profile,
 } from '../../src/types/database';
 
@@ -52,6 +55,8 @@ export default function ProfileScreen() {
   const [checkInSummary, setCheckInSummary] = useState<CheckInSummary | null>(null);
   const [followedGyms, setFollowedGyms] = useState<FollowedGym[]>([]);
   const [myGyms, setMyGyms] = useState<MyGymRelationship[]>([]);
+  // Gyms the user is an active owner/admin of - drives the Gym controls card.
+  const [ownedGyms, setOwnedGyms] = useState<OwnedGymControls[]>([]);
   const [onboardingRequests, setOnboardingRequests] = useState<OnboardingRequest[]>([]);
   const [followingCount, setFollowingCount] = useState(0);
   const [followerCount, setFollowerCount] = useState(0);
@@ -71,16 +76,25 @@ export default function ProfileScreen() {
     }
     setError(null);
     try {
-      const [profileData, summaryData, followedData, myGymsData, onboardingData, followCounts] =
-        await Promise.all([
-          fetchProfile(session.user.id),
-          fetchOverallCheckInSummary(session.user.id),
-          fetchFollowedGyms(session.user.id),
-          fetchMyGymRelationships(session.user.id),
-          fetchMyOnboardingRequests(session.user.id),
-          fetchFollowCounts(session.user.id),
-        ]);
+      const [
+        profileData,
+        summaryData,
+        followedData,
+        myGymsData,
+        onboardingData,
+        followCounts,
+        ownedGymsData,
+      ] = await Promise.all([
+        fetchProfile(session.user.id),
+        fetchOverallCheckInSummary(session.user.id),
+        fetchFollowedGyms(session.user.id),
+        fetchMyGymRelationships(session.user.id),
+        fetchMyOnboardingRequests(session.user.id),
+        fetchFollowCounts(session.user.id),
+        fetchOwnedGymControls(session.user.id),
+      ]);
       setProfile(profileData);
+      setOwnedGyms(ownedGymsData);
       setCheckInSummary(summaryData);
       setFollowedGyms(followedData);
       setMyGyms(myGymsData);
@@ -107,6 +121,13 @@ export default function ProfileScreen() {
       if (!session) return;
       fetchMyGymRelationships(session.user.id)
         .then(setMyGyms)
+        .catch(() => {
+          // Best-effort - keep showing what we had.
+        });
+      // Pending-request badges go stale as soon as the owner approves someone
+      // on the Members/Team screens, so re-read them on the way back too.
+      fetchOwnedGymControls(session.user.id)
+        .then(setOwnedGyms)
         .catch(() => {
           // Best-effort - keep showing what we had.
         });
@@ -186,6 +207,17 @@ export default function ProfileScreen() {
         onAvatarUploaded={handleAvatarUploaded}
         onEditPress={() => setIsEditModalVisible(true)}
       />
+
+      {ownedGyms.length > 0 ? (
+        <GymControlsCard
+          gyms={ownedGyms}
+          onGymUpdated={(updated) =>
+            setOwnedGyms((prev) =>
+              prev.map((gym) => (gym.gymId === updated.gymId ? updated : gym))
+            )
+          }
+        />
+      ) : null}
 
       <AlbumSection userId={session.user.id} refreshToken={albumRefreshToken} />
 
