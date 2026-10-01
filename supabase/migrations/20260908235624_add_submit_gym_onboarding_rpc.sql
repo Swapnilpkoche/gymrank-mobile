@@ -1,0 +1,48 @@
+create or replace function public.submit_gym_onboarding(
+  p_name text,
+  p_category text,
+  p_phone text,
+  p_city text,
+  p_state text,
+  p_country text,
+  p_address_line_1 text,
+  p_address_line_2 text,
+  p_landmark text,
+  p_postal_code text
+)
+returns table (gym_id bigint, request_id bigint)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_gym_id bigint;
+  v_request_id bigint;
+  v_slug text;
+begin
+  if auth.uid() is null then
+    raise exception 'Authentication required';
+  end if;
+
+  v_slug := lower(regexp_replace(p_name, '[^a-zA-Z0-9]+', '-', 'g'))
+            || '-' || substr(md5(random()::text || clock_timestamp()::text), 1, 6);
+
+  insert into public.gyms (name, slug, status, verification_status, created_by, category, phone, city, state, country)
+  values (p_name, v_slug, 'draft', 'claimed', auth.uid(), p_category, p_phone, p_city, p_state, p_country)
+  returning id into v_gym_id;
+
+  insert into public.gym_locations (gym_id, address_line_1, address_line_2, landmark, postal_code, phone, is_primary, status)
+  values (v_gym_id, p_address_line_1, nullif(p_address_line_2, ''), nullif(p_landmark, ''), nullif(p_postal_code, ''), p_phone, true, 'active');
+
+  insert into public.gym_staff (gym_id, user_id, role, status)
+  values (v_gym_id, auth.uid(), 'owner', 'active');
+
+  insert into public.gym_onboarding_requests (gym_id, submitted_by, admin_status)
+  values (v_gym_id, auth.uid(), 'pending_review')
+  returning id into v_request_id;
+
+  return query select v_gym_id, v_request_id;
+end;
+$$;
+
+grant execute on function public.submit_gym_onboarding(text, text, text, text, text, text, text, text, text, text) to authenticated;
