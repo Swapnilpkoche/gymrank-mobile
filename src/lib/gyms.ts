@@ -46,6 +46,10 @@ async function fetchGyms(): Promise<Gym[]> {
       gym_locations ( is_primary, localities ( name, cities ( name, states ( name, countries ( name ) ) ) ) )`
     )
     .eq('status', 'active')
+    // Owner-hidden gyms stay out of Discover (search_gyms applies the same
+    // rule server-side). Not an RLS rule on purpose: a hidden gym's page must
+    // still open for its members and anyone with a link.
+    .eq('is_discoverable', true)
     .order('name', { ascending: true });
 
   if (error) throw error;
