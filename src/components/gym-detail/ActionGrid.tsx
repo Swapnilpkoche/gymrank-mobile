@@ -25,8 +25,27 @@ type TrainerButton = {
 // button shows the countdown and is muted yet still tappable, so trying early
 // explains exactly how long is left rather than silently doing nothing.
 // Removed/suspended can't be cleared by the user, so they show as blocked.
-function trainerButtonFor(status: MyStaffStatus | null): TrainerButton {
-  if (!status) return { label: 'Join as Trainer', icon: 'award', disabled: false, active: false };
+const NOT_ACCEPTING_TRAINERS: TrainerButton = {
+  label: 'Not accepting trainers',
+  icon: 'slash',
+  disabled: true,
+  active: false,
+};
+
+function trainerButtonFor(status: MyStaffStatus | null, accepting: boolean): TrainerButton {
+  // Only the states that could send a request are affected - pending/active/
+  // removed-by-the-gym keep saying where the caller stands.
+  if (!status) {
+    return accepting
+      ? { label: 'Join as Trainer', icon: 'award', disabled: false, active: false }
+      : NOT_ACCEPTING_TRAINERS;
+  }
+  if (
+    !accepting &&
+    (status.status === 'rejected' || (status.status === 'removed' && status.removedBySelf))
+  ) {
+    return NOT_ACCEPTING_TRAINERS;
+  }
 
   switch (status.status) {
     case 'pending':
@@ -92,7 +111,7 @@ type MemberButton = {
 // The join button follows the caller's own membership state, so it never
 // offers "Join" to someone who is already a member, has a request pending, or
 // whose membership merely expired (they renew at the gym, not by re-joining).
-function memberButtonFor(state: MembershipState | null): MemberButton {
+function memberButtonFor(state: MembershipState | null, accepting: boolean): MemberButton {
   switch (state) {
     case 'pending':
       return { label: 'Request pending', icon: 'clock', disabled: true, hidden: false };
@@ -104,8 +123,11 @@ function memberButtonFor(state: MembershipState | null): MemberButton {
     case 'expired':
       return { label: 'Join as Member', icon: 'users', disabled: true, hidden: true };
     default:
-      // none, or a previously declined request (which may be re-sent)
-      return { label: 'Join as Member', icon: 'users', disabled: false, hidden: false };
+      // none, or a previously declined request (which may be re-sent) - unless
+      // the owner has switched member requests off.
+      return accepting
+        ? { label: 'Join as Member', icon: 'users', disabled: false, hidden: false }
+        : { label: 'Not accepting members', icon: 'slash', disabled: true, hidden: false };
   }
 }
 
@@ -124,6 +146,8 @@ export function ActionGrid({
   myStaffStatus,
   memberState,
   isGymStaff,
+  acceptingJoinRequests,
+  acceptingTrainerRequests,
   onWriteReview,
   onFollow,
   onJoinAsMember,
@@ -142,6 +166,10 @@ export function ActionGrid({
   // undermine verified reviews) or request membership at it, so those two
   // actions are left out entirely.
   isGymStaff: boolean;
+  // The gym's own switches (gyms.accepting_*). Enforced by the INSERT
+  // policies; here they only turn "Join" into a plain "Not accepting".
+  acceptingJoinRequests: boolean;
+  acceptingTrainerRequests: boolean;
   onWriteReview: () => void;
   onFollow: () => void;
   onJoinAsMember: () => void;
@@ -159,8 +187,8 @@ export function ActionGrid({
   onCheckIn: () => void;
   onCompare: () => void;
 }) {
-  const trainerButton = trainerButtonFor(myStaffStatus);
-  const memberButton = memberButtonFor(memberState);
+  const trainerButton = trainerButtonFor(myStaffStatus, acceptingTrainerRequests);
+  const memberButton = memberButtonFor(memberState, acceptingJoinRequests);
   const checkInButton = checkInButtonFor(todayCheckInState);
   const endedNote = endedNoteFor(myStaffStatus);
   const { session } = useAuth();

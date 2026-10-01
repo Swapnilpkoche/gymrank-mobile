@@ -73,6 +73,10 @@ export type GymDetail = Gym & {
   photoUrl: string | null;
   avgRating: number | null;
   reviewCount: number;
+  // Owner-controlled (gyms.accepting_*). The INSERT policies enforce these;
+  // the gym page reads them so the join buttons can say so up front.
+  acceptingJoinRequests: boolean;
+  acceptingTrainerRequests: boolean;
 };
 
 export type BusyHour = {

@@ -1,3 +1,9 @@
+import {
+  fetchGymRequestAvailability,
+  GYM_UNAVAILABLE_MESSAGE,
+  notAcceptingMessage,
+  type GymRequestAvailability,
+} from './gymControls';
 import { fetchMyMemberships, isCurrentMemberState } from './memberships';
 import { supabase } from './supabase';
 import { APP_TIMEZONE, computeCheckInStreak } from './time';
@@ -28,6 +34,8 @@ type RawGymDetailRow = Omit<Gym, 'city' | 'state' | 'country'> & {
       } | null;
     } | null;
   }[];
+  accepting_join_requests: boolean;
+  accepting_trainer_requests: boolean;
 };
 
 function resolveLocationNames(row: RawGymDetailRow) {
@@ -63,6 +71,7 @@ export async function fetchGymDetail(gymId: number): Promise<GymDetail | null> {
     .from('gyms')
     .select(
       `id, name, slug, description, status, verification_status, location, city, state, country, category, latitude, longitude,
+      accepting_join_requests, accepting_trainer_requests,
       gym_locations ( id, is_primary, localities ( name, cities ( name, states ( name, countries ( name ) ) ) ) )`
     )
     .eq('id', gymId)
@@ -108,6 +117,8 @@ export async function fetchGymDetail(gymId: number): Promise<GymDetail | null> {
     photoUrl,
     avgRating,
     reviewCount,
+    acceptingJoinRequests: row.accepting_join_requests,
+    acceptingTrainerRequests: row.accepting_trainer_requests,
   };
 }
 
@@ -311,19 +322,51 @@ export async function toggleFollow(gymId: number, userId: string, isFollowing: b
 export type RequestJoinResult =
   | { kind: 'success' }
   | { kind: 'duplicate'; message: string }
+  // The gym isn't taking member requests, or isn't active - nothing was sent.
+  | { kind: 'closed'; message: string }
   | { kind: 'error'; message: string };
+
+function closedJoinResult(availability: GymRequestAvailability): RequestJoinResult | null {
+  if (availability === 'unavailable') return { kind: 'closed', message: GYM_UNAVAILABLE_MESSAGE };
+  if (availability === 'not_accepting') {
+    return { kind: 'closed', message: notAcceptingMessage('member') };
+  }
+  return null;
+}
+
+// A 42501 from the insert can't say which WITH CHECK condition failed, so
+// re-read the gym: the owner may have switched requests off (or the gym gone
+// inactive) since the pre-check. Anything else stays a plain error.
+async function explainJoinInsertError(
+  gymId: number,
+  error: { code?: string; message: string }
+): Promise<RequestJoinResult> {
+  if (error.code === '42501') {
+    const availability = await fetchGymRequestAvailability(gymId, 'member').catch(() => null);
+    const closed = availability ? closedJoinResult(availability) : null;
+    if (closed) return closed;
+  }
+  return { kind: 'error', message: error.message };
+}
 
 // gym_members has a UNIQUE (gym_id, user_id) constraint, so a second
 // request hits a 23505 violation - look up the existing row to give a
 // status-appropriate message instead of a generic failure.
 export async function requestJoinAsMember(gymId: number, userId: string): Promise<RequestJoinResult> {
+  // The INSERT policy requires accepting_join_requests (and RLS only shows
+  // active gyms). Checking first gives the real reason, and keeps the
+  // rejected-retry path below from deleting the old row only for the
+  // re-insert to be refused.
+  const closed = closedJoinResult(await fetchGymRequestAvailability(gymId, 'member'));
+  if (closed) return closed;
+
   const { error } = await supabase
     .from('gym_members')
     .insert({ gym_id: gymId, user_id: userId, status: 'pending' });
 
   if (!error) return { kind: 'success' };
   if (error.code !== '23505') {
-    return { kind: 'error', message: error.message };
+    return explainJoinInsertError(gymId, error);
   }
 
   const { data: existing, error: fetchError } = await supabase
@@ -359,7 +402,7 @@ export async function requestJoinAsMember(gymId: number, userId: string): Promis
   const { error: reinsertError } = await supabase
     .from('gym_members')
     .insert({ gym_id: gymId, user_id: userId, status: 'pending' });
-  if (reinsertError) return { kind: 'error', message: reinsertError.message };
+  if (reinsertError) return explainJoinInsertError(gymId, reinsertError);
 
   return { kind: 'success' };
 }

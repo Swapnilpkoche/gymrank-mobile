@@ -1,3 +1,4 @@
+import { fetchGymRequestAvailability, type GymRequestAvailability } from './gymControls';
 import { supabase } from './supabase';
 import { formatWaitDuration } from './time';
 import type {
@@ -456,18 +457,43 @@ export type RequestTrainerResult =
   | { kind: 'needs_profile' }
   | { kind: 'cooldown'; message: string; remainingSeconds: number }
   | { kind: 'duplicate'; message: string }
+  // The gym isn't taking trainer requests, or isn't active - nothing was sent.
+  | { kind: 'closed'; availability: Exclude<GymRequestAvailability, 'accepting'> }
   | { kind: 'error'; message: string };
 
+// A failed WITH CHECK is a bare 42501 that can't say which condition failed.
+// The pre-check rules out a missing profile and a closed/inactive gym, but
+// the owner may switch requests off between that check and the insert - so
+// re-read the gym before falling back to the remaining cause, the 18+ rule.
+async function explainTrainerInsertError(
+  gymId: number,
+  error: { code?: string; message: string }
+): Promise<RequestTrainerResult> {
+  if (!isPermissionError(error)) return { kind: 'error', message: error.message };
+  const availability = await fetchGymRequestAvailability(gymId, 'trainer').catch(() => null);
+  if (availability === 'not_accepting' || availability === 'unavailable') {
+    return { kind: 'closed', availability };
+  }
+  return { kind: 'error', message: NOT_ADULT_MESSAGE };
+}
+
 // The server (gym_staff INSERT policy) is the real gate: trainer role only,
-// 18+ only, and a trainer_profiles row must already exist. The profile
-// pre-check here is just so that case can route the user to create one
-// instead of showing a generic policy error. gym_staff has UNIQUE
-// (gym_id, user_id), so a repeat request hits 23505 - look up the existing
-// row for a status-appropriate message, same as requestJoinAsMember.
+// 18+ only, a trainer_profiles row must already exist, and the gym must be
+// accepting trainer requests. The gym and profile pre-checks here are so
+// those cases get their own message (or route the user to create a profile)
+// instead of a generic policy error. gym_staff has UNIQUE (gym_id, user_id),
+// so a repeat request hits 23505 - look up the existing row for a
+// status-appropriate message, same as requestJoinAsMember.
 export async function requestJoinAsTrainer(
   gymId: number,
   userId: string
 ): Promise<RequestTrainerResult> {
+  // Gym first: no point sending someone off to create a profile for a gym
+  // that won't take the request. Also runs before the delete+reinsert retry
+  // below, so a closed gym never costs the user their earlier row.
+  const availability = await fetchGymRequestAvailability(gymId, 'trainer');
+  if (availability !== 'accepting') return { kind: 'closed', availability };
+
   const profile = await fetchTrainerProfile(userId);
   if (!profile) return { kind: 'needs_profile' };
 
@@ -480,8 +506,7 @@ export async function requestJoinAsTrainer(
   if (!error) return { kind: 'success' };
 
   if (error.code !== '23505') {
-    if (isPermissionError(error)) return { kind: 'error', message: NOT_ADULT_MESSAGE };
-    return { kind: 'error', message: error.message };
+    return explainTrainerInsertError(gymId, error);
   }
 
   const { data: existing, error: fetchError } = await supabase
@@ -556,7 +581,7 @@ export async function requestJoinAsTrainer(
   }
 
   const { error: reinsertError } = await insertRequest();
-  if (reinsertError) return { kind: 'error', message: reinsertError.message };
+  if (reinsertError) return explainTrainerInsertError(gymId, reinsertError);
 
   return { kind: 'success' };
 }

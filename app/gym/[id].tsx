@@ -50,6 +50,7 @@ import {
   toggleFollow,
 } from '../../src/lib/gymDetail';
 import { useTodayCheckInState } from '../../src/hooks/useTodayCheckInState';
+import { notAcceptingMessage } from '../../src/lib/gymControls';
 import { fetchGymPricingPlans } from '../../src/lib/gymPricing';
 import { fetchMyMemberships } from '../../src/lib/memberships';
 import {
@@ -359,6 +360,11 @@ export default function GymDetailScreen() {
         );
       } else if (result.kind === 'duplicate') {
         Alert.alert('Already requested', result.message);
+      } else if (result.kind === 'closed') {
+        Alert.alert('Not accepting requests', result.message);
+        // The owner switched requests off since this page loaded - re-read
+        // so the button says so too.
+        load();
       } else {
         Alert.alert('Something went wrong', result.message);
       }
@@ -386,6 +392,13 @@ export default function GymDetailScreen() {
       myStaffStatus.status === 'rejected' ||
       (myStaffStatus.status === 'removed' && myStaffStatus.removedBySelf);
     if (!canRequest) return;
+    // The button already says so; this just keeps the profile/confirm prompts
+    // below from ever offering a request the gym won't take. (requestJoinAsTrainer
+    // re-checks the live flag, and the INSERT policy enforces it.)
+    if (!gym.acceptingTrainerRequests) {
+      Alert.alert('Not accepting requests', notAcceptingMessage('trainer', gym.name));
+      return;
+    }
     const userId = session.user.id;
 
     const goCreateProfile = () =>
@@ -423,8 +436,10 @@ export default function GymDetailScreen() {
             onNeedsProfile: () => promptCreateTrainerProfile(gym.name, goCreateProfile),
           }).then((settled) => {
             // Re-read the real row instead of assuming: also covers "already
-            // pending" (the duplicate path), where nothing new was inserted.
-            if (settled) refreshMyStaffStatus();
+            // pending" (the duplicate path), where nothing new was inserted,
+            // and "not accepting" (the owner closed requests since this page
+            // loaded) - load() re-reads both the staff row and the gym's flags.
+            if (settled) load();
           });
         },
         { previouslyDeclined: myStaffStatus?.status === 'rejected' }
@@ -555,6 +570,8 @@ export default function GymDetailScreen() {
             myStaffStatus={myStaffStatus}
             memberState={myMembership?.state ?? null}
             isGymStaff={isGymStaff}
+            acceptingJoinRequests={gym.acceptingJoinRequests}
+            acceptingTrainerRequests={gym.acceptingTrainerRequests}
             onWriteReview={handleWriteReview}
             onFollow={handleFollow}
             onJoinAsMember={handleJoinAsMember}

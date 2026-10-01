@@ -1,5 +1,6 @@
 import { Alert } from 'react-native';
 
+import { GYM_UNAVAILABLE_MESSAGE, notAcceptingMessage } from './gymControls';
 import { cooldownMessage, requestJoinAsTrainer } from './trainer';
 
 // Every prompt in the trainer-request flow names the gym, so the user always
@@ -74,6 +75,15 @@ export async function sendTrainerRequest({
         return true;
       case 'cooldown':
         alertTrainerCooldown(gymName, result.remainingSeconds);
+        return true;
+      // Settled rather than "fix something": there's nothing the user can do
+      // about it, so a carried-along "applying to..." context is cleared.
+      case 'closed':
+        if (result.availability === 'not_accepting') {
+          Alert.alert('Not accepting requests', notAcceptingMessage('trainer', gymName));
+        } else {
+          Alert.alert(gymName, GYM_UNAVAILABLE_MESSAGE);
+        }
         return true;
       default:
         Alert.alert('Something went wrong', result.message);
