@@ -11,6 +11,7 @@ import {
   View,
 } from 'react-native';
 
+import { GuestAuthButtons } from '../src/components/auth/GuestAuthButtons';
 import { ThreadRow } from '../src/components/messages/ThreadRow';
 import { useAuth } from '../src/context/auth-context';
 import { useUnreadMessageCounts } from '../src/hooks/useUnreadMessageCounts';
@@ -65,9 +66,7 @@ export default function MessagesScreen() {
         <Stack.Screen options={{ title: 'Messages' }} />
         <Feather name="message-circle" size={32} color={colors.textMuted} />
         <Text style={styles.emptyTitle}>Sign in to view your messages</Text>
-        <Pressable style={styles.primaryButton} onPress={() => router.push('/login')}>
-          <Text style={styles.primaryButtonText}>Sign in</Text>
-        </Pressable>
+        <GuestAuthButtons style={styles.authButtons} />
       </View>
     );
   }
@@ -151,17 +150,8 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: colors.textPrimary,
   },
-  primaryButton: {
-    backgroundColor: colors.emerald,
-    borderRadius: radius.md,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.xxl,
+  authButtons: {
     marginTop: spacing.sm,
-  },
-  primaryButtonText: {
-    color: colors.white,
-    fontWeight: '700',
-    fontSize: fontSize.md,
   },
   error: {
     color: colors.danger,

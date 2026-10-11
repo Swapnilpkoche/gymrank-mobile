@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { GuestAuthButtons } from '../../src/components/auth/GuestAuthButtons';
 import { CheckInSummaryCard } from '../../src/components/gym-detail/CheckInSummaryCard';
 import { OnboardingStatusCard } from '../../src/components/list-gym/OnboardingStatusCard';
 import { AlbumSection } from '../../src/components/profile/AlbumSection';
@@ -169,9 +170,7 @@ export default function ProfileScreen() {
         <Text style={styles.emptyText}>
           Track your gyms, follows, and check-ins once you&apos;re signed in.
         </Text>
-        <Pressable style={styles.primaryButton} onPress={() => router.push('/login')}>
-          <Text style={styles.primaryButtonText}>Sign in</Text>
-        </Pressable>
+        <GuestAuthButtons style={styles.authButtons} />
       </View>
     );
   }
@@ -341,17 +340,8 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     textAlign: 'center',
   },
-  primaryButton: {
-    backgroundColor: colors.emerald,
-    borderRadius: radius.md,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.xxl,
+  authButtons: {
     marginTop: spacing.sm,
-  },
-  primaryButtonText: {
-    color: colors.white,
-    fontWeight: '700',
-    fontSize: fontSize.md,
   },
   error: {
     color: colors.danger,

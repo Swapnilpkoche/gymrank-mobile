@@ -13,6 +13,7 @@ import {
   View,
 } from 'react-native';
 
+import { GuestAuthButtons } from '../../src/components/auth/GuestAuthButtons';
 import { AddCertificationModal } from '../../src/components/trainer/AddCertificationModal';
 import { CertificationsSection } from '../../src/components/trainer/CertificationsSection';
 import { EditTrainerProfileModal } from '../../src/components/trainer/EditTrainerProfileModal';
@@ -380,6 +381,15 @@ export default function TrainerProfileScreen() {
           )}
         </View>
 
+        {/* Message still jumps to Log in when tapped, but guests also get
+            Sign up up front instead of only finding it on the Log in screen. */}
+        {!session ? (
+          <View style={styles.guestPrompt}>
+            <Text style={styles.guestPromptText}>Sign in to message this trainer.</Text>
+            <GuestAuthButtons />
+          </View>
+        ) : null}
+
         {affiliations.length > 0 ? (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Trains at</Text>
@@ -687,6 +697,16 @@ const styles = StyleSheet.create({
     fontSize: fontSize.base,
     color: colors.textMuted,
     lineHeight: 19,
+  },
+  guestPrompt: {
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  guestPromptText: {
+    fontSize: fontSize.sm,
+    color: colors.textMuted,
+    lineHeight: 17,
+    textAlign: 'center',
   },
   actionRow: {
     flexDirection: 'row',

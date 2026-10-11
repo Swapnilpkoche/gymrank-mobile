@@ -2,6 +2,7 @@ import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { GuestAuthButtons } from '../auth/GuestAuthButtons';
 import { useAuth } from '../../context/auth-context';
 import type { TodayCheckInState } from '../../hooks/useTodayCheckInState';
 import type { MyStaffStatus } from '../../lib/trainer';
@@ -288,6 +289,17 @@ export function ActionGrid({
         ))}
       </View>
 
+      {/* Gated buttons still jump to Log in when tapped, but guests also get
+          Sign up up front instead of only finding it on the Log in screen. */}
+      {!session ? (
+        <View style={styles.guestPrompt}>
+          <Text style={styles.guestPromptText}>
+            Sign in to review, follow, join or check in.
+          </Text>
+          <GuestAuthButtons />
+        </View>
+      ) : null}
+
       {isGymStaff ? (
         <>
           <Text style={styles.teamNote}>
@@ -310,6 +322,16 @@ export function ActionGrid({
 const styles = StyleSheet.create({
   container: {
     gap: spacing.md,
+  },
+  guestPrompt: {
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  guestPromptText: {
+    fontSize: fontSize.sm,
+    color: colors.textMuted,
+    lineHeight: 17,
+    textAlign: 'center',
   },
   teamNote: {
     fontSize: fontSize.sm,

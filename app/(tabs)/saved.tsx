@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { GuestAuthButtons } from '../../src/components/auth/GuestAuthButtons';
 import { SavedGymRow } from '../../src/components/saved/SavedGymRow';
 import { SavedMemberRow } from '../../src/components/saved/SavedMemberRow';
 import { SavedTabToggle, type SavedTab } from '../../src/components/saved/SavedTabToggle';
@@ -143,9 +144,7 @@ export default function SavedScreen() {
         <Text style={styles.emptyText}>
           Follow gyms and members to keep track of them once you&apos;re signed in.
         </Text>
-        <Pressable style={styles.primaryButton} onPress={() => router.push('/login')}>
-          <Text style={styles.primaryButtonText}>Sign in</Text>
-        </Pressable>
+        <GuestAuthButtons style={styles.authButtons} />
       </View>
     );
   }
@@ -351,16 +350,7 @@ const styles = StyleSheet.create({
     fontSize: fontSize.base,
     marginTop: spacing.xs,
   },
-  primaryButton: {
-    backgroundColor: colors.emerald,
-    borderRadius: radius.md,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.xxl,
+  authButtons: {
     marginTop: spacing.sm,
-  },
-  primaryButtonText: {
-    color: colors.white,
-    fontWeight: '700',
-    fontSize: fontSize.md,
   },
 });

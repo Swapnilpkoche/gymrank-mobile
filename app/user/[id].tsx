@@ -13,6 +13,7 @@ import {
   View,
 } from 'react-native';
 
+import { GuestAuthButtons } from '../../src/components/auth/GuestAuthButtons';
 import { AlbumCategoryPreview } from '../../src/components/profile/AlbumCategoryPreview';
 import { AlbumViewerModal } from '../../src/components/profile/AlbumViewerModal';
 import { GymListSection } from '../../src/components/profile/GymListSection';
@@ -204,9 +205,7 @@ export default function PublicProfileScreen() {
       <View style={styles.centered}>
         <Stack.Screen options={{ title: '' }} />
         <Text style={styles.signInText}>Sign in to view this profile.</Text>
-        <Pressable style={styles.followButton} onPress={() => router.push('/login')}>
-          <Text style={styles.followButtonText}>Sign in</Text>
-        </Pressable>
+        <GuestAuthButtons />
       </View>
     );
   }

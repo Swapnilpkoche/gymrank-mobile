@@ -13,6 +13,7 @@ import {
   View,
 } from 'react-native';
 
+import { GuestAuthButtons } from '../../../src/components/auth/GuestAuthButtons';
 import { NominationForm } from '../../../src/components/contests/NominationForm';
 import { NomineeVoteCard } from '../../../src/components/contests/NomineeVoteCard';
 import { useAuth } from '../../../src/context/auth-context';
@@ -267,7 +268,10 @@ export default function FaceOfGymScreen() {
               </Text>
 
               {!session ? (
-                <Text style={styles.empty}>Sign in to nominate yourself.</Text>
+                <>
+                  <Text style={styles.empty}>Sign in to nominate yourself.</Text>
+                  <GuestAuthButtons />
+                </>
               ) : myNomination && myNomination.status === 'active' ? (
                 <View style={styles.myNominationCard}>
                   <Image source={{ uri: myNomination.primaryPhotoUrl }} style={styles.myNominationPhoto} />
@@ -297,7 +301,10 @@ export default function FaceOfGymScreen() {
               </Text>
 
               {!session ? (
-                <Text style={styles.empty}>Sign in to vote.</Text>
+                <>
+                  <Text style={styles.empty}>Sign in to vote.</Text>
+                  <GuestAuthButtons />
+                </>
               ) : nominations.length === 0 ? (
                 <Text style={styles.empty}>No nominees to vote for yet.</Text>
               ) : (

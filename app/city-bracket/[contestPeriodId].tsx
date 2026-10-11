@@ -12,6 +12,7 @@ import {
   View,
 } from 'react-native';
 
+import { GuestAuthButtons } from '../../src/components/auth/GuestAuthButtons';
 import { BracketMatchupCard } from '../../src/components/contests/BracketMatchupCard';
 import { useAuth } from '../../src/context/auth-context';
 import {
@@ -168,6 +169,13 @@ export default function CityBracketScreen() {
                       : 'Completed'}
                 </Text>
               </View>
+
+              {round.status === 'voting' && !session ? (
+                <>
+                  <Text style={styles.empty}>Sign in to vote.</Text>
+                  <GuestAuthButtons />
+                </>
+              ) : null}
 
               <View style={styles.matchupList}>
                 {matchups.map((matchup) => (

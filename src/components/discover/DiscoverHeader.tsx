@@ -1,12 +1,11 @@
-import { useRouter } from 'expo-router';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
+import { GuestAuthButtons } from '../auth/GuestAuthButtons';
 import { useAuth } from '../../context/auth-context';
 import { colors, fontSize, radius, spacing } from '../../theme';
 
 export function DiscoverHeader({ locationText }: { locationText: string | null }) {
   const { session } = useAuth();
-  const router = useRouter();
 
   return (
     <View style={styles.header}>
@@ -22,14 +21,7 @@ export function DiscoverHeader({ locationText }: { locationText: string | null }
           </Text>
         </View>
       ) : (
-        <View style={styles.authButtons}>
-          <Pressable style={styles.signInButton} onPress={() => router.push('/login')}>
-            <Text style={styles.signInText}>Sign in</Text>
-          </Pressable>
-          <Pressable style={styles.signUpButton} onPress={() => router.push('/signup')}>
-            <Text style={styles.signUpText}>Sign up</Text>
-          </Pressable>
-        </View>
+        <GuestAuthButtons />
       )}
     </View>
   );
@@ -51,33 +43,6 @@ const styles = StyleSheet.create({
     fontSize: fontSize.base,
     color: colors.textMuted,
     marginTop: spacing.xs,
-  },
-  authButtons: {
-    flexDirection: 'row',
-    gap: spacing.sm,
-  },
-  signInButton: {
-    borderWidth: 1,
-    borderColor: colors.emerald,
-    borderRadius: radius.pill,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-  },
-  signInText: {
-    color: colors.emerald,
-    fontWeight: '600',
-    fontSize: fontSize.base,
-  },
-  signUpButton: {
-    backgroundColor: colors.emerald,
-    borderRadius: radius.pill,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-  },
-  signUpText: {
-    color: colors.white,
-    fontWeight: '600',
-    fontSize: fontSize.base,
   },
   avatar: {
     width: 36,

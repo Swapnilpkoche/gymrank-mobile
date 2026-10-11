@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { GuestAuthButtons } from '../../src/components/auth/GuestAuthButtons';
 import { CheckInCalendar } from '../../src/components/checkin/CheckInCalendar';
 import { CheckInModal } from '../../src/components/checkin/CheckInModal';
 import { GymCheckInRow } from '../../src/components/checkin/GymCheckInRow';
@@ -94,9 +95,7 @@ export default function CheckInScreen() {
         <Text style={styles.emptyText}>
           Track your gym visits and streaks once you&apos;re signed in.
         </Text>
-        <Pressable style={styles.primaryButton} onPress={() => router.push('/login')}>
-          <Text style={styles.primaryButtonText}>Sign in</Text>
-        </Pressable>
+        <GuestAuthButtons style={styles.authButtons} />
       </View>
     );
   }
@@ -312,16 +311,7 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     textAlign: 'center',
   },
-  primaryButton: {
-    backgroundColor: colors.emerald,
-    borderRadius: radius.md,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.xxl,
+  authButtons: {
     marginTop: spacing.sm,
-  },
-  primaryButtonText: {
-    color: colors.white,
-    fontWeight: '700',
-    fontSize: fontSize.md,
   },
 });

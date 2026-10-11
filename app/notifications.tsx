@@ -11,6 +11,7 @@ import {
   View,
 } from 'react-native';
 
+import { GuestAuthButtons } from '../src/components/auth/GuestAuthButtons';
 import { useAuth } from '../src/context/auth-context';
 import {
   fetchNotifications,
@@ -92,6 +93,7 @@ export default function NotificationsScreen() {
     return (
       <View style={styles.centered}>
         <Text style={styles.emptyText}>Sign in to see your notifications.</Text>
+        <GuestAuthButtons style={styles.authButtons} />
       </View>
     );
   }
@@ -210,6 +212,9 @@ const styles = StyleSheet.create({
     fontSize: fontSize.base,
     textAlign: 'center',
     lineHeight: 19,
+  },
+  authButtons: {
+    marginTop: spacing.md,
   },
   list: {
     gap: spacing.sm,

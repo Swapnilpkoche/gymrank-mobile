@@ -1,5 +1,5 @@
 import { Feather } from '@expo/vector-icons';
-import { Tabs, useRouter } from 'expo-router';
+import { Tabs } from 'expo-router';
 
 import { useAuth } from '../../src/context/auth-context';
 import { useUnreadNotificationCount } from '../../src/hooks/useUnreadNotificationCount';
@@ -7,7 +7,6 @@ import { colors } from '../../src/theme';
 
 export default function TabsLayout() {
   const { session } = useAuth();
-  const router = useRouter();
   const isLoggedIn = !!session;
   // There's no shared header to hang a bell on, so unread notifications badge
   // the Profile tab - which is also where the Notifications button lives.
@@ -48,14 +47,6 @@ export default function TabsLayout() {
           title: isLoggedIn ? 'Profile' : 'Account',
           tabBarIcon: ({ color, size }) => <Feather name="user" color={color} size={size} />,
           tabBarBadge: isLoggedIn && unreadNotifications > 0 ? unreadNotifications : undefined,
-        }}
-        listeners={{
-          tabPress: (event) => {
-            if (!isLoggedIn) {
-              event.preventDefault();
-              router.push('/login');
-            }
-          },
         }}
       />
     </Tabs>
