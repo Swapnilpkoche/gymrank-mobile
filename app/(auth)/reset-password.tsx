@@ -1,10 +1,11 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
 
 import { PasswordStrengthMeter } from '../../src/components/auth/PasswordStrengthMeter';
 import { supabase } from '../../src/lib/supabase';
 import { AuthScreenContainer } from '../../src/components/auth/AuthScreenContainer';
+import { OtpCodeInput, ResendCodeLink } from '../../src/components/auth/OtpCode';
 import { PasswordInput } from '../../src/components/auth/PasswordInput';
 import { colors, fontSize, radius, spacing } from '../../src/theme';
 
@@ -18,7 +19,6 @@ export default function ResetPasswordScreen() {
   const [error, setError] = useState<string | null>(null);
   const [resendMessage, setResendMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isResending, setIsResending] = useState(false);
 
   // Only flag a mismatch once they've started typing the confirmation.
   const passwordsMismatch = confirmPassword.length > 0 && confirmPassword !== newPassword;
@@ -32,28 +32,20 @@ export default function ResetPasswordScreen() {
   // no such window, so it's the actual guard - the state is kept only to
   // drive the UI (spinner/disabled look).
   const isSubmittingRef = useRef(false);
-  const isResendingRef = useRef(false);
 
   async function handleResend() {
-    if (!email || isResendingRef.current) return;
-    isResendingRef.current = true;
+    if (!email) return;
     setError(null);
     setResendMessage(null);
-    setIsResending(true);
-    try {
-      console.log('[reset-password] resetPasswordForEmail (resend) →', email);
-      const { error: resendError } = await supabase.auth.resetPasswordForEmail(email);
-      if (resendError) {
-        console.log('[reset-password] resend failed:', resendError.message);
-        setError(resendError.message);
-        return;
-      }
-      console.log('[reset-password] resend succeeded - previous code is now stale');
-      setResendMessage('A new code has been sent to your email.');
-    } finally {
-      isResendingRef.current = false;
-      setIsResending(false);
+    console.log('[reset-password] resetPasswordForEmail (resend) →', email);
+    const { error: resendError } = await supabase.auth.resetPasswordForEmail(email);
+    if (resendError) {
+      console.log('[reset-password] resend failed:', resendError.message);
+      setError(resendError.message);
+      return;
     }
+    console.log('[reset-password] resend succeeded - previous code is now stale');
+    setResendMessage('A new code has been sent to your email.');
   }
 
   async function handleSubmit() {
@@ -118,14 +110,7 @@ export default function ResetPasswordScreen() {
         Enter the code sent to {email ?? 'your email'} and choose a new password.
       </Text>
 
-      <TextInput
-        style={styles.input}
-        placeholderTextColor={colors.textMuted}
-        placeholder="Code from email"
-        keyboardType="number-pad"
-        value={code}
-        onChangeText={setCode}
-      />
+      <OtpCodeInput value={code} onChangeText={setCode} />
       <PasswordInput
         style={styles.input}
         placeholderTextColor={colors.textMuted}
@@ -162,11 +147,7 @@ export default function ResetPasswordScreen() {
         )}
       </Pressable>
 
-      <Pressable onPress={handleResend} disabled={isResending}>
-        <Text style={styles.link}>
-          {isResending ? 'Resending…' : "Didn't get a code? Resend"}
-        </Text>
-      </Pressable>
+      <ResendCodeLink onResend={handleResend} />
     </AuthScreenContainer>
   );
 }
@@ -217,11 +198,6 @@ const styles = StyleSheet.create({
     marginTop: -spacing.xs,
   },
   message: {
-    color: colors.emerald,
-  },
-  link: {
-    textAlign: 'center',
-    marginTop: spacing.lg,
     color: colors.emerald,
   },
 });

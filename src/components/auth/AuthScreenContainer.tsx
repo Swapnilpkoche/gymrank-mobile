@@ -8,6 +8,26 @@ import { colors, spacing } from '../../theme';
 
 const TOP_BUTTON_SIZE = 40;
 
+// Leaves the whole (auth) group and returns to whatever the guest was
+// browsing. Shared with screens that need to exit the flow from their own
+// buttons (e.g. Verify email's "Skip for now", or after a successful verify).
+export function useCloseAuthFlow() {
+  const router = useRouter();
+  const navigation = useNavigation();
+
+  return function closeAuthFlow() {
+    // The parent is the root stack, where (auth) sits on top of (tabs) or
+    // whichever screen pushed it - popping it there drops the whole group.
+    const rootNavigation = navigation.getParent();
+    if (rootNavigation?.canGoBack()) {
+      rootNavigation.goBack();
+    } else {
+      // Opened cold (e.g. a deep link) with nothing underneath.
+      router.replace('/');
+    }
+  };
+}
+
 // Shared shell for the auth screens. Centers the form like before, but lets it
 // scroll and lifts it above the keyboard so every input stays reachable on
 // small phones. Same iOS-padding / Android-resize approach as the message
@@ -29,20 +49,8 @@ export function AuthScreenContainer({
   topAction: 'close' | 'back';
 }) {
   const router = useRouter();
-  const navigation = useNavigation();
+  const handleClose = useCloseAuthFlow();
   const insets = useSafeAreaInsets();
-
-  function handleClose() {
-    // The parent is the root stack, where (auth) sits on top of (tabs) or
-    // whichever screen pushed it - popping it there drops the whole group.
-    const rootNavigation = navigation.getParent();
-    if (rootNavigation?.canGoBack()) {
-      rootNavigation.goBack();
-    } else {
-      // Opened cold (e.g. a deep link) with nothing underneath.
-      router.replace('/');
-    }
-  }
 
   function handleBack() {
     if (router.canGoBack()) {

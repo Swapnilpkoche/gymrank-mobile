@@ -1,4 +1,4 @@
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
   ActivityIndicator,
@@ -17,12 +17,12 @@ import { PasswordInput } from '../../src/components/auth/PasswordInput';
 import { colors, fontSize, radius, spacing } from '../../src/theme';
 
 export default function SignupScreen() {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Only flag a mismatch once they've started typing the confirmation.
@@ -30,7 +30,6 @@ export default function SignupScreen() {
 
   async function handleSignup() {
     setError(null);
-    setMessage(null);
 
     if (password !== confirmPassword) {
       setError("Passwords don't match.");
@@ -62,9 +61,10 @@ export default function SignupScreen() {
       return;
     }
 
-    // If email confirmation is required, Supabase returns a user but no session.
+    // "Confirm email" is on, so Supabase returns a user but no session until
+    // the emailed code is entered - that happens on the Verify email screen.
     if (data.user && !data.session) {
-      setMessage('Check your email to confirm your account before logging in.');
+      router.replace({ pathname: '/verify-email', params: { email: email.trim() } });
     }
     // If confirmation is disabled, a session is returned and the root layout redirects automatically.
   }
@@ -105,7 +105,6 @@ export default function SignupScreen() {
       <DateOfBirthPicker value={dateOfBirth} onChange={setDateOfBirth} />
 
       {error ? <Text style={styles.error}>{error}</Text> : null}
-      {message ? <Text style={styles.message}>{message}</Text> : null}
 
       <Pressable
         style={[styles.button, isSubmitting && styles.buttonDisabled]}
@@ -167,9 +166,6 @@ const styles = StyleSheet.create({
     color: colors.danger,
     fontSize: fontSize.sm,
     marginTop: -spacing.xs,
-  },
-  message: {
-    color: colors.emerald,
   },
   link: {
     textAlign: 'center',

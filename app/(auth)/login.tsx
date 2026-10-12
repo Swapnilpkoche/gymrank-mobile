@@ -25,6 +25,7 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Pre-fill from a previously "remembered" login, if any - this is the
@@ -45,6 +46,7 @@ export default function LoginScreen() {
 
   async function handleLogin() {
     setError(null);
+    setUnverifiedEmail(null);
     setIsSubmitting(true);
     const trimmedEmail = email.trim();
     const { error: signInError } = await supabase.auth.signInWithPassword({
@@ -53,6 +55,13 @@ export default function LoginScreen() {
     });
     setIsSubmitting(false);
     if (signInError) {
+      // Skipped Verify email after signing up (or never got that far) -
+      // there's no session until the code is entered, so send them there.
+      if (signInError.code === 'email_not_confirmed') {
+        setUnverifiedEmail(trimmedEmail);
+        setError("Your email isn't verified yet. Enter the code we emailed you to finish signing up.");
+        return;
+      }
       setError(signInError.message);
       return;
     }
@@ -109,6 +118,14 @@ export default function LoginScreen() {
       </View>
 
       {error ? <Text style={styles.error}>{error}</Text> : null}
+      {unverifiedEmail ? (
+        <Link
+          href={{ pathname: '/verify-email', params: { email: unverifiedEmail } }}
+          style={styles.verifyLink}
+        >
+          Enter verification code
+        </Link>
+      ) : null}
 
       <Pressable
         style={[styles.button, isSubmitting && styles.buttonDisabled]}
@@ -190,6 +207,11 @@ const styles = StyleSheet.create({
   rememberLabel: {
     fontSize: fontSize.md,
     color: colors.textPrimary,
+  },
+  verifyLink: {
+    color: colors.emerald,
+    fontWeight: '700',
+    fontSize: fontSize.md,
   },
   forgotLink: {
     color: colors.emerald,
