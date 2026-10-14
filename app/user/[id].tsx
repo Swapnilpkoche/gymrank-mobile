@@ -71,13 +71,23 @@ export default function PublicProfileScreen() {
 
   const load = useCallback(async () => {
     setError(null);
-    // get_public_profile and get_public_owned_gyms are signed-in only, so a
-    // guest gets a sign-in prompt instead of a permission error.
-    if (!session) {
-      setIsLoading(false);
-      return;
-    }
     try {
+      // Guests see the same public profile, minus relationship status. For a
+      // guest, get_public_profile returns no row for a minor, so stop there
+      // (showing "not available") rather than also pulling their album.
+      if (!session) {
+        const profileData = await fetchPublicProfile(targetUserId);
+        const [ownedGymsData, albumData] = profileData
+          ? await Promise.all([fetchPublicOwnedGyms(targetUserId), fetchAlbumItems(targetUserId)])
+          : [[], []];
+        setProfile(profileData);
+        setRelationship(null);
+        setOwnedGyms(ownedGymsData);
+        setAlbumItems(albumData);
+        setIsLoading(false);
+        return;
+      }
+
       const [profileData, relationshipData, ownedGymsData, albumData] = await Promise.all([
         fetchPublicProfile(targetUserId),
         fetchRelationshipStatus(session.user.id, targetUserId),
@@ -200,16 +210,6 @@ export default function PublicProfileScreen() {
     );
   }
 
-  if (!session) {
-    return (
-      <View style={styles.centered}>
-        <Stack.Screen options={{ title: '' }} />
-        <Text style={styles.signInText}>Sign in to view this profile.</Text>
-        <GuestAuthButtons />
-      </View>
-    );
-  }
-
   if (error || !profile) {
     return (
       <View style={styles.centered}>
@@ -311,6 +311,15 @@ export default function PublicProfileScreen() {
         </View>
       ) : null}
 
+      {/* Follow and Message still jump to Log in when tapped, but guests also
+          get Sign up up front instead of only finding it on the Log in screen. */}
+      {!session ? (
+        <View style={styles.guestPrompt}>
+          <Text style={styles.guestPromptText}>Sign in to follow or message.</Text>
+          <GuestAuthButtons />
+        </View>
+      ) : null}
+
       {ownedGyms.length > 0 ? (
         <View style={styles.ownedGymsSection}>
           <GymListSection
@@ -381,11 +390,16 @@ const styles = StyleSheet.create({
     color: colors.danger,
     textAlign: 'center',
   },
-  signInText: {
+  // Same as the guest prompt on app/trainer/[id].tsx.
+  guestPrompt: {
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  guestPromptText: {
+    fontSize: fontSize.sm,
     color: colors.textMuted,
-    fontSize: fontSize.md,
+    lineHeight: 17,
     textAlign: 'center',
-    marginBottom: spacing.md,
   },
   avatar: {
     width: AVATAR_SIZE,

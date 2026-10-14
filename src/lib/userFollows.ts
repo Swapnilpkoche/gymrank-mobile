@@ -26,9 +26,9 @@ type RawPublicOwnedGymRow = {
   member_count: number | string;
 };
 
-// get_public_owned_gyms is a SECURITY DEFINER RPC (signed-in only, like
-// get_public_profile) returning just the public summary of the active gyms a
-// user owns - rating via get_location_stats (same as the gym page) and
+// get_public_owned_gyms is a SECURITY DEFINER RPC (callable by guests, like
+// get_public_profile, but returning nothing for a minor when the caller is a
+// guest) returning just the public summary of the active gyms a user owns - rating via get_location_stats (same as the gym page) and
 // member count via get_gym_member_counts (same as Discover).
 export async function fetchPublicOwnedGyms(userId: string): Promise<PublicOwnedGym[]> {
   const { data, error } = await supabase.rpc('get_public_owned_gyms', { p_user_id: userId });
