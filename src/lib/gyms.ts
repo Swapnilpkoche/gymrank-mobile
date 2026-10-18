@@ -106,7 +106,7 @@ async function fetchRatings(gymIds: number[]): Promise<Map<number, { rating: num
   return ratings;
 }
 
-async function fetchHeroPhotos(gymIds: number[]): Promise<Map<number, string>> {
+export async function fetchHeroPhotos(gymIds: number[]): Promise<Map<number, string>> {
   const heroPhotos = new Map<number, string>();
   const firstGalleryPhotos = new Map<number, string>();
   if (gymIds.length === 0) return heroPhotos;

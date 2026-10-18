@@ -53,14 +53,14 @@ export function CertificationsSection({
           {certifications.map((certification) => {
             const photoUrl = certification.photoPath ? photoUrls[certification.photoPath] : undefined;
             return (
-              <View key={certification.id} style={styles.row}>
+              <View key={certification.id} style={styles.card}>
                 {photoUrl ? (
                   <Pressable onPress={() => setViewerUrl(photoUrl)}>
                     <Image source={{ uri: photoUrl }} style={styles.thumb} />
                   </Pressable>
                 ) : (
                   <View style={[styles.thumb, styles.thumbFallback]}>
-                    <Feather name="award" size={18} color={colors.emeraldLight} />
+                    <Feather name="award" size={22} color={colors.emeraldLight} />
                   </View>
                 )}
                 <View style={styles.info}>
@@ -132,20 +132,20 @@ const styles = StyleSheet.create({
   list: {
     gap: spacing.sm,
   },
-  row: {
+  card: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.md,
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: radius.md,
-    padding: spacing.md,
+    borderRadius: radius.lg,
+    padding: spacing.lg,
   },
   thumb: {
-    width: 48,
-    height: 48,
-    borderRadius: radius.sm,
+    width: 56,
+    height: 56,
+    borderRadius: radius.md,
   },
   thumbFallback: {
     backgroundColor: colors.emeraldTint,
@@ -154,16 +154,16 @@ const styles = StyleSheet.create({
   },
   info: {
     flex: 1,
+    gap: spacing.xs,
   },
   certTitle: {
     color: colors.textPrimary,
-    fontWeight: '600',
-    fontSize: fontSize.md,
+    fontWeight: '700',
+    fontSize: fontSize.lg,
   },
   issuer: {
     color: colors.textMuted,
     fontSize: fontSize.sm,
-    marginTop: spacing.xs,
   },
   viewerOverlay: {
     flex: 1,

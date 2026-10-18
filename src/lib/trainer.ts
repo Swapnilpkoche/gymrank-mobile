@@ -1,4 +1,5 @@
 import { fetchGymRequestAvailability, type GymRequestAvailability } from './gymControls';
+import { fetchHeroPhotos } from './gyms';
 import { supabase } from './supabase';
 import { formatWaitDuration } from './time';
 import type {
@@ -323,23 +324,32 @@ export async function deleteTrainerCertification(certification: TrainerCertifica
 
 type RawAffiliationRow = {
   gym_id: number;
-  gyms: { name: string; city: string | null } | null;
+  gyms: { name: string; city: string | null; location: string | null } | null;
 };
 
 export async function fetchTrainerAffiliations(userId: string): Promise<TrainerAffiliation[]> {
   const { data, error } = await supabase
     .from('gym_staff')
-    .select('gym_id, gyms(name, city)')
+    .select('gym_id, gyms(name, city, location)')
     .eq('user_id', userId)
     .eq('role', 'trainer')
     .eq('status', 'active');
 
   if (error) throw error;
 
-  return ((data ?? []) as unknown as RawAffiliationRow[]).map((row) => ({
+  const rows = (data ?? []) as unknown as RawAffiliationRow[];
+  // Best-effort: a gym photo that fails to load just shows the placeholder -
+  // it shouldn't hide where the trainer works.
+  const photos = await fetchHeroPhotos(rows.map((row) => row.gym_id)).catch(
+    () => new Map<number, string>()
+  );
+
+  return rows.map((row) => ({
     gymId: row.gym_id,
     gymName: row.gyms?.name ?? 'Unknown gym',
     city: row.gyms?.city ?? null,
+    location: row.gyms?.location ?? null,
+    photoUrl: photos.get(row.gym_id) ?? null,
   }));
 }
 

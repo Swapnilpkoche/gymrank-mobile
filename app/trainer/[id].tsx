@@ -1,4 +1,5 @@
 import { Feather } from '@expo/vector-icons';
+import * as Linking from 'expo-linking';
 import { Stack, useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
@@ -8,6 +9,7 @@ import {
   Pressable,
   RefreshControl,
   ScrollView,
+  Share,
   StyleSheet,
   Text,
   View,
@@ -73,7 +75,9 @@ export default function TrainerProfileScreen() {
   const [affiliations, setAffiliations] = useState<TrainerAffiliation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [isMessagePending, setIsMessagePending] = useState(false);
+  // Which contact button is waiting on the thread lookup - both are disabled
+  // meanwhile, the spinner shows on the one that was tapped.
+  const [pendingContact, setPendingContact] = useState<'message' | 'book' | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isAddCertificationVisible, setIsAddCertificationVisible] = useState(false);
@@ -171,12 +175,13 @@ export default function TrainerProfileScreen() {
 
   // Same contact path as the public profile screen - server-side
   // (trg_enforce_message_thread_rules) is what actually gates who can message.
-  async function handleMessagePress() {
+  // "Book a Session" goes through here too until there's a real booking flow.
+  async function handleContactPress(kind: 'message' | 'book') {
     if (!session) {
       router.push('/login');
       return;
     }
-    setIsMessagePending(true);
+    setPendingContact(kind);
     try {
       const result = await getOrCreateMessageThread(session.user.id, trainerUserId);
       if (result.kind === 'success') {
@@ -190,7 +195,18 @@ export default function TrainerProfileScreen() {
         Alert.alert('Something went wrong', result.message);
       }
     } finally {
-      setIsMessagePending(false);
+      setPendingContact(null);
+    }
+  }
+
+  // No web profile page exists yet, so this shares the app's deep link
+  // (gymrank://trainer/<id>), which opens this screen for anyone with the app.
+  async function handleShare() {
+    const url = Linking.createURL(`/trainer/${trainerUserId}`);
+    try {
+      await Share.share({ message: `${displayName} on GymTrust: ${url}`, url });
+    } catch (err) {
+      Alert.alert("Couldn't share", err instanceof Error ? err.message : 'Please try again.');
     }
   }
 
@@ -270,7 +286,7 @@ export default function TrainerProfileScreen() {
         <Stack.Screen options={{ title: displayName }} />
 
         {isOwnProfile && applyGym ? (
-          <View style={styles.applyCard}>
+          <View style={[styles.applyCard, styles.applyCardTop]}>
             <View style={styles.applyHeader}>
               <Feather name="map-pin" size={14} color={colors.emeraldLight} />
               <Text style={styles.applyLabel}>Trainer request</Text>
@@ -298,194 +314,260 @@ export default function TrainerProfileScreen() {
         ) : null}
 
         {photoUrl ? (
-          <Image source={{ uri: photoUrl }} style={styles.photo} />
+          <Image source={{ uri: photoUrl }} style={styles.hero} />
         ) : (
-          <View style={[styles.photo, styles.photoFallback]}>
-            <Text style={styles.photoFallbackText}>{initials(displayName)}</Text>
+          <View style={[styles.hero, styles.heroFallback]}>
+            <Text style={styles.heroFallbackText}>{initials(displayName)}</Text>
           </View>
         )}
 
-        <Text style={styles.name}>{displayName}</Text>
-        {publicProfile?.username ? (
-          <Text style={styles.username}>@{publicProfile.username}</Text>
-        ) : null}
+        <View style={styles.body}>
+          <View style={styles.identity}>
+            <Text style={styles.name}>{displayName}</Text>
+            {publicProfile?.username ? (
+              <Text style={styles.username}>@{publicProfile.username}</Text>
+            ) : null}
+          </View>
 
-        {trainer ? (
-          <>
-            <View style={styles.badgeRow}>
-              <View style={styles.trainerBadge}>
-                <Feather name="award" size={12} color={colors.emeraldLight} />
-                <Text style={styles.trainerBadgeText}>Trainer</Text>
+          {trainer ? (
+            <>
+              <View style={styles.badgeRow}>
+                <View style={styles.trainerBadge}>
+                  <Feather name="award" size={12} color={colors.emeraldLight} />
+                  <Text style={styles.trainerBadgeText}>Trainer</Text>
+                </View>
+                {trainer.yearsExperience != null ? (
+                  <View style={styles.experienceBadge}>
+                    <Feather name="clock" size={12} color={colors.textMuted} />
+                    <Text style={styles.experienceBadgeText}>
+                      {trainer.yearsExperience} {trainer.yearsExperience === 1 ? 'yr' : 'yrs'} experience
+                    </Text>
+                  </View>
+                ) : null}
               </View>
-              {trainer.yearsExperience != null ? (
-                <View style={styles.experienceBadge}>
-                  <Text style={styles.experienceBadgeText}>
-                    {trainer.yearsExperience} {trainer.yearsExperience === 1 ? 'yr' : 'yrs'} experience
-                  </Text>
+
+              {trainer.specialties.length > 0 ? (
+                <View style={styles.section}>
+                  <Text style={styles.sectionTitle}>Specializations</Text>
+                  <View style={styles.chipRow}>
+                    {trainer.specialties.map((specialty) => (
+                      <View key={specialty} style={styles.chip}>
+                        <Feather name="activity" size={13} color={colors.emeraldLight} />
+                        <Text style={styles.chipText}>{specialty}</Text>
+                      </View>
+                    ))}
+                  </View>
                 </View>
               ) : null}
-            </View>
 
-            {trainer.specialties.length > 0 ? (
-              <View style={styles.chipRow}>
-                {trainer.specialties.map((specialty) => (
-                  <View key={specialty} style={styles.chip}>
-                    <Text style={styles.chipText}>{specialty}</Text>
-                  </View>
-                ))}
+              {trainer.bio ? (
+                <View style={styles.section}>
+                  <Text style={styles.sectionTitle}>About</Text>
+                  <Text style={styles.bio}>{trainer.bio}</Text>
+                </View>
+              ) : null}
+            </>
+          ) : isOwnProfile ? (
+            // The generic pitch only makes sense with no gym in play - when
+            // applying to one, the request card above already says exactly what
+            // this is for.
+            applyGym ? null : (
+              <View style={styles.ctaCard}>
+                <Text style={styles.ctaTitle}>Become a trainer on GymTrust</Text>
+                <Text style={styles.ctaText}>
+                  Create a trainer profile to show your specialties and certifications, and to request
+                  to join a gym as a trainer. You must be 18 or over.
+                </Text>
               </View>
-            ) : null}
-
-            {trainer.bio ? <Text style={styles.bio}>{trainer.bio}</Text> : null}
-          </>
-        ) : isOwnProfile ? (
-          // The generic pitch only makes sense with no gym in play - when
-          // applying to one, the request card above already says exactly what
-          // this is for.
-          applyGym ? null : (
-            <View style={styles.ctaCard}>
-              <Text style={styles.ctaTitle}>Become a trainer on GymTrust</Text>
-              <Text style={styles.ctaText}>
-                Create a trainer profile to show your specialties and certifications, and to request
-                to join a gym as a trainer. You must be 18 or over.
-              </Text>
-            </View>
-          )
-        ) : (
-          <Text style={styles.emptyText}>This user hasn&apos;t set up a trainer profile yet.</Text>
-        )}
-
-        <View style={styles.actionRow}>
-          {isOwnProfile ? (
-            <Pressable style={styles.primaryButton} onPress={() => setIsEditModalVisible(true)}>
-              <Feather name="edit-2" size={16} color={colors.white} />
-              <Text style={styles.primaryButtonText}>
-                {trainer ? 'Edit trainer profile' : 'Create trainer profile'}
-              </Text>
-            </Pressable>
+            )
           ) : (
-            <Pressable
-              style={styles.outlineButton}
-              onPress={handleMessagePress}
-              disabled={isMessagePending}
-            >
-              {isMessagePending ? (
-                <ActivityIndicator color={colors.emerald} size="small" />
-              ) : (
-                <>
-                  <Feather name="message-circle" size={16} color={colors.emerald} />
-                  <Text style={styles.outlineButtonText}>Message</Text>
-                </>
-              )}
-            </Pressable>
+            <Text style={styles.emptyText}>This user hasn&apos;t set up a trainer profile yet.</Text>
           )}
-        </View>
 
-        {/* Message still jumps to Log in when tapped, but guests also get
-            Sign up up front instead of only finding it on the Log in screen. */}
-        {!session ? (
-          <View style={styles.guestPrompt}>
-            <Text style={styles.guestPromptText}>Sign in to message this trainer.</Text>
-            <GuestAuthButtons />
-          </View>
-        ) : null}
-
-        {affiliations.length > 0 ? (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Trains at</Text>
-            <View style={styles.list}>
-              {affiliations.map((affiliation) => (
+          <View style={styles.actionRow}>
+            {isOwnProfile ? (
+              <Pressable
+                style={[styles.primaryButton, styles.actionButton]}
+                onPress={() => setIsEditModalVisible(true)}
+              >
+                <Feather name="edit-2" size={16} color={colors.white} />
+                <Text style={styles.primaryButtonText}>
+                  {trainer ? 'Edit trainer profile' : 'Create trainer profile'}
+                </Text>
+              </Pressable>
+            ) : (
+              <>
+                {/* Only someone with a trainer profile can be booked; a plain
+                    user's page keeps just Message. */}
+                {trainer ? (
+                  <Pressable
+                    style={[styles.primaryButton, styles.actionButton]}
+                    onPress={() => handleContactPress('book')}
+                    disabled={pendingContact !== null}
+                  >
+                    {pendingContact === 'book' ? (
+                      <ActivityIndicator color={colors.white} size="small" />
+                    ) : (
+                      <>
+                        <Feather name="calendar" size={16} color={colors.white} />
+                        <Text style={styles.primaryButtonText}>Book a Session</Text>
+                      </>
+                    )}
+                  </Pressable>
+                ) : null}
                 <Pressable
-                  key={affiliation.gymId}
-                  style={styles.gymRow}
-                  onPress={() =>
-                    router.push({ pathname: '/gym/[id]', params: { id: String(affiliation.gymId) } })
-                  }
+                  style={[styles.outlineButton, styles.actionButton]}
+                  onPress={() => handleContactPress('message')}
+                  disabled={pendingContact !== null}
                 >
-                  <Feather name="map-pin" size={16} color={colors.emerald} />
-                  <View style={styles.gymInfo}>
-                    <Text style={styles.gymName}>{affiliation.gymName}</Text>
-                    {affiliation.city ? <Text style={styles.gymCity}>{affiliation.city}</Text> : null}
-                  </View>
-                  {/* Every row here is a TRAINER row (fetchTrainerAffiliations filters
-                      role = 'trainer', and gym_staff is unique per gym+user, so you
-                      can't also be that gym's owner). The sole-owner case that hides
-                      "Leave this gym" on the gym page therefore can't occur in this
-                      list - Leave is always valid here. */}
-                  {isOwnProfile ? (
-                    <Pressable
-                      style={styles.leaveButton}
-                      onPress={() => handleLeave(affiliation)}
-                      hitSlop={6}
-                      accessibilityLabel={`Leave ${affiliation.gymName}`}
-                    >
-                      <Feather name="log-out" size={13} color={colors.danger} />
-                      <Text style={styles.leaveButtonText}>Leave</Text>
-                    </Pressable>
+                  {pendingContact === 'message' ? (
+                    <ActivityIndicator color={colors.emerald} size="small" />
                   ) : (
-                    <Feather name="chevron-right" size={16} color={colors.textMuted} />
+                    <>
+                      <Feather name="message-circle" size={16} color={colors.emerald} />
+                      <Text style={styles.outlineButtonText}>Message</Text>
+                    </>
                   )}
                 </Pressable>
-              ))}
-            </View>
+              </>
+            )}
           </View>
-        ) : null}
 
-        {isOwnProfile && history.length > 0 ? (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Gym history</Text>
-            <View style={styles.list}>
-              {history.map((item) => {
-                const when = item.at ? ` · ${formatShortDate(item.at)}` : '';
-                const roleLabel = item.role === 'trainer' ? '' : ` (${item.role})`;
-                let text: string;
-                let warn = false;
-                if (item.status === 'removed') {
-                  warn = !item.leftByChoice;
-                  text = item.leftByChoice
-                    ? `You left ${item.gymName}${roleLabel}${when}`
-                    : `You were removed from ${item.gymName}${roleLabel}${when}`;
-                } else if (item.status === 'rejected') {
-                  warn = true;
-                  text = `${item.gymName} declined your request${when}`;
-                } else if (item.status === 'suspended') {
-                  warn = true;
-                  text = `Your access at ${item.gymName} is suspended`;
-                } else {
-                  text = `Request pending at ${item.gymName}`;
-                }
-
-                return (
-                  <Pressable
-                    key={item.id}
-                    style={[styles.gymRow, warn && styles.historyRowWarn]}
-                    onPress={() =>
-                      router.push({ pathname: '/gym/[id]', params: { id: String(item.gymId) } })
-                    }
-                  >
-                    <Feather
-                      name={warn ? 'alert-circle' : 'clock'}
-                      size={16}
-                      color={warn ? colors.warning : colors.textMuted}
-                    />
-                    <Text style={[styles.historyText, warn && styles.historyTextWarn]}>{text}</Text>
-                    <Feather name="chevron-right" size={16} color={colors.textMuted} />
-                  </Pressable>
-                );
-              })}
+          {/* Message / Book still jump to Log in when tapped, but guests also get
+              Sign up up front instead of only finding it on the Log in screen. */}
+          {!session ? (
+            <View style={styles.guestPrompt}>
+              <Text style={styles.guestPromptText}>
+                {trainer
+                  ? 'Sign in to message or book a session with this trainer.'
+                  : 'Sign in to message this trainer.'}
+              </Text>
+              <GuestAuthButtons />
             </View>
-          </View>
-        ) : null}
+          ) : null}
 
-        {trainer ? (
-          <CertificationsSection
-            certifications={certifications}
-            photoUrls={certificatePhotoUrls}
-            isOwner={isOwnProfile}
-            onAddPress={() => setIsAddCertificationVisible(true)}
-            onDelete={handleDeleteCertification}
-          />
-        ) : null}
+          {affiliations.length > 0 ? (
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Trains at</Text>
+              <View style={styles.list}>
+                {affiliations.map((affiliation) => {
+                  const place = affiliation.location ?? affiliation.city;
+                  return (
+                    <Pressable
+                      key={affiliation.gymId}
+                      style={styles.gymCard}
+                      onPress={() =>
+                        router.push({ pathname: '/gym/[id]', params: { id: String(affiliation.gymId) } })
+                      }
+                    >
+                      {affiliation.photoUrl ? (
+                        <Image source={{ uri: affiliation.photoUrl }} style={styles.gymThumb} />
+                      ) : (
+                        <View style={[styles.gymThumb, styles.gymThumbFallback]}>
+                          <Feather name="image" size={20} color={colors.textMuted} />
+                        </View>
+                      )}
+                      <View style={styles.gymInfo}>
+                        <Text style={styles.gymName} numberOfLines={1}>
+                          {affiliation.gymName}
+                        </Text>
+                        {place ? (
+                          <View style={styles.gymPlaceRow}>
+                            <Feather name="map-pin" size={12} color={colors.textMuted} />
+                            <Text style={styles.gymCity} numberOfLines={2}>
+                              {place}
+                            </Text>
+                          </View>
+                        ) : null}
+                      </View>
+                      {/* Every row here is a TRAINER row (fetchTrainerAffiliations filters
+                          role = 'trainer', and gym_staff is unique per gym+user, so you
+                          can't also be that gym's owner). The sole-owner case that hides
+                          "Leave this gym" on the gym page therefore can't occur in this
+                          list - Leave is always valid here. */}
+                      {isOwnProfile ? (
+                        <Pressable
+                          style={styles.leaveButton}
+                          onPress={() => handleLeave(affiliation)}
+                          hitSlop={6}
+                          accessibilityLabel={`Leave ${affiliation.gymName}`}
+                        >
+                          <Feather name="log-out" size={13} color={colors.danger} />
+                          <Text style={styles.leaveButtonText}>Leave</Text>
+                        </Pressable>
+                      ) : (
+                        <Feather name="chevron-right" size={16} color={colors.textMuted} />
+                      )}
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </View>
+          ) : null}
+
+          {isOwnProfile && history.length > 0 ? (
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Gym history</Text>
+              <View style={styles.list}>
+                {history.map((item) => {
+                  const when = item.at ? ` · ${formatShortDate(item.at)}` : '';
+                  const roleLabel = item.role === 'trainer' ? '' : ` (${item.role})`;
+                  let text: string;
+                  let warn = false;
+                  if (item.status === 'removed') {
+                    warn = !item.leftByChoice;
+                    text = item.leftByChoice
+                      ? `You left ${item.gymName}${roleLabel}${when}`
+                      : `You were removed from ${item.gymName}${roleLabel}${when}`;
+                  } else if (item.status === 'rejected') {
+                    warn = true;
+                    text = `${item.gymName} declined your request${when}`;
+                  } else if (item.status === 'suspended') {
+                    warn = true;
+                    text = `Your access at ${item.gymName} is suspended`;
+                  } else {
+                    text = `Request pending at ${item.gymName}`;
+                  }
+
+                  return (
+                    <Pressable
+                      key={item.id}
+                      style={[styles.gymRow, warn && styles.historyRowWarn]}
+                      onPress={() =>
+                        router.push({ pathname: '/gym/[id]', params: { id: String(item.gymId) } })
+                      }
+                    >
+                      <Feather
+                        name={warn ? 'alert-circle' : 'clock'}
+                        size={16}
+                        color={warn ? colors.warning : colors.textMuted}
+                      />
+                      <Text style={[styles.historyText, warn && styles.historyTextWarn]}>{text}</Text>
+                      <Feather name="chevron-right" size={16} color={colors.textMuted} />
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </View>
+          ) : null}
+
+          {trainer ? (
+            <CertificationsSection
+              certifications={certifications}
+              photoUrls={certificatePhotoUrls}
+              isOwner={isOwnProfile}
+              onAddPress={() => setIsAddCertificationVisible(true)}
+              onDelete={handleDeleteCertification}
+            />
+          ) : null}
+
+          {trainer ? (
+            <Pressable style={styles.shareButton} onPress={handleShare}>
+              <Feather name="share-2" size={16} color={colors.textPrimary} />
+              <Text style={styles.shareButtonText}>Share Profile</Text>
+            </Pressable>
+          ) : null}
+        </View>
       </ScrollView>
 
       {isOwnProfile && session ? (
@@ -514,8 +596,6 @@ export default function TrainerProfileScreen() {
   );
 }
 
-const PHOTO_SIZE = 112;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -523,10 +603,15 @@ const styles = StyleSheet.create({
   },
   content: {
     flexGrow: 1,
-    alignItems: 'center',
-    padding: spacing.xxl,
     paddingBottom: 48,
-    gap: spacing.md,
+  },
+  body: {
+    padding: spacing.xxl,
+    gap: spacing.lg,
+  },
+  applyCardTop: {
+    width: 'auto',
+    margin: spacing.lg,
   },
   centered: {
     flex: 1,
@@ -583,27 +668,27 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     fontSize: fontSize.md,
   },
-  photo: {
-    width: PHOTO_SIZE,
-    height: PHOTO_SIZE,
-    borderRadius: PHOTO_SIZE / 2,
-    marginBottom: spacing.xs,
+  hero: {
+    width: '100%',
+    aspectRatio: 1,
   },
-  photoFallback: {
+  heroFallback: {
     backgroundColor: colors.surfaceRaised,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  photoFallbackText: {
-    color: colors.textPrimary,
+  heroFallbackText: {
+    color: colors.textMuted,
     fontWeight: '700',
-    fontSize: 36,
+    fontSize: 72,
+  },
+  identity: {
+    gap: spacing.xs,
   },
   name: {
-    fontSize: fontSize.xxl,
-    fontWeight: '700',
+    fontSize: fontSize.display,
+    fontWeight: '800',
     color: colors.textPrimary,
-    textAlign: 'center',
   },
   username: {
     fontSize: fontSize.base,
@@ -612,9 +697,8 @@ const styles = StyleSheet.create({
   badgeRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'center',
     gap: spacing.sm,
-    marginTop: spacing.xs,
+    marginTop: -spacing.xs,
   },
   trainerBadge: {
     flexDirection: 'row',
@@ -633,6 +717,9 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   experienceBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
@@ -648,35 +735,32 @@ const styles = StyleSheet.create({
   chipRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'center',
     gap: spacing.sm,
-    marginTop: spacing.xs,
   },
   chip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
     borderRadius: radius.pill,
-    paddingVertical: spacing.xs,
+    paddingVertical: spacing.sm,
     paddingHorizontal: spacing.md,
   },
   chipText: {
     color: colors.textPrimary,
-    fontSize: fontSize.sm,
+    fontSize: fontSize.base,
     fontWeight: '600',
   },
   bio: {
-    fontSize: fontSize.md,
+    fontSize: fontSize.lg,
     color: colors.textPrimary,
-    textAlign: 'center',
-    lineHeight: 21,
-    marginTop: spacing.sm,
+    lineHeight: 23,
   },
   emptyText: {
     fontSize: fontSize.base,
     color: colors.textMuted,
-    textAlign: 'center',
-    marginTop: spacing.xs,
   },
   ctaCard: {
     width: '100%',
@@ -711,7 +795,11 @@ const styles = StyleSheet.create({
   actionRow: {
     flexDirection: 'row',
     gap: spacing.md,
-    marginTop: spacing.md,
+  },
+  actionButton: {
+    flex: 1,
+    paddingHorizontal: spacing.md,
+    minWidth: 0,
   },
   primaryButton: {
     flexDirection: 'row',
@@ -748,7 +836,6 @@ const styles = StyleSheet.create({
   section: {
     width: '100%',
     gap: spacing.md,
-    marginTop: spacing.md,
   },
   sectionTitle: {
     fontSize: fontSize.lg,
@@ -768,8 +855,51 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
     padding: spacing.md,
   },
+  gymCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    backgroundColor: colors.card,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.lg,
+    padding: spacing.md,
+  },
+  gymThumb: {
+    width: 72,
+    height: 72,
+    borderRadius: radius.md,
+  },
+  gymThumbFallback: {
+    backgroundColor: colors.surfaceRaised,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   gymInfo: {
     flex: 1,
+    gap: spacing.xs,
+  },
+  gymPlaceRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: spacing.xs,
+  },
+  shareButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.sm,
+    backgroundColor: colors.card,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.pill,
+    paddingVertical: spacing.md,
+    marginTop: spacing.sm,
+  },
+  shareButtonText: {
+    color: colors.textPrimary,
+    fontWeight: '700',
+    fontSize: fontSize.md,
   },
   leaveButton: {
     flexDirection: 'row',
@@ -804,8 +934,8 @@ const styles = StyleSheet.create({
     fontSize: fontSize.md,
   },
   gymCity: {
+    flex: 1,
     color: colors.textMuted,
     fontSize: fontSize.sm,
-    marginTop: spacing.xs,
   },
 });

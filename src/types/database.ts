@@ -157,6 +157,9 @@ export type TrainerAffiliation = {
   gymId: number;
   gymName: string;
   city: string | null;
+  location: string | null;
+  // The gym's hero (or first gallery) photo, same pick as the Discover cards.
+  photoUrl: string | null;
 };
 
 // One of the caller's own NON-active gym_staff rows - a request that's still
