@@ -21,6 +21,7 @@ import { useAuth } from '../../src/context/auth-context';
 import { fetchAlbumItems } from '../../src/lib/album';
 import { confirmUnfollow } from '../../src/lib/confirmations';
 import { getOrCreateMessageThread } from '../../src/lib/messages';
+import { isActiveTrainerWithProfile } from '../../src/lib/trainer';
 import {
   fetchPublicOwnedGyms,
   fetchPublicProfile,
@@ -72,11 +73,25 @@ export default function PublicProfileScreen() {
   const load = useCallback(async () => {
     setError(null);
     try {
+      // A trainer has one profile: however you got here (search, Saved,
+      // reviews, a deep link), an active trainer with a trainer profile is
+      // shown on the trainer screen instead. `replace` so Back returns to
+      // wherever you came from. A failed check just falls back to this screen.
+      const [profileData, isTrainer] = await Promise.all([
+        fetchPublicProfile(targetUserId),
+        isActiveTrainerWithProfile(targetUserId).catch(() => false),
+      ]);
+      // For a guest, get_public_profile returns no row for a minor - that
+      // stays "not available" here rather than redirecting anywhere.
+      if (isTrainer && (session || profileData)) {
+        router.replace({ pathname: '/trainer/[id]', params: { id: targetUserId } });
+        return;
+      }
+
       // Guests see the same public profile, minus relationship status. For a
       // guest, get_public_profile returns no row for a minor, so stop there
       // (showing "not available") rather than also pulling their album.
       if (!session) {
-        const profileData = await fetchPublicProfile(targetUserId);
         const [ownedGymsData, albumData] = profileData
           ? await Promise.all([fetchPublicOwnedGyms(targetUserId), fetchAlbumItems(targetUserId)])
           : [[], []];
@@ -88,8 +103,7 @@ export default function PublicProfileScreen() {
         return;
       }
 
-      const [profileData, relationshipData, ownedGymsData, albumData] = await Promise.all([
-        fetchPublicProfile(targetUserId),
+      const [relationshipData, ownedGymsData, albumData] = await Promise.all([
         fetchRelationshipStatus(session.user.id, targetUserId),
         fetchPublicOwnedGyms(targetUserId),
         fetchAlbumItems(targetUserId),

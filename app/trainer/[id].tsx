@@ -16,13 +16,16 @@ import {
 } from 'react-native';
 
 import { GuestAuthButtons } from '../../src/components/auth/GuestAuthButtons';
+import { AlbumCategoryPreview } from '../../src/components/profile/AlbumCategoryPreview';
+import { AlbumViewerModal } from '../../src/components/profile/AlbumViewerModal';
 import { AddCertificationModal } from '../../src/components/trainer/AddCertificationModal';
 import { AvailabilitySection } from '../../src/components/trainer/AvailabilitySection';
 import { BookSessionModal } from '../../src/components/trainer/BookSessionModal';
 import { CertificationsSection } from '../../src/components/trainer/CertificationsSection';
 import { EditTrainerProfileModal } from '../../src/components/trainer/EditTrainerProfileModal';
 import { useAuth } from '../../src/context/auth-context';
-import { confirmLeaveGym } from '../../src/lib/confirmations';
+import { fetchAlbumItems } from '../../src/lib/album';
+import { confirmLeaveGym, confirmUnfollow } from '../../src/lib/confirmations';
 import { getOrCreateMessageThread } from '../../src/lib/messages';
 import { checkCanBookSessions } from '../../src/lib/sessions';
 import { formatShortDate } from '../../src/lib/time';
@@ -37,9 +40,16 @@ import {
   leaveGym,
 } from '../../src/lib/trainer';
 import { confirmTrainerRequest, sendTrainerRequest } from '../../src/lib/trainerRequestFlow';
-import { fetchPublicProfile } from '../../src/lib/userFollows';
+import {
+  fetchPublicProfile,
+  fetchRelationshipStatus,
+  followUser,
+  unfollowUser,
+  type RelationshipStatus,
+} from '../../src/lib/userFollows';
 import { colors, fontSize, radius, spacing } from '../../src/theme';
 import type {
+  AlbumItem,
   MyGymHistoryItem,
   PublicProfile,
   TrainerAffiliation,
@@ -82,6 +92,10 @@ export default function TrainerProfileScreen() {
   // meanwhile, the spinner shows on the one that was tapped.
   const [pendingContact, setPendingContact] = useState<'message' | 'book' | null>(null);
   const [isBookingVisible, setIsBookingVisible] = useState(false);
+  const [relationship, setRelationship] = useState<RelationshipStatus | null>(null);
+  const [isFollowActionPending, setIsFollowActionPending] = useState(false);
+  const [albumItems, setAlbumItems] = useState<AlbumItem[]>([]);
+  const [viewerItem, setViewerItem] = useState<AlbumItem | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isAddCertificationVisible, setIsAddCertificationVisible] = useState(false);
@@ -103,10 +117,18 @@ export default function TrainerProfileScreen() {
   const load = useCallback(async () => {
     setError(null);
     try {
-      const [profileData, trainerData, affiliationData, applyGymName, historyData] = await Promise.all([
-        // get_public_profile is only granted to signed-in users; a guest still
-        // sees the trainer's public trainer data, just without a name/avatar.
-        session ? fetchPublicProfile(trainerUserId) : Promise.resolve(null),
+      const [
+        profileData,
+        trainerData,
+        affiliationData,
+        applyGymName,
+        historyData,
+        relationshipData,
+        albumData,
+      ] = await Promise.all([
+        // Guests get a row here too, except for a minor (get_public_profile's
+        // guest rule) - then the trainer data shows without a name/avatar.
+        fetchPublicProfile(trainerUserId),
         fetchTrainerProfile(trainerUserId),
         fetchTrainerAffiliations(trainerUserId),
         // Only ever meaningful on your own profile; a gym you can't see just
@@ -118,11 +140,22 @@ export default function TrainerProfileScreen() {
         isOwnProfile
           ? fetchMyGymHistory(trainerUserId).catch(() => [] as MyGymHistoryItem[])
           : Promise.resolve([] as MyGymHistoryItem[]),
+        // Follow state and the album - the same features as the plain public
+        // profile, so showing the trainer layout doesn't drop them. Both are
+        // best-effort: a failure hides that piece, not the whole profile.
+        session && !isOwnProfile
+          ? fetchRelationshipStatus(session.user.id, trainerUserId).catch(() => null)
+          : Promise.resolve(null),
+        fetchAlbumItems(trainerUserId).catch(() => [] as AlbumItem[]),
       ]);
       setPublicProfile(profileData);
       setTrainer(trainerData);
       setAffiliations(affiliationData);
       setHistory(historyData);
+      setRelationship(relationshipData);
+      // Same rule as the plain profile: a guest gets no album for someone
+      // get_public_profile hides (a minor).
+      setAlbumItems(session || profileData ? albumData : []);
       setApplyGym(
         applyGymName !== null && applyGymIdNumber !== null
           ? { id: applyGymIdNumber, name: applyGymName }
@@ -176,6 +209,8 @@ export default function TrainerProfileScreen() {
 
   const displayName = publicProfile?.fullName || publicProfile?.username || 'GymTrust trainer';
   const photoUrl = trainer?.photoUrl ?? publicProfile?.avatarUrl ?? null;
+  const albumPhotos = albumItems.filter((item) => item.mediaType === 'photo');
+  const albumVideos = albumItems.filter((item) => item.mediaType === 'video');
 
   // Same contact path as the public profile screen - server-side
   // (trg_enforce_message_thread_rules) is what actually gates who can message.
@@ -218,6 +253,59 @@ export default function TrainerProfileScreen() {
     } finally {
       setPendingContact(null);
     }
+  }
+
+  // Follow is separate from booking - same behaviour as the plain public
+  // profile (optimistic, rolled back on failure, follow caps surfaced).
+  async function performFollow() {
+    if (!session) return;
+    setIsFollowActionPending(true);
+    setRelationship((prev) => ({ isFollowing: true, isFollowedBy: prev?.isFollowedBy ?? false }));
+    try {
+      const result = await followUser(session.user.id, trainerUserId);
+      if (result.kind === 'limit_exceeded') {
+        setRelationship((prev) => (prev ? { ...prev, isFollowing: false } : prev));
+        Alert.alert("Can't follow", result.message);
+      } else if (result.kind === 'error') {
+        setRelationship((prev) => (prev ? { ...prev, isFollowing: false } : prev));
+        Alert.alert('Something went wrong', result.message);
+      }
+    } finally {
+      setIsFollowActionPending(false);
+    }
+  }
+
+  async function performUnfollow() {
+    if (!session) return;
+    setIsFollowActionPending(true);
+    setRelationship((prev) => (prev ? { ...prev, isFollowing: false } : prev));
+    try {
+      await unfollowUser(session.user.id, trainerUserId);
+    } catch (err) {
+      setRelationship((prev) => (prev ? { ...prev, isFollowing: true } : prev));
+      Alert.alert('Something went wrong', err instanceof Error ? err.message : 'Please try again.');
+    } finally {
+      setIsFollowActionPending(false);
+    }
+  }
+
+  function handleFollowPress() {
+    if (!session) {
+      router.push('/login');
+      return;
+    }
+    if (relationship?.isFollowing) {
+      confirmUnfollow(displayName, performUnfollow);
+    } else {
+      performFollow();
+    }
+  }
+
+  function goToFullAlbum(mediaType: AlbumItem['mediaType']) {
+    router.push({
+      pathname: '/album/[userId]/[mediaType]',
+      params: { userId: trainerUserId, mediaType: mediaType === 'photo' ? 'photos' : 'videos' },
+    });
   }
 
   // No web profile page exists yet, so this shares the app's deep link
@@ -343,12 +431,58 @@ export default function TrainerProfileScreen() {
         )}
 
         <View style={styles.body}>
-          <View style={styles.identity}>
-            <Text style={styles.name}>{displayName}</Text>
-            {publicProfile?.username ? (
-              <Text style={styles.username}>@{publicProfile.username}</Text>
+          <View style={styles.identityRow}>
+            <View style={styles.identity}>
+              <Text style={styles.name}>{displayName}</Text>
+              {publicProfile?.username ? (
+                <Text style={styles.username}>@{publicProfile.username}</Text>
+              ) : null}
+            </View>
+            {/* Follow sits with the name, apart from the Book/Message row -
+                following someone isn't booking them. Guests go to Log in. */}
+            {!isOwnProfile ? (
+              <Pressable
+                style={[styles.followButton, relationship?.isFollowing && styles.followButtonActive]}
+                onPress={handleFollowPress}
+                disabled={isFollowActionPending}
+              >
+                {isFollowActionPending ? (
+                  <ActivityIndicator
+                    color={relationship?.isFollowing ? colors.white : colors.emerald}
+                    size="small"
+                  />
+                ) : (
+                  <>
+                    <Feather
+                      name="heart"
+                      size={14}
+                      color={relationship?.isFollowing ? colors.white : colors.emerald}
+                    />
+                    <Text
+                      style={[
+                        styles.followButtonText,
+                        relationship?.isFollowing && styles.followButtonTextActive,
+                      ]}
+                    >
+                      {relationship?.isFollowing
+                        ? 'Following'
+                        : relationship?.isFollowedBy
+                          ? 'Follow Back'
+                          : 'Follow'}
+                    </Text>
+                  </>
+                )}
+              </Pressable>
             ) : null}
           </View>
+
+          {!trainer && relationship?.isFollowedBy ? (
+            <View style={styles.badgeRow}>
+              <View style={styles.experienceBadge}>
+                <Text style={styles.experienceBadgeText}>Follows you</Text>
+              </View>
+            </View>
+          ) : null}
 
           {trainer ? (
             <>
@@ -357,6 +491,11 @@ export default function TrainerProfileScreen() {
                   <Feather name="award" size={12} color={colors.emeraldLight} />
                   <Text style={styles.trainerBadgeText}>Trainer</Text>
                 </View>
+                {relationship?.isFollowedBy ? (
+                  <View style={styles.experienceBadge}>
+                    <Text style={styles.experienceBadgeText}>Follows you</Text>
+                  </View>
+                ) : null}
                 {trainer.yearsExperience != null ? (
                   <View style={styles.experienceBadge}>
                     <Feather name="clock" size={12} color={colors.textMuted} />
@@ -454,14 +593,14 @@ export default function TrainerProfileScreen() {
             )}
           </View>
 
-          {/* Message / Book still jump to Log in when tapped, but guests also get
-              Sign up up front instead of only finding it on the Log in screen. */}
+          {/* Follow / Message / Book still jump to Log in when tapped, but guests
+              also get Sign up up front instead of only finding it on Log in. */}
           {!session ? (
             <View style={styles.guestPrompt}>
               <Text style={styles.guestPromptText}>
                 {trainer
-                  ? 'Sign in to message or book a session with this trainer.'
-                  : 'Sign in to message this trainer.'}
+                  ? 'Sign in to follow, message or book a session with this trainer.'
+                  : 'Sign in to follow or message.'}
               </Text>
               <GuestAuthButtons />
             </View>
@@ -593,6 +732,29 @@ export default function TrainerProfileScreen() {
             />
           ) : null}
 
+          {/* The same album previews as the plain public profile; hidden when
+              there's nothing to show. */}
+          {albumPhotos.length > 0 || albumVideos.length > 0 ? (
+            <View style={styles.albumSection}>
+              {albumPhotos.length > 0 ? (
+                <AlbumCategoryPreview
+                  title="Photos"
+                  items={albumPhotos}
+                  onItemPress={setViewerItem}
+                  onSeeAll={() => goToFullAlbum('photo')}
+                />
+              ) : null}
+              {albumVideos.length > 0 ? (
+                <AlbumCategoryPreview
+                  title="Videos"
+                  items={albumVideos}
+                  onItemPress={setViewerItem}
+                  onSeeAll={() => goToFullAlbum('video')}
+                />
+              ) : null}
+            </View>
+          ) : null}
+
           {trainer ? (
             <Pressable style={styles.shareButton} onPress={handleShare}>
               <Feather name="share-2" size={16} color={colors.textPrimary} />
@@ -601,6 +763,8 @@ export default function TrainerProfileScreen() {
           ) : null}
         </View>
       </ScrollView>
+
+      <AlbumViewerModal item={viewerItem} items={albumItems} onClose={() => setViewerItem(null)} />
 
       {isOwnProfile && session ? (
         <>
@@ -724,8 +888,43 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     fontSize: 72,
   },
+  identityRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    gap: spacing.md,
+  },
   identity: {
+    flex: 1,
     gap: spacing.xs,
+  },
+  followButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.xs,
+    borderWidth: 1,
+    borderColor: colors.emerald,
+    borderRadius: radius.pill,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.lg,
+    minWidth: 104,
+    marginTop: spacing.xs,
+  },
+  followButtonActive: {
+    backgroundColor: colors.emerald,
+  },
+  followButtonText: {
+    color: colors.emerald,
+    fontWeight: '700',
+    fontSize: fontSize.base,
+  },
+  followButtonTextActive: {
+    color: colors.white,
+  },
+  albumSection: {
+    width: '100%',
+    gap: spacing.xl,
   },
   name: {
     fontSize: fontSize.display,

@@ -148,6 +148,30 @@ export async function fetchTrainerProfile(userId: string): Promise<TrainerProfil
   return data ? toTrainerProfile(data as RawTrainerProfileRow) : null;
 }
 
+// Whether this person gets the trainer profile screen wherever their profile
+// is opened (search, Saved, reviews, deep links...): an active trainer at any
+// gym who has a trainer profile - the same rule the gym's Team section uses.
+// Both reads are public (active gym_staff rows and trainer_profiles are
+// readable by guests too).
+export async function isActiveTrainerWithProfile(userId: string): Promise<boolean> {
+  const [staff, profile] = await Promise.all([
+    supabase
+      .from('gym_staff')
+      .select('gym_id', { count: 'exact', head: true })
+      .eq('user_id', userId)
+      .eq('role', 'trainer')
+      .eq('status', 'active'),
+    supabase
+      .from('trainer_profiles')
+      .select('user_id', { count: 'exact', head: true })
+      .eq('user_id', userId),
+  ]);
+
+  if (staff.error) throw staff.error;
+  if (profile.error) throw profile.error;
+  return (staff.count ?? 0) > 0 && (profile.count ?? 0) > 0;
+}
+
 // Looked up by id (rather than trusting a name passed through navigation
 // params) so the "applying to..." context can't show anything but the real
 // gym. Null for a gym the caller can't see (e.g. not active).
