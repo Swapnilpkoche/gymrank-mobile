@@ -87,6 +87,7 @@ function RootNavigation() {
         <Stack.Screen name="album/[userId]/[mediaType]" options={{ headerShown: true, title: '' }} />
         <Stack.Screen name="messages" options={{ headerShown: true, title: 'Messages' }} />
         <Stack.Screen name="notifications" options={{ headerShown: true, title: 'Notifications' }} />
+        <Stack.Screen name="sessions" options={{ headerShown: true, title: 'Sessions' }} />
         <Stack.Screen name="messages/[threadId]" options={{ headerShown: true, title: '' }} />
         <Stack.Screen name="list-gym" options={{ headerShown: true, title: 'List your gym' }} />
         <Stack.Screen

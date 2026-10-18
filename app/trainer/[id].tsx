@@ -17,11 +17,14 @@ import {
 
 import { GuestAuthButtons } from '../../src/components/auth/GuestAuthButtons';
 import { AddCertificationModal } from '../../src/components/trainer/AddCertificationModal';
+import { AvailabilitySection } from '../../src/components/trainer/AvailabilitySection';
+import { BookSessionModal } from '../../src/components/trainer/BookSessionModal';
 import { CertificationsSection } from '../../src/components/trainer/CertificationsSection';
 import { EditTrainerProfileModal } from '../../src/components/trainer/EditTrainerProfileModal';
 import { useAuth } from '../../src/context/auth-context';
 import { confirmLeaveGym } from '../../src/lib/confirmations';
 import { getOrCreateMessageThread } from '../../src/lib/messages';
+import { checkCanBookSessions } from '../../src/lib/sessions';
 import { formatShortDate } from '../../src/lib/time';
 import {
   deleteTrainerCertification,
@@ -78,6 +81,7 @@ export default function TrainerProfileScreen() {
   // Which contact button is waiting on the thread lookup - both are disabled
   // meanwhile, the spinner shows on the one that was tapped.
   const [pendingContact, setPendingContact] = useState<'message' | 'book' | null>(null);
+  const [isBookingVisible, setIsBookingVisible] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isAddCertificationVisible, setIsAddCertificationVisible] = useState(false);
@@ -175,13 +179,30 @@ export default function TrainerProfileScreen() {
 
   // Same contact path as the public profile screen - server-side
   // (trg_enforce_message_thread_rules) is what actually gates who can message.
-  // "Book a Session" goes through here too until there's a real booking flow.
+  // Book a Session is gated the same way: guests go to Log in, and a signed-in
+  // minor gets the same kind of "adults only" alert messaging shows
+  // (request_trainer_session re-checks is_adult server-side).
   async function handleContactPress(kind: 'message' | 'book') {
     if (!session) {
       router.push('/login');
       return;
     }
     setPendingContact(kind);
+    if (kind === 'book') {
+      try {
+        const eligibility = await checkCanBookSessions(session.user.id);
+        if (eligibility.kind === 'success') {
+          setIsBookingVisible(true);
+        } else if (eligibility.kind === 'ineligible') {
+          Alert.alert("Can't book", eligibility.message);
+        } else {
+          Alert.alert('Something went wrong', eligibility.message);
+        }
+      } finally {
+        setPendingContact(null);
+      }
+      return;
+    }
     try {
       const result = await getOrCreateMessageThread(session.user.id, trainerUserId);
       if (result.kind === 'success') {
@@ -551,6 +572,17 @@ export default function TrainerProfileScreen() {
             </View>
           ) : null}
 
+          {isOwnProfile && trainer ? (
+            <>
+              <AvailabilitySection trainerId={trainerUserId} gyms={affiliations} />
+              <Pressable style={styles.sessionsLink} onPress={() => router.push('/sessions')}>
+                <Feather name="calendar" size={16} color={colors.emerald} />
+                <Text style={styles.sessionsLinkText}>Session requests & upcoming sessions</Text>
+                <Feather name="chevron-right" size={16} color={colors.textMuted} />
+              </Pressable>
+            </>
+          ) : null}
+
           {trainer ? (
             <CertificationsSection
               certifications={certifications}
@@ -591,6 +623,16 @@ export default function TrainerProfileScreen() {
             }}
           />
         </>
+      ) : null}
+
+      {!isOwnProfile && session && trainer ? (
+        <BookSessionModal
+          visible={isBookingVisible}
+          trainerId={trainerUserId}
+          trainerName={displayName}
+          gyms={affiliations}
+          onClose={() => setIsBookingVisible(false)}
+        />
       ) : null}
     </>
   );
@@ -883,6 +925,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     gap: spacing.xs,
+  },
+  sessionsLink: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    backgroundColor: colors.card,
+    borderWidth: 1,
+    borderColor: colors.emerald,
+    borderRadius: radius.md,
+    padding: spacing.md,
+  },
+  sessionsLinkText: {
+    flex: 1,
+    color: colors.textPrimary,
+    fontWeight: '600',
+    fontSize: fontSize.md,
   },
   shareButton: {
     flexDirection: 'row',

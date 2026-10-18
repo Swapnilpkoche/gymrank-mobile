@@ -26,6 +26,7 @@ import { MembershipReminderBanner } from '../../src/components/gym-detail/Member
 import { MyMembershipCard } from '../../src/components/gym-detail/MyMembershipCard';
 import { StaffRequestsSection } from '../../src/components/gym-detail/StaffRequestsSection';
 import { TeamSection } from '../../src/components/gym-detail/TeamSection';
+import { UpcomingSessionsCard } from '../../src/components/gym-detail/UpcomingSessionsCard';
 import { WriteReviewModal } from '../../src/components/gym-detail/WriteReviewModal';
 import { GymPickerModal } from '../../src/components/compare/GymPickerModal';
 import { useAuth } from '../../src/context/auth-context';
@@ -602,6 +603,11 @@ export default function GymDetailScreen() {
 
           {/* Owners/admins: the Members screen (plans, renewals, requests). */}
           {isGymAdmin ? <ManageMembersCard gymId={gymId} /> : null}
+
+          {/* Owners/admins: confirmed trainer sessions coming up here (read-only). */}
+          {isGymAdmin ? (
+            <UpcomingSessionsCard gymId={gymId} refreshToken={requestsRefreshToken} />
+          ) : null}
 
           {isEligible && busyHours ? <BusyHoursChart hours={busyHours} /> : null}
           {isEligible && checkInSummary ? <CheckInSummaryCard summary={checkInSummary} scope="gym" /> : null}

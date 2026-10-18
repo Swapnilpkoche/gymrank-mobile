@@ -323,11 +323,18 @@ export type MyGymRelationship = {
 export type NotificationKind =
   | 'membership_expiring'
   | 'membership_expiring_final'
-  | 'membership_expired';
+  | 'membership_expired'
+  | 'session_requested'
+  | 'session_confirmed'
+  | 'session_declined'
+  | 'session_cancelled'
+  | 'gym_session_confirmed';
 
 export type AppNotification = {
   id: number;
   gymId: number;
+  // Set for the session_* / gym_session_confirmed kinds, null for membership ones.
+  bookingId: number | null;
   kind: NotificationKind;
   title: string;
   body: string;
@@ -455,4 +462,44 @@ export type Nomination = {
   rank: number | null;
   fullName: string | null;
   username: string | null;
+};
+
+// One weekly slot a trainer offers at one gym (trainer_availability_slots).
+// dayOfWeek is 0 = Sunday .. 6 = Saturday; startTime is 'HH:MM'.
+export type AvailabilitySlot = {
+  id: number;
+  trainerId: string;
+  gymId: number;
+  dayOfWeek: number;
+  startTime: string;
+  isActive: boolean;
+};
+
+export type SessionBookingStatus = 'pending' | 'confirmed' | 'declined' | 'cancelled';
+
+// A booking from get_my_trainer_sessions - seen from either side. isTrainer
+// says which side the viewer is on; "other" is the person across from them.
+export type SessionBooking = {
+  id: number;
+  isTrainer: boolean;
+  otherUserId: string;
+  otherName: string;
+  gymId: number;
+  gymName: string;
+  sessionDate: string; // 'YYYY-MM-DD'
+  startTime: string; // 'HH:MM'
+  status: SessionBookingStatus;
+  note: string | null;
+  createdAt: string;
+};
+
+// Owner/admin read-only view (get_gym_upcoming_sessions).
+export type GymUpcomingSession = {
+  id: number;
+  sessionDate: string;
+  startTime: string;
+  trainerId: string;
+  trainerName: string;
+  requesterId: string;
+  requesterName: string;
 };

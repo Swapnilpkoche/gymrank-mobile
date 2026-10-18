@@ -1,13 +1,15 @@
 import { supabase } from './supabase';
 import type { AppNotification, NotificationKind } from '../types/database';
 
-// In-app notifications. There's no push infrastructure: the daily job writes
-// rows to `notifications` and this reads them. RLS scopes every query to the
+// In-app notifications. There's no push infrastructure: the daily membership
+// job and the session-booking RPCs write rows to `notifications` and this
+// reads them. RLS scopes every query to the
 // caller's own rows, and clients may only update read_at (column-level grant).
 
 type RawNotificationRow = {
   id: number;
   gym_id: number;
+  booking_id: number | null;
   kind: NotificationKind;
   title: string;
   body: string;
@@ -18,7 +20,7 @@ type RawNotificationRow = {
 export async function fetchNotifications(limit = 50): Promise<AppNotification[]> {
   const { data, error } = await supabase
     .from('notifications')
-    .select('id, gym_id, kind, title, body, created_at, read_at')
+    .select('id, gym_id, booking_id, kind, title, body, created_at, read_at')
     .order('created_at', { ascending: false })
     .order('id', { ascending: false })
     .limit(limit);
@@ -28,6 +30,7 @@ export async function fetchNotifications(limit = 50): Promise<AppNotification[]>
   return ((data ?? []) as RawNotificationRow[]).map((row) => ({
     id: row.id,
     gymId: row.gym_id,
+    bookingId: row.booking_id,
     kind: row.kind,
     title: row.title,
     body: row.body,

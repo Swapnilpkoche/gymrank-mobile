@@ -232,6 +232,10 @@ export default function ProfileScreen() {
           <Text style={styles.listGymButtonText}>Notifications</Text>
           <UnreadBadge count={unreadNotifications} />
         </Pressable>
+        <Pressable style={styles.listGymButton} onPress={() => router.push('/sessions')}>
+          <Feather name="calendar" size={18} color={colors.emerald} />
+          <Text style={styles.listGymButtonText}>Trainer sessions</Text>
+        </Pressable>
       </View>
 
       <View style={styles.section}>

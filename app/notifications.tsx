@@ -1,6 +1,6 @@
 import { Feather } from '@expo/vector-icons';
 import { Stack, useRouter } from 'expo-router';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, type ComponentProps } from 'react';
 import {
   ActivityIndicator,
   Pressable,
@@ -21,7 +21,7 @@ import {
 } from '../src/lib/notifications';
 import { formatShortDate } from '../src/lib/time';
 import { colors, fontSize, radius, spacing } from '../src/theme';
-import type { AppNotification } from '../src/types/database';
+import type { AppNotification, NotificationKind } from '../src/types/database';
 
 export default function NotificationsScreen() {
   const { session } = useAuth();
@@ -58,7 +58,9 @@ export default function NotificationsScreen() {
   const unreadCount = items.filter((item) => item.readAt === null).length;
 
   // Optimistic: flip it read straight away, then tell the badge; if the write
-  // fails the next load puts it back. Either way the gym opens.
+  // fails the next load puts it back. Either way the target opens: Sessions
+  // for your own session events, the gym page (where the owner's Upcoming
+  // sessions card lives) for everything else.
   async function handleOpen(item: AppNotification) {
     if (item.readAt === null) {
       const now = new Date().toISOString();
@@ -67,7 +69,11 @@ export default function NotificationsScreen() {
         .catch(() => {})
         .finally(notifyNotificationsChanged);
     }
-    router.push({ pathname: '/gym/[id]', params: { id: String(item.gymId) } });
+    if (item.kind.startsWith('session_')) {
+      router.push('/sessions');
+    } else {
+      router.push({ pathname: '/gym/[id]', params: { id: String(item.gymId) } });
+    }
   }
 
   async function handleMarkAllRead() {
@@ -126,14 +132,15 @@ export default function NotificationsScreen() {
           <Feather name="bell" size={28} color={colors.textMuted} />
           <Text style={styles.emptyTitle}>No notifications yet</Text>
           <Text style={styles.emptyText}>
-            We&apos;ll let you know here when a gym membership of yours is about to end.
+            We&apos;ll let you know here when a gym membership of yours is about to end, and
+            about your trainer session requests.
           </Text>
         </View>
       ) : (
         <View style={styles.list}>
           {items.map((item) => {
             const unread = item.readAt === null;
-            const isExpired = item.kind === 'membership_expired';
+            const icon = notificationIcon(item.kind);
             return (
               <Pressable
                 key={item.id}
@@ -145,11 +152,7 @@ export default function NotificationsScreen() {
                 </View>
                 <View style={styles.body}>
                   <View style={styles.titleRow}>
-                    <Feather
-                      name={isExpired ? 'alert-circle' : 'clock'}
-                      size={14}
-                      color={isExpired ? colors.danger : colors.warning}
-                    />
+                    <Feather name={icon.name} size={14} color={icon.color} />
                     <Text style={[styles.title, unread && styles.titleUnread]}>{item.title}</Text>
                   </View>
                   <Text style={[styles.text, unread && styles.textUnread]}>{item.body}</Text>
@@ -163,6 +166,27 @@ export default function NotificationsScreen() {
       )}
     </ScrollView>
   );
+}
+
+function notificationIcon(kind: NotificationKind): {
+  name: ComponentProps<typeof Feather>['name'];
+  color: string;
+} {
+  switch (kind) {
+    case 'membership_expired':
+      return { name: 'alert-circle', color: colors.danger };
+    case 'membership_expiring':
+    case 'membership_expiring_final':
+      return { name: 'clock', color: colors.warning };
+    case 'session_confirmed':
+    case 'gym_session_confirmed':
+      return { name: 'check-circle', color: colors.emeraldLight };
+    case 'session_declined':
+    case 'session_cancelled':
+      return { name: 'x-circle', color: colors.textMuted };
+    default:
+      return { name: 'calendar', color: colors.emeraldLight };
+  }
 }
 
 const styles = StyleSheet.create({
