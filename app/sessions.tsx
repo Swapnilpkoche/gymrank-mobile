@@ -1,6 +1,6 @@
 import { Feather } from '@expo/vector-icons';
-import { Stack, useFocusEffect, useRouter } from 'expo-router';
-import { useCallback, useRef, useState, type ReactNode } from 'react';
+import { Stack, useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -10,6 +10,8 @@ import {
   StyleSheet,
   Text,
   View,
+  type ScrollViewInstance,
+  type ViewInstance,
 } from 'react-native';
 
 import { GuestAuthButtons } from '../src/components/auth/GuestAuthButtons';
@@ -38,9 +40,24 @@ const STATUS_LABEL: Record<SessionBookingStatus, string> = {
 //     confirmed sessions;
 //   - as a member: your own requests and bookings, cancellable while open.
 // The RPCs enforce who can do what; this screen only offers the valid actions.
+//
+// Opened from a notification with `bookingId`, it scrolls to that booking and
+// highlights it. A booking the lists don't show (e.g. one that was cancelled
+// or declined, on the trainer side) is pinned at the top instead, so the
+// notification always lands on the session it's about.
 export default function SessionsScreen() {
   const { session } = useAuth();
   const router = useRouter();
+  const { bookingId } = useLocalSearchParams<{ bookingId?: string }>();
+  const parsedTargetId = bookingId ? Number(bookingId) : NaN;
+  const targetId = Number.isInteger(parsedTargetId) && parsedTargetId > 0 ? parsedTargetId : null;
+  const scrollViewRef = useRef<ScrollViewInstance>(null);
+  // Same pattern as the gym page: measureLayout needs the ScrollView's own
+  // inner content view as the host-component ancestor.
+  const scrollContentRef = useRef<ViewInstance>(null);
+  const cardRefs = useRef(new Map<number, ViewInstance>());
+  const handledTargetRef = useRef<number | null>(null);
+  const [flashId, setFlashId] = useState<number | null>(null);
   const [bookings, setBookings] = useState<SessionBooking[]>([]);
   const [isTrainerAnywhere, setIsTrainerAnywhere] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -76,6 +93,31 @@ export default function SessionsScreen() {
       load();
     }, [load])
   );
+
+  // Once the first load has rendered, scroll the notification's booking into
+  // view and flash it. Deferred a tick so the cards have laid out first.
+  useEffect(() => {
+    if (isLoading || targetId === null || handledTargetRef.current === targetId) return;
+    const timeout = setTimeout(() => {
+      handledTargetRef.current = targetId;
+      const card = cardRefs.current.get(targetId);
+      if (card && scrollContentRef.current) {
+        card.measureLayout(
+          scrollContentRef.current,
+          (_x, y) => scrollViewRef.current?.scrollTo({ y: Math.max(y - 16, 0), animated: true }),
+          () => {}
+        );
+      }
+      setFlashId(targetId);
+    }, 50);
+    return () => clearTimeout(timeout);
+  }, [isLoading, targetId, bookings]);
+
+  useEffect(() => {
+    if (flashId === null) return;
+    const timeout = setTimeout(() => setFlashId(null), 2500);
+    return () => clearTimeout(timeout);
+  }, [flashId]);
 
   const handleRefresh = useCallback(async () => {
     setIsRefreshing(true);
@@ -163,10 +205,28 @@ export default function SessionsScreen() {
     .reverse();
   const showTrainerSections = isTrainerAnywhere || bookings.some((b) => b.isTrainer);
 
+  // The notification's booking, when none of the lists below shows it.
+  const listedIds = new Set(
+    [...(showTrainerSections ? [...trainerRequests, ...trainerUpcoming] : []), ...myOpen, ...myPast].map(
+      (b) => b.id
+    )
+  );
+  const target = targetId !== null ? bookings.find((b) => b.id === targetId) ?? null : null;
+  const pinnedTarget = target && !listedIds.has(target.id) ? target : null;
+  // Older than the week of history this screen loads (or no longer yours).
+  const isTargetMissing = targetId !== null && !target && !error;
+
   function renderRow(booking: SessionBooking, actions: ReactNode) {
     const isBusy = busyId === booking.id;
     return (
-      <View key={booking.id} style={styles.card}>
+      <View
+        key={booking.id}
+        ref={(node) => {
+          if (node) cardRefs.current.set(booking.id, node);
+          else cardRefs.current.delete(booking.id);
+        }}
+        style={[styles.card, flashId === booking.id && styles.cardHighlighted]}
+      >
         <View style={styles.cardHeader}>
           <View style={styles.when}>
             <Text style={styles.whenDate}>{formatSessionDate(booking.sessionDate)}</Text>
@@ -223,6 +283,8 @@ export default function SessionsScreen() {
 
   return (
     <ScrollView
+      ref={scrollViewRef}
+      innerViewRef={scrollContentRef}
       style={styles.container}
       contentContainerStyle={styles.content}
       refreshControl={
@@ -232,6 +294,22 @@ export default function SessionsScreen() {
       <Stack.Screen options={{ title: 'Sessions' }} />
 
       {error ? <Text style={styles.error}>{error}</Text> : null}
+
+      {pinnedTarget ? (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>From your notification</Text>
+          {renderRow(pinnedTarget, null)}
+        </View>
+      ) : null}
+
+      {isTargetMissing ? (
+        <View style={styles.notice}>
+          <Feather name="info" size={14} color={colors.textMuted} />
+          <Text style={styles.noticeText}>
+            That session is more than a week old, so it&apos;s no longer listed here.
+          </Text>
+        </View>
+      ) : null}
 
       {showTrainerSections ? (
         <>
@@ -345,6 +423,26 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     borderRadius: radius.lg,
     padding: spacing.lg,
+  },
+  cardHighlighted: {
+    borderColor: colors.emerald,
+    backgroundColor: colors.emeraldTint,
+  },
+  notice: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    backgroundColor: colors.card,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    padding: spacing.md,
+  },
+  noticeText: {
+    flex: 1,
+    color: colors.textMuted,
+    fontSize: fontSize.base,
+    lineHeight: 18,
   },
   cardHeader: {
     flexDirection: 'row',

@@ -328,12 +328,13 @@ export type NotificationKind =
   | 'session_confirmed'
   | 'session_declined'
   | 'session_cancelled'
-  | 'gym_session_confirmed';
+  | 'gym_session_confirmed'
+  | 'gym_session_requested';
 
 export type AppNotification = {
   id: number;
   gymId: number;
-  // Set for the session_* / gym_session_confirmed kinds, null for membership ones.
+  // Set for the session_* / gym_session_* kinds, null for membership ones.
   bookingId: number | null;
   kind: NotificationKind;
   title: string;
@@ -493,13 +494,22 @@ export type SessionBooking = {
   createdAt: string;
 };
 
-// Owner/admin read-only view (get_gym_upcoming_sessions).
+// Owner/admin read-only view (get_gym_upcoming_sessions): confirmed sessions
+// and requests still waiting on the trainer.
 export type GymUpcomingSession = {
   id: number;
   sessionDate: string;
   startTime: string;
+  status: 'confirmed' | 'pending';
   trainerId: string;
   trainerName: string;
   requesterId: string;
   requesterName: string;
+};
+
+// Owner/admin only (get_gym_trainer_session_stats), all-time at one gym.
+// accepted counts sessions the trainer confirmed, even if cancelled later.
+export type TrainerSessionStats = {
+  received: number;
+  accepted: number;
 };

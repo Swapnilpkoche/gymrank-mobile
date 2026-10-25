@@ -4,7 +4,7 @@ import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { useProfileNavigation } from '../../hooks/useProfileNavigation';
 import { colors, fontSize, radius, spacing } from '../../theme';
-import type { TeamMember } from '../../types/database';
+import type { TeamMember, TrainerSessionStats } from '../../types/database';
 
 function initials(name: string): string {
   return name.charAt(0).toUpperCase();
@@ -14,6 +14,7 @@ export function TeamSection({
   team,
   viewerUserId,
   viewerRole,
+  trainerSessionStats = null,
   onRemoveMember,
 }: {
   team: TeamMember[];
@@ -21,6 +22,9 @@ export function TeamSection({
   // The viewer's role if they're an ACTIVE owner/admin of this gym; null for
   // everyone else, who get no management controls.
   viewerRole: 'owner' | 'admin' | null;
+  // Owners/admins only: all-time session requests per trainer at this gym,
+  // keyed by user id (a trainer with none has no entry). null hides the line.
+  trainerSessionStats?: Record<string, TrainerSessionStats> | null;
   onRemoveMember: (member: TeamMember) => void;
 }) {
   const goToProfile = useProfileNavigation();
@@ -56,6 +60,10 @@ export function TeamSection({
         {team.map((member) => {
           const isOwner = member.role === 'owner';
           const linksToTrainerProfile = member.role === 'trainer' && member.hasTrainerProfile;
+          const stats =
+            member.role === 'trainer' && trainerSessionStats
+              ? trainerSessionStats[member.userId] ?? { received: 0, accepted: 0 }
+              : null;
           return (
             <Pressable
               key={member.id}
@@ -74,6 +82,13 @@ export function TeamSection({
                 <Text style={[styles.role, isOwner && styles.roleOwner]}>
                   {isOwner ? 'Owner' : member.role}
                 </Text>
+                {stats ? (
+                  <Text style={styles.stats}>
+                    {stats.received === 1 ? '1 session request' : `${stats.received} session requests`}
+                    {' · '}
+                    {stats.accepted} accepted
+                  </Text>
+                ) : null}
               </View>
               {linksToTrainerProfile ? (
                 <Feather name="chevron-right" size={16} color={colors.textMuted} />
@@ -166,6 +181,11 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     fontSize: fontSize.sm,
     textTransform: 'capitalize',
+  },
+  stats: {
+    color: colors.textMuted,
+    fontSize: fontSize.xs,
+    marginTop: spacing.xs,
   },
   roleOwner: {
     color: colors.emeraldLight,

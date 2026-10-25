@@ -58,9 +58,13 @@ export default function NotificationsScreen() {
   const unreadCount = items.filter((item) => item.readAt === null).length;
 
   // Optimistic: flip it read straight away, then tell the badge; if the write
-  // fails the next load puts it back. Either way the target opens: Sessions
-  // for your own session events, the gym page (where the owner's Upcoming
-  // sessions card lives) for everything else.
+  // fails the next load puts it back. Either way the target opens:
+  //   - any booking notification (booking_id set) opens that session: the
+  //     owner's gym_session_* kinds go to the gym page's Upcoming sessions
+  //     card (which lists pending requests too - Sessions only shows a
+  //     booking to its trainer and requester), the trainer/requester kinds
+  //     go to Sessions - both scrolled to and highlighting that booking;
+  //   - membership notifications open the gym.
   async function handleOpen(item: AppNotification) {
     if (item.readAt === null) {
       const now = new Date().toISOString();
@@ -69,11 +73,19 @@ export default function NotificationsScreen() {
         .catch(() => {})
         .finally(notifyNotificationsChanged);
     }
-    if (item.kind.startsWith('session_')) {
-      router.push('/sessions');
-    } else {
-      router.push({ pathname: '/gym/[id]', params: { id: String(item.gymId) } });
+    if (item.bookingId !== null) {
+      const bookingId = String(item.bookingId);
+      if (item.kind === 'gym_session_confirmed' || item.kind === 'gym_session_requested') {
+        router.push({
+          pathname: '/gym/[id]',
+          params: { id: String(item.gymId), highlight: 'sessions', bookingId },
+        });
+      } else {
+        router.push({ pathname: '/sessions', params: { bookingId } });
+      }
+      return;
     }
+    router.push({ pathname: '/gym/[id]', params: { id: String(item.gymId) } });
   }
 
   async function handleMarkAllRead() {

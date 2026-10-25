@@ -8,15 +8,21 @@ import type { GymUpcomingSession } from '../../types/database';
 
 const MAX_VISIBLE = 10;
 
-// Owners/admins: read-only list of confirmed trainer sessions coming up at
-// this gym, so they always know who's training whom and when. Rendered only
-// for admins; get_gym_upcoming_sessions enforces that server-side regardless.
+// Owners/admins: read-only list of trainer sessions coming up at this gym -
+// confirmed ones and requests still waiting on the trainer - so they always
+// know who's training whom and when. Rendered only for admins;
+// get_gym_upcoming_sessions enforces that server-side regardless.
+// highlightBookingId (from the owner's "Session requested / booked at your
+// gym" notifications) marks that session's row, keeps it visible even past
+// the first MAX_VISIBLE, and says so plainly if it's no longer upcoming.
 export function UpcomingSessionsCard({
   gymId,
   refreshToken,
+  highlightBookingId = null,
 }: {
   gymId: number;
   refreshToken?: number;
+  highlightBookingId?: number | null;
 }) {
   const [sessions, setSessions] = useState<GymUpcomingSession[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -40,7 +46,13 @@ export function UpcomingSessionsCard({
     };
   }, [gymId, refreshToken]);
 
-  const visible = sessions.slice(0, MAX_VISIBLE);
+  const highlighted =
+    highlightBookingId !== null ? sessions.find((s) => s.id === highlightBookingId) ?? null : null;
+  const firstPage = sessions.slice(0, MAX_VISIBLE);
+  const visible =
+    highlighted && !firstPage.includes(highlighted) ? [...firstPage, highlighted] : firstPage;
+  // Declined or cancelled since, or the session time has passed.
+  const isHighlightGone = highlightBookingId !== null && !isLoading && !error && !highlighted;
 
   return (
     <View style={styles.card}>
@@ -50,18 +62,29 @@ export function UpcomingSessionsCard({
         {sessions.length > 0 ? <Text style={styles.count}>{sessions.length}</Text> : null}
       </View>
 
+      {isHighlightGone ? (
+        <Text style={styles.goneNote}>
+          The session from your notification is no longer upcoming - it was declined or cancelled,
+          or its time has passed.
+        </Text>
+      ) : null}
+
       {isLoading ? (
         <ActivityIndicator color={colors.emerald} />
       ) : error ? (
         <Text style={styles.error}>{error}</Text>
       ) : sessions.length === 0 ? (
         <Text style={styles.empty}>
-          No confirmed trainer sessions coming up. Sessions your trainers confirm show up here.
+          No trainer sessions coming up. New requests and the sessions your trainers confirm show
+          up here.
         </Text>
       ) : (
         <View style={styles.list}>
           {visible.map((session) => (
-            <View key={session.id} style={styles.row}>
+            <View
+              key={session.id}
+              style={[styles.row, session.id === highlightBookingId && styles.rowHighlighted]}
+            >
               <View style={styles.when}>
                 <Text style={styles.whenDate}>{formatSessionDate(session.sessionDate)}</Text>
                 <Text style={styles.whenTime}>{formatSlotTime(session.startTime)}</Text>
@@ -74,10 +97,15 @@ export function UpcomingSessionsCard({
                   with {session.requesterName}
                 </Text>
               </View>
+              {session.status === 'pending' ? (
+                <View style={styles.pendingBadge}>
+                  <Text style={styles.pendingBadgeText}>Awaiting trainer</Text>
+                </View>
+              ) : null}
             </View>
           ))}
-          {sessions.length > MAX_VISIBLE ? (
-            <Text style={styles.more}>+{sessions.length - MAX_VISIBLE} more</Text>
+          {sessions.length > visible.length ? (
+            <Text style={styles.more}>+{sessions.length - visible.length} more</Text>
           ) : null}
         </View>
       )}
@@ -130,6 +158,16 @@ const styles = StyleSheet.create({
     borderRadius: radius.sm,
     padding: spacing.md,
   },
+  rowHighlighted: {
+    borderWidth: 1,
+    borderColor: colors.emerald,
+    backgroundColor: colors.emeraldTint,
+  },
+  goneNote: {
+    color: colors.textMuted,
+    fontSize: fontSize.sm,
+    lineHeight: 17,
+  },
   when: {
     width: 88,
     gap: spacing.xs,
@@ -156,6 +194,18 @@ const styles = StyleSheet.create({
   requester: {
     color: colors.textMuted,
     fontSize: fontSize.sm,
+  },
+  pendingBadge: {
+    borderWidth: 1,
+    borderColor: colors.warning,
+    borderRadius: radius.pill,
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.sm,
+  },
+  pendingBadgeText: {
+    color: colors.warning,
+    fontSize: fontSize.xs,
+    fontWeight: '600',
   },
   more: {
     color: colors.textMuted,

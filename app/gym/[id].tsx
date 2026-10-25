@@ -56,6 +56,7 @@ import { useTodayCheckInState } from '../../src/hooks/useTodayCheckInState';
 import { notAcceptingMessage } from '../../src/lib/gymControls';
 import { fetchGymPricingPlans } from '../../src/lib/gymPricing';
 import { fetchMyMemberships } from '../../src/lib/memberships';
+import { fetchGymTrainerSessionStats } from '../../src/lib/sessions';
 import {
   fetchCooldownRemainingSeconds,
   fetchMyStaffStatus,
@@ -81,12 +82,24 @@ import type {
   LocationOption,
   MyMembership,
   TeamMember,
+  TrainerSessionStats,
 } from '../../src/types/database';
 
 export default function GymDetailScreen() {
-  // highlight: 'reviews' | 'team' scroll to (and flash) that section;
-  // 'pricing' opens the owner's pricing editor.
-  const { id, highlight } = useLocalSearchParams<{ id: string; highlight?: string }>();
+  // highlight: 'reviews' | 'team' | 'sessions' scroll to (and flash) that
+  // section; 'pricing' opens the owner's pricing editor. With 'sessions',
+  // bookingId marks which upcoming session to point at (from the owner's
+  // "Session requested / booked at your gym" notifications).
+  const { id, highlight, bookingId } = useLocalSearchParams<{
+    id: string;
+    highlight?: string;
+    bookingId?: string;
+  }>();
+  const parsedHighlightBookingId = bookingId ? Number(bookingId) : NaN;
+  const highlightBookingId =
+    Number.isInteger(parsedHighlightBookingId) && parsedHighlightBookingId > 0
+      ? parsedHighlightBookingId
+      : null;
   const gymId = Number(id);
   const { session } = useAuth();
   const router = useRouter();
@@ -98,8 +111,11 @@ export default function GymDetailScreen() {
   const scrollContentRef = useRef<ViewInstance>(null);
   const reviewsWrapperRef = useRef<ViewInstance>(null);
   const teamWrapperRef = useRef<ViewInstance>(null);
+  const sessionsWrapperRef = useRef<ViewInstance>(null);
   const hasScrolledToHighlightRef = useRef(false);
-  const [highlightedSection, setHighlightedSection] = useState<'reviews' | 'team' | null>(null);
+  const [highlightedSection, setHighlightedSection] = useState<
+    'reviews' | 'team' | 'sessions' | null
+  >(null);
 
   const [gym, setGym] = useState<GymDetail | null>(null);
   const [equipment, setEquipment] = useState<LocationOption[]>([]);
@@ -109,6 +125,11 @@ export default function GymDetailScreen() {
   const [pricingPlans, setPricingPlans] = useState<GymPricingPlan[]>([]);
   const [isEligible, setIsEligible] = useState(false);
   const [isGymAdmin, setIsGymAdmin] = useState(false);
+  // Owners/admins only: per-trainer request counts shown on the Team rows.
+  const [trainerSessionStats, setTrainerSessionStats] = useState<Record<
+    string,
+    TrainerSessionStats
+  > | null>(null);
   // The caller's own gym_staff row for this gym (any role/status), driving the
   // trainer button: Join / pending / active / declined.
   const [myStaffStatus, setMyStaffStatus] = useState<MyStaffStatus | null>(null);
@@ -200,6 +221,10 @@ export default function GymDetailScreen() {
         setIsEligible(eligible);
         setIsFollowing(following);
         setIsGymAdmin(gymAdmin);
+        // Best-effort: on failure the Team rows just show no counts.
+        setTrainerSessionStats(
+          gymAdmin ? await fetchGymTrainerSessionStats(gymId).catch(() => null) : null
+        );
 
         if (eligible) {
           const [hours, summary] = await Promise.all([
@@ -217,6 +242,7 @@ export default function GymDetailScreen() {
         setIsEligible(false);
         setIsFollowing(false);
         setIsGymAdmin(false);
+        setTrainerSessionStats(null);
         setMyStaffStatus(null);
         setMyMembership(null);
         setBusyHours(null);
@@ -236,9 +262,14 @@ export default function GymDetailScreen() {
 
   useEffect(() => {
     if (isLoading) return;
-    if (highlight !== 'reviews' && highlight !== 'team') return;
+    if (highlight !== 'reviews' && highlight !== 'team' && highlight !== 'sessions') return;
     if (hasScrolledToHighlightRef.current) return;
-    const targetRef = highlight === 'team' ? teamWrapperRef : reviewsWrapperRef;
+    const targetRef =
+      highlight === 'team'
+        ? teamWrapperRef
+        : highlight === 'sessions'
+          ? sessionsWrapperRef
+          : reviewsWrapperRef;
 
     // Defer a tick so the ScrollView content (reviews included) has actually
     // laid out before we measure - isLoading flipping false and the layout
@@ -257,7 +288,9 @@ export default function GymDetailScreen() {
     }, 50);
 
     return () => clearTimeout(scrollTimeout);
-  }, [isLoading, highlight]);
+    // isGymAdmin: the sessions card only renders for owners/admins, so wait
+    // for that flag too rather than missing the card's ref.
+  }, [isLoading, highlight, isGymAdmin]);
 
   // highlight=pricing (the Gym controls card's Pricing link) opens the
   // owner's pricing editor directly - once, and only for an owner/admin.
@@ -605,7 +638,19 @@ export default function GymDetailScreen() {
 
           {/* Owners/admins: confirmed trainer sessions coming up here (read-only). */}
           {isGymAdmin ? (
-            <UpcomingSessionsCard gymId={gymId} refreshToken={requestsRefreshToken} />
+            <View
+              ref={sessionsWrapperRef}
+              style={[
+                styles.highlightWrapper,
+                highlightedSection === 'sessions' && styles.highlightWrapperActive,
+              ]}
+            >
+              <UpcomingSessionsCard
+                gymId={gymId}
+                refreshToken={requestsRefreshToken}
+                highlightBookingId={highlight === 'sessions' ? highlightBookingId : null}
+              />
+            </View>
           ) : null}
 
           {isEligible && busyHours ? <BusyHoursChart hours={busyHours} /> : null}
@@ -644,6 +689,7 @@ export default function GymDetailScreen() {
                 team={team}
                 viewerUserId={session?.user.id ?? null}
                 viewerRole={viewerRole}
+                trainerSessionStats={trainerSessionStats}
                 onRemoveMember={handleRemoveMember}
               />
             </View>

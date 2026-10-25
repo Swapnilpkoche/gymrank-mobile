@@ -5,6 +5,7 @@ import type {
   GymUpcomingSession,
   SessionBooking,
   SessionBookingStatus,
+  TrainerSessionStats,
 } from '../types/database';
 
 // Trainer session booking. Availability slots are written directly (RLS: own
@@ -297,6 +298,7 @@ type RawGymSessionRow = {
   booking_id: number;
   session_date: string;
   start_time: string;
+  status: 'confirmed' | 'pending';
   trainer_id: string;
   trainer_name: string;
   requester_id: string;
@@ -311,9 +313,33 @@ export async function fetchGymUpcomingSessions(gymId: number): Promise<GymUpcomi
     id: row.booking_id,
     sessionDate: row.session_date,
     startTime: toHourMinute(row.start_time),
+    status: row.status,
     trainerId: row.trainer_id,
     trainerName: row.trainer_name,
     requesterId: row.requester_id,
     requesterName: row.requester_name,
   }));
+}
+
+type RawTrainerStatsRow = {
+  trainer_id: string;
+  requests_received: number;
+  requests_accepted: number;
+};
+
+// Owner/admin only (the RPC checks is_gym_admin). Keyed by trainer user id;
+// a trainer with no requests at this gym has no entry.
+export async function fetchGymTrainerSessionStats(
+  gymId: number
+): Promise<Record<string, TrainerSessionStats>> {
+  const { data, error } = await supabase.rpc('get_gym_trainer_session_stats', { p_gym_id: gymId });
+  if (error) throw error;
+  const stats: Record<string, TrainerSessionStats> = {};
+  for (const row of (data ?? []) as RawTrainerStatsRow[]) {
+    stats[row.trainer_id] = {
+      received: Number(row.requests_received),
+      accepted: Number(row.requests_accepted),
+    };
+  }
+  return stats;
 }
