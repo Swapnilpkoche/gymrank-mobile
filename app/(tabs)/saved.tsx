@@ -252,7 +252,7 @@ export default function SavedScreen() {
           )}
           ItemSeparatorComponent={() => <View style={styles.separator} />}
           ListEmptyComponent={
-            isSearching ? null : trimmedSearchQuery ? (
+            isSearching ? undefined : trimmedSearchQuery ? (
               <View style={styles.emptyContainer}>
                 <Feather name="search" size={32} color={colors.textMuted} />
                 <Text style={styles.emptyTitle}>No members found</Text>

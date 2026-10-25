@@ -182,7 +182,7 @@ export default function CheckInScreen() {
               <Text style={styles.viewAllText}>View all ({historyTotalCount})</Text>
               <Feather name="arrow-right" size={14} color={colors.emeraldLight} />
             </Pressable>
-          ) : null
+          ) : undefined
         }
       />
 

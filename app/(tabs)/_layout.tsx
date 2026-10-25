@@ -24,28 +24,30 @@ export default function TabsLayout() {
         name="index"
         options={{
           title: 'Discover',
-          tabBarIcon: ({ color, size }) => <Feather name="compass" color={color} size={size} />,
+          // The tab bar always passes a string tint; its ColorValue type is just wider
+          // than what the icon props accept.
+          tabBarIcon: ({ color, size }) => <Feather name="compass" color={color as string} size={size} />,
         }}
       />
       <Tabs.Screen
         name="check-in"
         options={{
           title: 'Check In',
-          tabBarIcon: ({ color, size }) => <Feather name="map-pin" color={color} size={size} />,
+          tabBarIcon: ({ color, size }) => <Feather name="map-pin" color={color as string} size={size} />,
         }}
       />
       <Tabs.Screen
         name="saved"
         options={{
           title: 'Saved',
-          tabBarIcon: ({ color, size }) => <Feather name="heart" color={color} size={size} />,
+          tabBarIcon: ({ color, size }) => <Feather name="heart" color={color as string} size={size} />,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: isLoggedIn ? 'Profile' : 'Account',
-          tabBarIcon: ({ color, size }) => <Feather name="user" color={color} size={size} />,
+          tabBarIcon: ({ color, size }) => <Feather name="user" color={color as string} size={size} />,
           tabBarBadge: isLoggedIn && unreadNotifications > 0 ? unreadNotifications : undefined,
         }}
       />

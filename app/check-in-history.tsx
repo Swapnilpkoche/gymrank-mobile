@@ -82,7 +82,7 @@ export default function CheckInHistoryScreen() {
       }
       onEndReachedThreshold={0.4}
       onEndReached={handleLoadMore}
-      ListHeaderComponent={error ? <Text style={styles.error}>{error}</Text> : null}
+      ListHeaderComponent={error ? <Text style={styles.error}>{error}</Text> : undefined}
       renderItem={({ item }) => (
         <View style={styles.historyRow}>
           <View style={styles.historyDot} />
@@ -97,7 +97,7 @@ export default function CheckInHistoryScreen() {
       ListFooterComponent={
         isLoadingMore ? (
           <ActivityIndicator color={colors.emerald} style={styles.footerSpinner} />
-        ) : null
+        ) : undefined
       }
     />
   );

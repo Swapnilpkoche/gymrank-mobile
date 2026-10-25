@@ -1,5 +1,5 @@
 import { Stack, useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
-import { useCallback, useEffect, useRef, useState, type RefObject } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -8,6 +8,8 @@ import {
   StyleSheet,
   Text,
   View,
+  type ScrollViewInstance,
+  type ViewInstance,
 } from 'react-native';
 
 import { ActionGrid } from '../../src/components/gym-detail/ActionGrid';
@@ -88,14 +90,14 @@ export default function GymDetailScreen() {
   const gymId = Number(id);
   const { session } = useAuth();
   const router = useRouter();
-  const scrollViewRef = useRef<ScrollView>(null);
+  const scrollViewRef = useRef<ScrollViewInstance>(null);
   // ScrollView's own inner content View ref - measureLayout on the New
   // Architecture requires a real host-component ref here, not the numeric
   // handle findNodeHandle(scrollViewRef.current) used to produce (that's
   // the deprecated old-architecture form and just logs a warning now).
-  const scrollContentRef = useRef<View>(null);
-  const reviewsWrapperRef = useRef<View>(null);
-  const teamWrapperRef = useRef<View>(null);
+  const scrollContentRef = useRef<ViewInstance>(null);
+  const reviewsWrapperRef = useRef<ViewInstance>(null);
+  const teamWrapperRef = useRef<ViewInstance>(null);
   const hasScrolledToHighlightRef = useRef(false);
   const [highlightedSection, setHighlightedSection] = useState<'reviews' | 'team' | null>(null);
 
@@ -551,10 +553,7 @@ export default function GymDetailScreen() {
     <>
       <ScrollView
         ref={scrollViewRef}
-        // Bundled RN type declares this as RefObject<View> (non-nullable),
-        // but the actual prop (and useRef's own return type) allow a null
-        // current until mount - the cast just bridges that stale .d.ts gap.
-        innerViewRef={scrollContentRef as RefObject<View>}
+        innerViewRef={scrollContentRef}
         style={styles.container}
         contentContainerStyle={styles.content}
         refreshControl={
